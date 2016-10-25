@@ -6,8 +6,19 @@ public class Cannon : MonoBehaviour {
 
 	[SerializeField] float rotationSpeed;
 	[SerializeField] float maxBlastForce;
+	[SerializeField] Color idleColor;
+	[SerializeField] Color activeColor;
 
+	SpriteRenderer spriteRenderer;
 	Player storedPlayer;
+	Quaternion originalRotation;
+
+	void Awake () {
+
+		spriteRenderer = this.GetComponentInChildren<SpriteRenderer>();
+		spriteRenderer.color = idleColor;
+		originalRotation = this.transform.rotation;
+	}
 
 	void Update () {
 
@@ -26,18 +37,17 @@ public class Cannon : MonoBehaviour {
 			if (Input.GetButtonDown ("Jump")) {
 				//Debug.Log ("Fire!");
 				StartCoroutine (TempDisableCollider ());
-				storedPlayer.GetComponent<Rigidbody2D>().isKinematic = false;
-				storedPlayer.GetComponent<Rigidbody2D>().AddForce (maxBlastForce * this.transform.up);
+				ShootOutPlayer(storedPlayer.GetComponentInChildren<Rigidbody2D>());
 			}
 		}
 	}
 
 	void OnTriggerEnter2D(Collider2D other) {
 
-		if (other.CompareTag ("Player")) {
+		if (!storedPlayer && other.CompareTag ("Player")) {
 
 			storedPlayer = other.GetComponentInChildren<Player> ();
-			this.GetComponentInChildren<SpriteRenderer> ().color = Color.green;
+			spriteRenderer.color = activeColor;
 		}
 	}
 
@@ -48,5 +58,20 @@ public class Cannon : MonoBehaviour {
 		yield return new WaitForSeconds (0.5f);
 
 		this.GetComponent<Collider2D> ().enabled = true;
+
+		ResetCannon();
+	}
+
+	void ShootOutPlayer (Rigidbody2D playerRigidbody) {
+
+		playerRigidbody.isKinematic = false;
+		playerRigidbody.AddForce (maxBlastForce * this.transform.up);
+		storedPlayer = null;
+	}
+
+	void ResetCannon () {
+
+		spriteRenderer.color = idleColor;
+		this.transform.rotation = originalRotation;
 	}
 }
