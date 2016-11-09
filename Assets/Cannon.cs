@@ -11,13 +11,11 @@ public class Cannon : MonoBehaviour {
 
 	SpriteRenderer spriteRenderer;
 	Player storedPlayer;
-	Quaternion originalRotation;
 
 	void Awake () {
 
 		spriteRenderer = this.GetComponentInChildren<SpriteRenderer>();
 		spriteRenderer.color = idleColor;
-		originalRotation = this.transform.rotation;
 	}
 
 	void Update () {
@@ -55,7 +53,7 @@ public class Cannon : MonoBehaviour {
 
 		this.GetComponent<Collider2D> ().enabled = false;
 
-		yield return new WaitForSeconds (0.5f);
+		yield return new WaitForSeconds (0.25f);
 
 		this.GetComponent<Collider2D> ().enabled = true;
 
@@ -66,12 +64,12 @@ public class Cannon : MonoBehaviour {
 
 		playerRigidbody.isKinematic = false;
 		playerRigidbody.AddForce (maxBlastForce * this.transform.up);
+		storedPlayer.transform.GetComponent<SpriteRenderer>().enabled = true;
 		storedPlayer = null;
 	}
 
 	void ResetCannon () {
 
 		spriteRenderer.color = idleColor;
-		this.transform.rotation = originalRotation;
 	}
 }
