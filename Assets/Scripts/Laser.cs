@@ -15,6 +15,8 @@ public class Laser : MonoBehaviour {
 	void Awake () {
 
 		rb2d = this.GetComponentInChildren<Rigidbody2D> ();
+		this.GetComponentInChildren<TrailRenderer> ().sortingLayerName = this.GetComponent<SpriteRenderer> ().sortingLayerName;
+		this.GetComponentInChildren<TrailRenderer> ().sortingOrder = this.GetComponent<SpriteRenderer> ().sortingOrder - 1;
 	}
 
 	void OnCollisionEnter2D(Collision2D other) {
@@ -35,7 +37,7 @@ public class Laser : MonoBehaviour {
 		if(other.CompareTag("Item")) {
 
 			score++;
-			scoreText.text = "P" + (cannon.GetComponent<Cannon> ().GetPlayerID () + 1) + ": " + score.ToString("00");
+			scoreText.text = "P" + (cannon.GetComponent<Cannon> ().GetPlayerID () + 1) + "- " + score.ToString("00");
 		}
 	}
 }

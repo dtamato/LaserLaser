@@ -11,6 +11,8 @@ public class Cannon : MonoBehaviour {
 
 	Player rewiredPlayer;
 	Laser storedLaser;
+	float pivotAngle;
+	int rotationModifier = 1;
 
 	void Awake () {
 
@@ -21,14 +23,37 @@ public class Cannon : MonoBehaviour {
 
 		if (storedLaser) {
 
+			// Change direction of rotation
+			if (this.transform.up == Vector3.up) {
+
+				rotationModifier = 1;
+			}
+			else if (this.transform.up == Vector3.down) {
+
+				rotationModifier = -1;
+			}
+
 			if (rewiredPlayer.GetAxis ("Horizontal") < 0) {
 				//Debug.Log ("Horizontal: " + Input.GetAxis ("Horizontal"));
-				this.transform.Rotate(rotationSpeed * Vector3.forward);
+				this.transform.Rotate(rotationSpeed * rotationModifier * Vector3.forward);
 			}
 			else if(rewiredPlayer.GetAxis ("Horizontal") > 0) {
 				//Debug.Log ("Horizontal: " + Input.GetAxis ("Horizontal"));
-				this.transform.Rotate(-rotationSpeed * Vector3.forward);
+				this.transform.Rotate(-rotationSpeed * rotationModifier * Vector3.forward);
 			}
+
+			// Restrict angle
+//			float zAngle = this.transform.rotation.eulerAngles.z;
+//			float offsetAngle = pivotAngle - zAngle;
+//			//Debug.Log ("zAngle: " + zAngle);
+//			if ((zAngle >= -45 && zAngle <= -40) ||zAngle >= 315 && zAngle <= 320) {
+//
+//				this.transform.rotation = Quaternion.Euler (0, 0, -39);
+//			}
+//			else if (zAngle >= 40 && zAngle <= 45) {
+//
+//				this.transform.rotation = Quaternion.Euler (0, 0, 39);
+//			}
 
 
 			if (rewiredPlayer.GetButtonDown ("Fire")) {
@@ -56,8 +81,6 @@ public class Cannon : MonoBehaviour {
 		yield return new WaitForSeconds (0.25f);
 
 		this.GetComponent<Collider2D> ().enabled = true;
-
-		ResetCannon();
 	}
 
 	void ShootOutPlayer (Rigidbody2D playerRigidbody) {
@@ -68,10 +91,11 @@ public class Cannon : MonoBehaviour {
 		storedLaser = null;
 	}
 
-	void ResetCannon () {
-
-
-	}
+//	// Called from Laser.cs
+//	public void SetPivotAngle (float newPivotAngle) {
+//
+//		pivotAngle = newPivotAngle;
+//	}
 
 	public int GetPlayerID () {
 
