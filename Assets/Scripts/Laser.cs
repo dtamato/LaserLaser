@@ -15,8 +15,8 @@ public class Laser : MonoBehaviour {
 	void Awake () {
 
 		rb2d = this.GetComponentInChildren<Rigidbody2D> ();
-		//this.GetComponentInChildren<TrailRenderer> ().sortingLayerName = this.GetComponent<SpriteRenderer> ().sortingLayerName;
-		//this.GetComponentInChildren<TrailRenderer> ().sortingOrder = this.GetComponent<SpriteRenderer> ().sortingOrder - 1;
+		this.GetComponentInChildren<TrailRenderer> ().sortingLayerName = this.GetComponent<SpriteRenderer> ().sortingLayerName;
+		this.GetComponentInChildren<TrailRenderer> ().sortingOrder = this.GetComponent<SpriteRenderer> ().sortingOrder - 1;
 	}
 
 	void OnCollisionEnter2D(Collision2D other) {
@@ -28,6 +28,7 @@ public class Laser : MonoBehaviour {
 			cannon.transform.rotation = other.transform.rotation;
 			this.transform.position = cannon.transform.position + 1.5f * cannon.transform.up;
 			this.transform.GetComponent<SpriteRenderer>().enabled = false;
+			cannon.GetComponentInChildren<Cannon> ().SetNewBaseAngle ();
 		}
 	}
 
