@@ -10,7 +10,7 @@ public class Laser : MonoBehaviour {
 	[SerializeField] Text scoreText;
 
 	Rigidbody2D rb2d;
-	int score = 0;
+	public int score = 0;
 
 	void Awake () {
 
