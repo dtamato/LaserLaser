@@ -25,43 +25,99 @@ public class Cannon : MonoBehaviour {
 	float maxAngle;
 	int rotationModifier = 1;
 
-    //Lobby Handling Variables.
-    bool inLobby = false;
-    bool playerIsActive = false;
+    //Boolean Flags.
+    bool inLobby = false;           //Player is in Lobby.
+    bool playerIsActive = false;    //Player has joined the game (pressed A in Lobby).
+    public bool gameOver = false;   //The game is over (input is removed).
+
     GameObject joinUI = null;
     Text scoreUI = null;
-    public bool gameOver = false;
 
 
 	void Awake ()
     {
-        gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
         rewiredPlayer = ReInput.players.GetPlayer (playerId);
 		if (maxAngleOffset < 0) { maxAngleOffset *= -1; }
-		SetNewBaseAngle ();
+        SetNewBaseAngle();
+    }
+
+    void Start()
+    {
+        gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
 
         //If Lobby is the active scene.
-        if (SceneManager.GetActiveScene().buildIndex == 0) {
-            inLobby = true;
-            joinUI = GameObject.Find("PlayerJoin" + playerId);
+        if (SceneManager.GetActiveScene().buildIndex == 0)
+        {
+            inLobby = true;                                         //Set the player state to be in Lobby.
+            joinUI = GameObject.Find("PlayerJoin" + playerId);      //Reference the Join UI cover.
         }
+
         //If Main Game is the active scene.
-        else if (SceneManager.GetActiveScene().buildIndex == 1) {
-            playerIsActive = gameManager.getPlayerState(playerId);
-            //If the player isn't active, remove their score UI and the player.
+        else if (SceneManager.GetActiveScene().buildIndex == 1)
+        {
+            playerIsActive = gameManager.getPlayerState(playerId);      //Retrieve whether the player is active from the gameManager.
+            
+            //If the player isn't active, hide their cannon and their score text.
             if (!playerIsActive) {
                 scoreUI = GameObject.Find("PlayerScore" + playerId).GetComponent<Text>();
                 scoreUI.text = "          ";
                 gameObject.SetActive(false);
+            }
+            //If the player is active, remove their input temporarily. It's given back after the countdown.
+            else {
+                playerIsActive = false;
             }
         }
     }
 
 	void Update ()
     {
-        //Enable Input from Player.
-		if (storedLaser)
-			ProcessInputs ();
+        //Prevents player input until the game countdown has finished.
+        if (!playerIsActive && gameManager.startGame == true)
+            playerIsActive = true;
+        
+        //Enable Input from Player when they're mounted on a wall.
+		if (storedLaser) {
+            //If the player is in the lobby, and they aren't currently active.
+            if (inLobby && !playerIsActive)
+            {
+                //If the player presses A.
+                if (rewiredPlayer.GetButtonDown("Fire"))
+                {
+                    playerIsActive = true;                  //Activate the player.
+                    gameManager.setPlayerState(playerId);   //Tell the gameManager the player is activated.
+                    joinUI.SetActive(false);                //Take down the Join UI.
+                }
+            }
+
+            //If the player is in the lobby, is currently active (has pressed A), and they press B.
+            if (inLobby && playerIsActive && rewiredPlayer.GetButtonDown("Back"))
+            {
+                playerIsActive = false;                 //Deactivate the player.
+                gameManager.setPlayerState(playerId);   //Tell the gameManager the player is deactivated.
+                joinUI.SetActive(true);                 //Put the Join UI cover back up.
+            }
+
+            //If the player is not in the lobby (in the game), and the game is over (time ran out).
+            if (!inLobby && gameOver)
+            {
+                playerIsActive = false;     //Removes movement and firing input from the player.
+                //If the player presses start the game returns to the lobby.
+                if (rewiredPlayer.GetButtonDown("StartGame"))
+                {
+                    gameManager.ReturnToLobby();
+                }
+            }
+
+            //If a player who is active presses start, the game begins.
+            if (inLobby && playerIsActive && rewiredPlayer.GetButtonDown("StartGame"))
+            {
+                SceneManager.LoadScene(1);
+            }
+
+            //Process gameplay Inputs.
+            ProcessInputs ();
+        }
 	}
 
 	void OnTriggerEnter2D(Collider2D other)
@@ -72,25 +128,6 @@ public class Cannon : MonoBehaviour {
 
 	void ProcessInputs ()
     {
-        if (!playerIsActive && inLobby) {
-            if (rewiredPlayer.GetButtonDown("Fire")) {
-                playerIsActive = true;
-                gameManager.setPlayerState(playerId);
-                joinUI.SetActive(false);
-            }
-        }
-
-        //Once game over is triggered take away control from the player.
-        //Only allow start to be pressed to return to lobby.
-        if (gameOver && !inLobby) {
-            playerIsActive = false;
-            if (rewiredPlayer.GetButtonDown("StartGame"))
-            {
-                SceneManager.LoadScene(0);
-            }
-        }
-
-
         if (playerIsActive)
         {
             // Change direction of rotation if upside down
@@ -137,19 +174,6 @@ public class Cannon : MonoBehaviour {
                 ShootOutPlayer(storedLaser.GetComponentInChildren<Rigidbody2D>());
                 this.GetComponent<AudioSource>().pitch = Random.Range(0.5f, 1.5f);
                 this.GetComponent<AudioSource>().Play();
-            }
-
-            //If the player presses B while in the lobby, the player is removed from play.
-            if (rewiredPlayer.GetButtonDown("Back") && inLobby)
-            {
-                playerIsActive = false;
-                gameManager.setPlayerState(playerId);
-                joinUI.SetActive(true);
-            }
-
-            //If the player 1 presses Start while in the lobby, the game begins with whatever players are joined.
-            if (rewiredPlayer.GetButtonDown("StartGame") && inLobby && playerId == 0) {
-                SceneManager.LoadScene(1);
             }
         }
     }

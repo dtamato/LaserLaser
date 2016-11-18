@@ -10,14 +10,18 @@ public class GameManager : MonoBehaviour {
     public List <bool> playerState;
     public List <int> playerScores;
 
-    private bool inGame = false;
+    //Boolean flags.
+    public bool inGame = false;        //True when in Main Game (Build Code 1).
+    public bool startGame = false;     //True when the 5 second countdown has passed.
+
+    //Timer variables.
     private Text timeText;
-    private float timer;
+    public float timer;
     private float countDown;
     private float delay;
-    private bool startGame = false;
+    
 
-    //
+    
     private GameObject gameOverPanel;
 
     //Ensures there is only one instance of the gameManager, and it isn't destroyed when changing scenes.
@@ -52,11 +56,11 @@ public class GameManager : MonoBehaviour {
         //Runs once when entering the Main Game Scene.
         if (SceneManager.GetActiveScene().buildIndex == 1 && !inGame) {
             //Initialize the timer.
-            inGame = true;
+            inGame = true;                                                  //Sets the game state to in game.
             timeText = GameObject.Find("TimeText").GetComponent<Text>();
-            timer = 10.0f;
-            delay = 5.0f;
-            timeText.text = timer.ToString("F1");
+            timer = 5.0f;                                                  //Game timer, set to desired game length.
+            delay = 5.0f;                                                   //Countdown / grace period. Input activates after this many seconds.
+            timeText.text = timer.ToString("F1");                           //Put the time on the clock.
             
             //Initialize the game over panel.
             gameOverPanel = GameObject.Find("GameOverPanel");
@@ -85,7 +89,7 @@ public class GameManager : MonoBehaviour {
         if (startGame && timer <= 0.0f) {
             startGame = false;
             timeText.text = "0.0";
-            StartCoroutine("GameOver");
+            GameOver();
         }
         
 	}
@@ -93,12 +97,11 @@ public class GameManager : MonoBehaviour {
     IEnumerator CountDown()
     {
         yield return new WaitForSeconds(delay);
-        startGame = true;
+        startGame = true;       //Once this is toggled, players have input.
     }
 
-    IEnumerator GameOver()
+    public void GameOver()
     {
-        yield return new WaitForSeconds(0.5f);
         gameOverPanel.SetActive(true);
 
         //Iterate through each active player.
@@ -110,7 +113,7 @@ public class GameManager : MonoBehaviour {
                 GameObject score = GameObject.Find("FinalScore" + i);                                                                           
                 GameObject scoreBar = GameObject.Find("Bar" + i);
                 score.GetComponent<Text>().text = (playerScores[i]).ToString();                                                                 //Set the score text.
-                scoreBar.GetComponent<RectTransform>().SetInsetAndSizeFromParentEdge(RectTransform.Edge.Bottom, 0, (5 * playerScores[i]));      //Resize the score bar.
+                scoreBar.GetComponent<RectTransform>().SetInsetAndSizeFromParentEdge(RectTransform.Edge.Bottom, 0, (3 * playerScores[i]));      //Resize the score bar.
             }
             else
                 playerScores[i] = 0;    //If no player was active in a slot, set their score to 0.
@@ -146,6 +149,16 @@ public class GameManager : MonoBehaviour {
                 panel1.color = new Color(255, 153, 0, 100);
                 break;
         }
+    }
+
+    //Called from Cannon.cs.
+    public void ReturnToLobby()
+    {
+        //Reset the player states when returning to lobby.
+        for (int i = 0; i < 4; i++)
+            playerState[i] = false;
+
+        SceneManager.LoadScene(0);
     }
 
     //Called from Cannon.cs. Sets whether the player is active or not.
