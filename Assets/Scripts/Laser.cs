@@ -49,7 +49,6 @@ public class Laser : MonoBehaviour
                 comboCount++;
                 crystalCount = 0;
             }
-
         }
     }
 
@@ -62,15 +61,15 @@ public class Laser : MonoBehaviour
             crystalCount++;
             //Debug.Log("I have a combo of: " + comboCount);
             score++;
-            Debug.Log(score);
+            //Debug.Log(score);
             scoreText.text = "P" + (cannon.GetComponent<Cannon>().GetPlayerID() + 1) + "- " + score.ToString("00");
-
+			//Camera.main.GetComponent<CameraEffects> ().ShakeCamera ();
         }
     }
 
     void Update()
     {
-        if (SceneManager.GetActiveScene().buildIndex == 1)
+        if (SceneManager.GetActiveScene().buildIndex == 2)
         {
             comboText.text = "Combo: " + comboCount;
             //Debug.Log(comboCount);

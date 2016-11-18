@@ -142,6 +142,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b11298ec40a0fee4b98da455a5308b1c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  crystalCollectedPrefab: {fileID: 1000013082268746, guid: d28ba9bd8b4297f4382608813bf3869b,
+    type: 2}
 --- !u!212 &212000011913306992
 SpriteRenderer:
   m_ObjectHideFlags: 1

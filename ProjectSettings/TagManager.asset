@@ -8,6 +8,7 @@ TagManager:
   - Boundary
   - Item
   - GameManager
+  - AudioManager
   layers:
   - Default
   - TransparentFX

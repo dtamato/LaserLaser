@@ -19,9 +19,7 @@ public class GameManager : MonoBehaviour {
     public float timer;
     private float countDown;
     private float delay;
-    
-
-    
+        
     private GameObject gameOverPanel;
 
     //Ensures there is only one instance of the gameManager, and it isn't destroyed when changing scenes.
@@ -49,7 +47,7 @@ public class GameManager : MonoBehaviour {
 	void Update ()
     {
         //Resets game state when returning to lobby after a game.
-        if (SceneManager.GetActiveScene().buildIndex == 0 && inGame) {
+        if (SceneManager.GetActiveScene().buildIndex == 1 && inGame) {
             inGame = false;
 
             playerState = new List<bool>(4); //re-initializes playerlist
@@ -59,16 +57,15 @@ public class GameManager : MonoBehaviour {
                 playerState.Add(false);
                 playerScores.Add(0);
             }
-
         }
 
         //Runs once when entering the Main Game Scene.
-        if (SceneManager.GetActiveScene().buildIndex == 1 && !inGame) {
+        if (SceneManager.GetActiveScene().buildIndex == 2 && !inGame) {
             //Initialize the timer.
             inGame = true;                                                  //Sets the game state to in game.
             timeText = GameObject.Find("TimeText").GetComponent<Text>();
-            timer = 60.0f;                                                  //Game timer, set to desired game length.
-            delay = 5.0f;                                                   //Countdown / grace period. Input activates after this many seconds.
+            timer = 90.0f;                                                  //Game timer, set to desired game length.
+            delay = 3.0f;                                                   //Countdown / grace period. Input activates after this many seconds.
             timeText.text = timer.ToString("F1");                           //Put the time on the clock.
             
             //Initialize the game over panel.
@@ -94,6 +91,11 @@ public class GameManager : MonoBehaviour {
             timeText.text = timer.ToString("F1");
         }
 
+		if (startGame && timer <= 30f) {
+
+			GameObject.Find ("Audio Kitty").GetComponent<AudioSource> ().pitch = 1.25f;
+		}
+
         //When the timer runs out, the game is over.
         if (startGame && timer <= 0.0f) {
             startGame = false;
@@ -106,12 +108,18 @@ public class GameManager : MonoBehaviour {
     IEnumerator CountDown()
     {
         yield return new WaitForSeconds(delay);
+		GameObject.Find("Get Ready Text").SetActive (false);
         startGame = true;       //Once this is toggled, players have input.
     }
 
     public void GameOver()
     {
         gameOverPanel.SetActive(true);
+
+		GameObject topBarGroup = GameObject.Find ("Top Bar Group");
+		if (topBarGroup) {
+			topBarGroup.SetActive (false);
+		}
 
         //Iterate through each active player.
         for (int i = 0; i < 4; i++) {
@@ -144,20 +152,7 @@ public class GameManager : MonoBehaviour {
 
         //Set the panel color to that of the winner.
         Image panel1 = GameObject.Find("GameOverPanel").GetComponent<Image>();
-        switch (winner) {
-            case 0:
-                panel1.color = new Color(255, 0, 0, 100);
-                break;
-            case 1:
-                panel1.color = new Color(0, 255, 0, 100);
-                break;
-            case 2:
-                panel1.color = new Color(255, 0, 255, 100);
-                break;
-            case 3:
-                panel1.color = new Color(255, 153, 0, 100);
-                break;
-        }
+		panel1.color = new Color32 (74, 68, 249, 255);
     }
 
     //Called from Cannon.cs.
@@ -183,6 +178,4 @@ public class GameManager : MonoBehaviour {
     {
         return playerState[playerID];
     }
-
-
 }

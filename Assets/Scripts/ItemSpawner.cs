@@ -10,10 +10,20 @@ public class ItemSpawner : MonoBehaviour {
     private GameManager gameManager;
     private bool initial = true;
     private bool cooldown = false;
+	private bool dontRunThisAlotOfTimes = false;
+	private int playerCount = 0;
 
 	void Start ()
     {
         gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
+		//Check how many players are in the game.
+		for (int i = 0; i < 4; i++) {
+			if (gameManager.playerState [i] = true)
+				playerCount++;
+		}
+
+		//Scale the spawn cooldown based on number of players.
+		spawnCooldown = 1.0f - (0.05f * playerCount);
 	}
 	
 	void Update ()
@@ -29,8 +39,10 @@ public class ItemSpawner : MonoBehaviour {
             StartCoroutine("SpawnItem");
         }
         //When there's only 30 seconds left, speed up item spawning.
-        if (gameManager.timer < 15.0f)
-            spawnCooldown = 0.5f;
+		if (!dontRunThisAlotOfTimes && gameManager.timer < 30.0f) {
+			spawnCooldown -= 0.2f;
+			dontRunThisAlotOfTimes = true;
+		}
     }
 
 	IEnumerator SpawnItem ()

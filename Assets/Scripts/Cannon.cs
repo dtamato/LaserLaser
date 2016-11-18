@@ -47,14 +47,14 @@ public class Cannon : MonoBehaviour {
         gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
 
         //If Lobby is the active scene.
-        if (SceneManager.GetActiveScene().buildIndex == 0)
+        if (SceneManager.GetActiveScene().buildIndex == 1)
         {
             inLobby = true;                                         //Set the player state to be in Lobby.
             joinUI = GameObject.Find("PlayerJoin" + playerId);      //Reference the Join UI cover.
         }
 
         //If Main Game is the active scene.
-        else if (SceneManager.GetActiveScene().buildIndex == 1)
+        else if (SceneManager.GetActiveScene().buildIndex == 2)
         {
             playerIsActive = gameManager.getPlayerState(playerId);      //Retrieve whether the player is active from the gameManager.
             
@@ -115,7 +115,7 @@ public class Cannon : MonoBehaviour {
             //If a player who is active presses start, the game begins.
             if (inLobby && playerIsActive && rewiredPlayer.GetButtonDown("StartGame"))
             {
-                SceneManager.LoadScene(1);
+                SceneManager.LoadScene(2);
             }
 
             //Process gameplay Inputs.
@@ -133,12 +133,6 @@ public class Cannon : MonoBehaviour {
     {
         if (playerIsActive)
         {
-            // Change direction of rotation if upside down
-            if (this.transform.up == Vector3.up)
-                rotationModifier = 1;
-            else if (this.transform.up == Vector3.down)
-                rotationModifier = -1;
-
             // Get controller joystick input
             if (rewiredPlayer.GetAxis("Horizontal") < 0)
             {
@@ -154,8 +148,6 @@ public class Cannon : MonoBehaviour {
             // Restrict angle
             currentAngle = this.transform.rotation.eulerAngles.z;
             if (currentAngle < 0) { currentAngle += 360; }
-
-            angleOffset = Mathf.Abs(currentAngle - baseAngle);
 
             //Debug.Log ("zAngle: " + zAngle);
 
@@ -209,6 +201,16 @@ public class Cannon : MonoBehaviour {
 
 		maxAngle = baseAngle + maxAngleOffset;
 		if (maxAngle < 0) { maxAngle += 360; }
+
+		// Change rotation modifier if upside down
+		if (this.transform.up == Vector3.down) {
+
+			rotationModifier = -1;
+		}
+		else {
+
+			rotationModifier = 1;
+		}
 	}
 
 	public int GetPlayerID () {
