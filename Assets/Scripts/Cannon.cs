@@ -32,6 +32,7 @@ public class Cannon : MonoBehaviour {
 
     GameObject joinUI = null;
     Text scoreUI = null;
+    Text comboUI = null;
 
 
 	void Awake ()
@@ -57,8 +58,10 @@ public class Cannon : MonoBehaviour {
         {
             playerIsActive = gameManager.getPlayerState(playerId);      //Retrieve whether the player is active from the gameManager.
             
-            //If the player isn't active, hide their cannon and their score text.
+            //If the player isn't active, hide their cannon, their score text, and their combo text.
             if (!playerIsActive) {
+                comboUI = GameObject.Find("PlayerCombo" + playerId).GetComponent<Text>();
+                comboUI.text = "          ";
                 scoreUI = GameObject.Find("PlayerScore" + playerId).GetComponent<Text>();
                 scoreUI.text = "          ";
                 gameObject.SetActive(false);

@@ -51,6 +51,15 @@ public class GameManager : MonoBehaviour {
         //Resets game state when returning to lobby after a game.
         if (SceneManager.GetActiveScene().buildIndex == 0 && inGame) {
             inGame = false;
+
+            playerState = new List<bool>(4); //re-initializes playerlist
+            playerScores = new List<int>(4);
+            for (int i = 0; i < 4; i++)
+            {
+                playerState.Add(false);
+                playerScores.Add(0);
+            }
+
         }
 
         //Runs once when entering the Main Game Scene.
@@ -58,7 +67,7 @@ public class GameManager : MonoBehaviour {
             //Initialize the timer.
             inGame = true;                                                  //Sets the game state to in game.
             timeText = GameObject.Find("TimeText").GetComponent<Text>();
-            timer = 5.0f;                                                  //Game timer, set to desired game length.
+            timer = 60.0f;                                                  //Game timer, set to desired game length.
             delay = 5.0f;                                                   //Countdown / grace period. Input activates after this many seconds.
             timeText.text = timer.ToString("F1");                           //Put the time on the clock.
             
@@ -67,7 +76,7 @@ public class GameManager : MonoBehaviour {
             for (int i = 0; i < 4; i++) {
                 GameObject scoreBar = GameObject.Find("ScoreBar" + i);
                 GameObject score = GameObject.Find("FinalScore" + i);
-                //Check if each player is active, and deactivate the score summaries for those who aren't,
+                //Check if each player is active, and deactivate the score summaries for those who aren't active
                 if (!playerState[i]) { 
                     scoreBar.SetActive(false);
                     score.SetActive(false);
@@ -130,7 +139,7 @@ public class GameManager : MonoBehaviour {
         }
 
         //Set the Winner Text.
-        Text winnerText = GameObject.Find("WinnerText").GetComponent<Text>();
+        Text winnerText = GameObject.Find("WinnerText").GetComponent<Text>(); //This should be changed, its unsafe. If winnertext is not in scene, game breaks.
         winnerText.text = ("Player " + (winner + 1) + " Wins!");
 
         //Set the panel color to that of the winner.

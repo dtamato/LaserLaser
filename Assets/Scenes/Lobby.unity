@@ -37,7 +37,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.3735644, g: 0.38112032, b: 0.35887682, a: 1}
+  m_IndirectSpecularColor: {r: 0.37356454, g: 0.38112053, b: 0.3588771, a: 1}
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
@@ -1700,7 +1700,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cannon: {fileID: 571366209}
   scoreText: {fileID: 0}
+  comboText: {fileID: 0}
   score: 0
+  comboCount: 0
 --- !u!96 &831401312
 TrailRenderer:
   m_ObjectHideFlags: 0
@@ -2173,7 +2175,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cannon: {fileID: 2104336996}
   scoreText: {fileID: 0}
+  comboText: {fileID: 0}
   score: 0
+  comboCount: 0
 --- !u!50 &1131215737
 Rigidbody2D:
   serializedVersion: 2
@@ -2346,7 +2350,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cannon: {fileID: 271962437}
   scoreText: {fileID: 0}
+  comboText: {fileID: 0}
   score: 0
+  comboCount: 0
 --- !u!50 &1143426526
 Rigidbody2D:
   serializedVersion: 2
@@ -3072,7 +3078,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cannon: {fileID: 1447055553}
   scoreText: {fileID: 0}
+  comboText: {fileID: 0}
   score: 0
+  comboCount: 0
 --- !u!50 &1670502933
 Rigidbody2D:
   serializedVersion: 2
@@ -3473,6 +3481,28 @@ MonoBehaviour:
         _actionId: 2
         _elementType: 1
         _elementIdentifierId: 8
+        _axisRange: 0
+        _invert: 0
+        _axisContribution: 0
+        _keyboardKeyCode: 0
+        _modifierKey1: 0
+        _modifierKey2: 0
+        _modifierKey3: 0
+      - _actionCategoryId: 0
+        _actionId: 3
+        _elementType: 1
+        _elementIdentifierId: 15
+        _axisRange: 0
+        _invert: 0
+        _axisContribution: 0
+        _keyboardKeyCode: 0
+        _modifierKey1: 0
+        _modifierKey2: 0
+        _modifierKey3: 0
+      - _actionCategoryId: 0
+        _actionId: 2
+        _elementType: 1
+        _elementIdentifierId: 14
         _axisRange: 0
         _invert: 0
         _axisContribution: 0
