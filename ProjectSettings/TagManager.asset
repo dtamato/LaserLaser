@@ -7,7 +7,6 @@ TagManager:
   - Cannon
   - Boundary
   - Item
-  - GameManager
   layers:
   - Default
   - TransparentFX

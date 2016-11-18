@@ -8,10 +8,12 @@ public class Laser : MonoBehaviour {
 
 	[SerializeField] GameObject cannon;
 	[SerializeField] Text scoreText;
+    [SerializeField] private Text comboText;
 
 	Rigidbody2D rb2d;
-	public int score = 0;
-
+	int score = 0;
+    private int crystalCount = 0;
+    private int comboCount = 0;
 	void Awake () {
 
 		rb2d = this.GetComponentInChildren<Rigidbody2D> ();
@@ -29,16 +31,35 @@ public class Laser : MonoBehaviour {
 			this.transform.position = cannon.transform.position + 1.5f * cannon.transform.up;
 			this.transform.GetComponent<SpriteRenderer>().enabled = false;
 			cannon.GetComponentInChildren<Cannon> ().SetNewBaseAngle ();
+
+		    if (crystalCount == 0)
+		    {
+                comboCount = 0;
+            }
+		    else
+		    {
+		        comboCount++;
+		        crystalCount = 0;
+		    }
+		        
 		}
 	}
 
 	void OnTriggerEnter2D(Collider2D other) {
 
 		//Destroy(this.gameObject);
-		if(other.CompareTag("Item")) {
-
+		if(other.CompareTag("Item"))
+		{
+		    crystalCount++;
+		    //Debug.Log("I have a combo of: " + comboCount);
 			score++;
 			scoreText.text = "P" + (cannon.GetComponent<Cannon> ().GetPlayerID () + 1) + "- " + score.ToString("00");
+		    
 		}
 	}
+
+    void Update()
+    {
+        comboText.text = "Combo: " + comboCount;
+    }
 }
