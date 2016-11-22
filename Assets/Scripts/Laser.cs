@@ -80,6 +80,13 @@ public class Laser : MonoBehaviour
 			}
 			//Camera.main.GetComponent<CameraEffects> ().ShakeCamera ();
         }
+
+		// Enables the Paralysis script for a set period of time.
+		if (other.tag == "Paralysis") {
+			Destroy (other.gameObject);
+			GetComponentInParent<Paralysis> ().enabled = true;
+			StartCoroutine (DisableScript ());
+		}
     }
 
     void Update()
@@ -91,4 +98,10 @@ public class Laser : MonoBehaviour
         }
             
     }
+
+	IEnumerator DisableScript()
+	{
+		yield return new WaitForSeconds (2);
+		GetComponentInParent<Paralysis> ().enabled = false;
+	}
 }

@@ -7,7 +7,7 @@ using System.Collections;
 public class CannonTester : MonoBehaviour {
 
 	[SerializeField] int playerId;
-	[SerializeField] float rotationSpeed = 2;
+	public float rotationSpeed = 2;
 	[SerializeField] float maxBlastForce = 2200;
 	[SerializeField] float maxAngleOffset = 70;
 
