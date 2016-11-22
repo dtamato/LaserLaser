@@ -37,7 +37,15 @@ public class Laser : MonoBehaviour
             cannon.transform.rotation = other.transform.rotation;
             this.transform.position = cannon.transform.position + 1.5f * cannon.transform.up;
             this.transform.GetComponent<SpriteRenderer>().enabled = false;
-            cannon.GetComponentInChildren<Cannon>().SetNewBaseAngle();
+            
+			if (cannon.GetComponentInChildren<Cannon> ()) {
+				
+				cannon.GetComponentInChildren<Cannon> ().SetNewBaseAngle ();
+			}
+			else if (cannon.GetComponentInChildren<CannonTester> ()) {
+
+				cannon.GetComponentInChildren<CannonTester> ().SetNewBaseAngle ();
+			}
 
             if (crystalCount == 0)
             {
@@ -62,7 +70,14 @@ public class Laser : MonoBehaviour
             //Debug.Log("I have a combo of: " + comboCount);
             score++;
             //Debug.Log(score);
-            scoreText.text = "P" + (cannon.GetComponent<Cannon>().GetPlayerID() + 1) + "- " + score.ToString("00");
+			if (cannon.GetComponent<Cannon> ()) {
+			
+				scoreText.text = "P" + (cannon.GetComponent<Cannon> ().GetPlayerID () + 1) + "- " + score.ToString ("00");
+			}
+			else if (cannon.GetComponent<CannonTester> ()) {
+
+				scoreText.text = "P" + (cannon.GetComponent<CannonTester> ().GetPlayerID () + 1) + "- " + score.ToString ("00");
+			}
 			//Camera.main.GetComponent<CameraEffects> ().ShakeCamera ();
         }
     }
