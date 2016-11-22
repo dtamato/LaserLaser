@@ -3,10 +3,10 @@ using System.Collections;
 
 public class Paralysis : MonoBehaviour 
 {
-	[SerializeField] private GameObject playerOne;
-	[SerializeField] private GameObject playerTwo;
-	[SerializeField] private GameObject playerThree;
-	[SerializeField] private GameObject playerFour;
+	public GameObject playerOne;
+	public GameObject playerTwo;
+	public GameObject playerThree;
+	public GameObject playerFour;
 	
 	// Update is called once per frame
 	void Update () 

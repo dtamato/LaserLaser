@@ -7,7 +7,7 @@ using UnityEngine.SceneManagement;
 [RequireComponent(typeof(Collider2D), typeof(Rigidbody2D))]
 public class Laser : MonoBehaviour
 {
-
+	[SerializeField] float paralysisTimer = 2;
     [SerializeField] GameObject cannon;
     [SerializeField] Text scoreText;
     [SerializeField] private Text comboText;
@@ -101,7 +101,12 @@ public class Laser : MonoBehaviour
 
 	IEnumerator DisableScript()
 	{
-		yield return new WaitForSeconds (2);
+		yield return new WaitForSeconds (paralysisTimer);
 		GetComponentInParent<Paralysis> ().enabled = false;
+		GetComponentInParent<Paralysis> ().playerOne.GetComponent<CannonTester> ().enabled = true;
+		GetComponentInParent<Paralysis> ().playerTwo.GetComponent<CannonTester> ().enabled = true;
+		GetComponentInParent<Paralysis> ().playerThree.GetComponent<CannonTester> ().enabled = true;
+		GetComponentInParent<Paralysis> ().playerFour.GetComponent<CannonTester> ().enabled = true;
+
 	}
 }

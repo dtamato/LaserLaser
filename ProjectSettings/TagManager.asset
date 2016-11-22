@@ -9,6 +9,7 @@ TagManager:
   - Item
   - GameManager
   - AudioManager
+  - Paralysis
   layers:
   - Default
   - TransparentFX
