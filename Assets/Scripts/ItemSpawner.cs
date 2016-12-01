@@ -8,7 +8,7 @@ public class ItemSpawner : MonoBehaviour {
 	[SerializeField] GameObject itemPrefab;
 	[SerializeField] float spawnCooldown = 1.0f;
 
-    private GameManager gameManager;
+    private GameControllerParent gameManager;
     private bool initial = true;
     private bool cooldown = false;
 	private bool dontRunThisAlotOfTimes = false;
@@ -16,46 +16,18 @@ public class ItemSpawner : MonoBehaviour {
 
 	void Start ()
     {
-		if (GameObject.FindGameObjectWithTag ("GameManager")) {
-		
-			gameManager = GameObject.FindGameObjectWithTag ("GameManager").GetComponent<GameManager> ();
-
-			//Check how many players are in the game.
-			for (int i = 0; i < 4; i++) {
-				if (gameManager.playerState [i] = true)
-					playerCount++;
-			}
-		}
-
-		//Scale the spawn cooldown based on number of players.
+		// Scale the spawn cooldown based on number of players.
+		gameManager = GameObject.FindGameObjectWithTag ("GameController").GetComponent<GameControllerParent> ();
+		int playerCount = gameManager.GetActivePlayers().Length;
 		spawnCooldown = 1.0f - (0.05f * playerCount);
 
-		if(SceneManager.GetActiveScene().name == "Powerup Test Arena") {
-
-			StartCoroutine ("RecursiveSpawner");
-		}
+		// Start spawning diamonds
+		StartCoroutine ("RecursiveSpawner");
 	}
 	
 	void Update ()
     {
-		if (gameManager) {
-			
-			//Start spawning items once the game countdown has finished.
-			if (gameManager.startGame && initial) {
-				initial = false;
-				StartCoroutine ("SpawnItem");
-			}
-			//Continue spawning items each time the cooldown is met.
-			if (gameManager.startGame && cooldown) {
-				cooldown = false;
-				StartCoroutine ("SpawnItem");
-			}
-			//When there's only 30 seconds left, speed up item spawning.
-			if (!dontRunThisAlotOfTimes && gameManager.timer < 30.0f) {
-				spawnCooldown -= 0.2f;
-				dontRunThisAlotOfTimes = true;
-			}
-		}
+
     }
 
 	IEnumerator SpawnItem ()
@@ -76,7 +48,7 @@ public class ItemSpawner : MonoBehaviour {
 
 		StartCoroutine ("SpawnItem");
 
-		yield return new WaitForSeconds (spawnCooldown);
+		yield return new WaitForSeconds (Random.Range(spawnCooldown * 0.5f, spawnCooldown * 1.5f));
 
 		StartCoroutine ("RecursiveSpawner");
 	}

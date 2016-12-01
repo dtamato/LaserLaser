@@ -5,9 +5,9 @@ TagManager:
   serializedVersion: 2
   tags:
   - Cannon
+  - Laser
   - Boundary
   - Item
-  - GameManager
   - AudioManager
   - Paralysis
   layers:

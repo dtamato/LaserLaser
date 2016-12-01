@@ -1,7 +1,6 @@
 ﻿using Rewired;
 using UnityEngine;
 using System.Collections;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 [DisallowMultipleComponent]
@@ -12,28 +11,25 @@ public class Cannon : MonoBehaviour {
 	[SerializeField] float maxBlastForce = 2200;
 	[SerializeField] float maxAngleOffset = 70;
 
-    //External References.
-	Player rewiredPlayer;
-	Laser storedLaser;
-    GameManager gameManager;
-
-    //Variables handling player rotation.
-    float currentAngle;
+    // Variables handling player rotation.
+	float currentRotation;
+	float accelerationModifier = 0.01f;
+	float currentAcceleration = 0;
+	int rotationModifier = 1;
+	float currentAngle;
 	float angleOffset;
 	float baseAngle;
 	float minAngle;
 	float maxAngle;
-	int rotationModifier = 1;
 
-    //Boolean Flags.
-    bool inLobby = false;           //Player is in Lobby.
-    bool playerIsActive = false;    //Player has joined the game (pressed A in Lobby).
-    public bool gameOver = false;   //The game is over (input is removed).
-
+	// UI variables
     GameObject joinUI = null;
     Text scoreUI = null;
     Text comboUI = null;
 
+	// External References.
+	Player rewiredPlayer;
+	Laser storedLaser;
 
 	void Awake ()
     {
@@ -42,136 +38,64 @@ public class Cannon : MonoBehaviour {
         SetNewBaseAngle();
     }
 
-    void Start()
-    {
-        gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
-
-        //If Lobby is the active scene.
-        if (SceneManager.GetActiveScene().buildIndex == 1)
-        {
-            inLobby = true;                                         //Set the player state to be in Lobby.
-            joinUI = GameObject.Find("PlayerJoin" + playerId);      //Reference the Join UI cover.
-        }
-
-        //If Main Game is the active scene.
-        else if (SceneManager.GetActiveScene().buildIndex == 2)
-        {
-            playerIsActive = gameManager.getPlayerState(playerId);      //Retrieve whether the player is active from the gameManager.
-            
-            //If the player isn't active, hide their cannon, their score text, and their combo text.
-            if (!playerIsActive) {
-                comboUI = GameObject.Find("PlayerCombo" + playerId).GetComponent<Text>();
-                comboUI.text = "          ";
-                scoreUI = GameObject.Find("PlayerScore" + playerId).GetComponent<Text>();
-                scoreUI.text = "          ";
-                gameObject.SetActive(false);
-            }
-            //If the player is active, remove their input temporarily. It's given back after the countdown.
-            else {
-                playerIsActive = false;
-            }
-        }
-    }
-
 	void Update ()
     {
-        //Prevents player input until the game countdown has finished.
-        if (!playerIsActive && gameManager.startGame == true)
-            playerIsActive = true;
-        
-        //Enable Input from Player when they're mounted on a wall.
 		if (storedLaser) {
-            //If the player is in the lobby, and they aren't currently active.
-            if (inLobby && !playerIsActive)
-            {
-                //If the player presses A.
-                if (rewiredPlayer.GetButtonDown("Fire"))
-                {
-                    playerIsActive = true;                  //Activate the player.
-                    gameManager.setPlayerState(playerId);   //Tell the gameManager the player is activated.
-                    joinUI.SetActive(false);                //Take down the Join UI.
-                }
-            }
-
-            //If the player is in the lobby, is currently active (has pressed A), and they press B.
-            if (inLobby && playerIsActive && rewiredPlayer.GetButtonDown("Back"))
-            {
-                playerIsActive = false;                 //Deactivate the player.
-                gameManager.setPlayerState(playerId);   //Tell the gameManager the player is deactivated.
-                joinUI.SetActive(true);                 //Put the Join UI cover back up.
-            }
-
-            //If the player is not in the lobby (in the game), and the game is over (time ran out).
-            if (!inLobby && gameOver)
-            {
-                playerIsActive = false;     //Removes movement and firing input from the player.
-                //If the player presses start the game returns to the lobby.
-                if (rewiredPlayer.GetButtonDown("StartGame"))
-                {
-                    gameManager.ReturnToLobby();
-                }
-            }
-
-            //If a player who is active presses start, the game begins.
-            if (inLobby && playerIsActive && rewiredPlayer.GetButtonDown("StartGame"))
-            {
-                SceneManager.LoadScene(2);
-            }
-
-            //Process gameplay Inputs.
+				
             ProcessInputs ();
         }
 	}
 
 	void OnTriggerEnter2D(Collider2D other)
-    {
-        if (!storedLaser && other.CompareTag ("Player"))
-            storedLaser = other.GetComponentInChildren<Laser> ();
+	{
+		if (!storedLaser && other.CompareTag ("Player"))
+			storedLaser = other.GetComponentInChildren<Laser> ();
 	}
 
 	void ProcessInputs ()
     {
-        if (playerIsActive)
+        // Get controller joystick input
+		if (rewiredPlayer.GetAxis ("Horizontal") < 0) {
+			
+			//Debug.Log ("Horizontal: " + Input.GetAxis ("Horizontal"));
+			rotationSpeed += accelerationModifier;
+			this.transform.Rotate (rotationSpeed * rotationModifier * Vector3.forward);
+		}
+		else if (rewiredPlayer.GetAxis ("Horizontal") > 0) {
+			
+			//Debug.Log ("Horizontal: " + Input.GetAxis ("Horizontal"));
+			this.transform.Rotate (-rotationSpeed * rotationModifier * Vector3.forward);
+		}
+		else if (rewiredPlayer.GetAxis ("Horizontal") == 0) {
+
+			currentAcceleration = 0;
+		}
+
+		RestrictAngle ();
+
+        if (rewiredPlayer.GetButtonDown("Fire"))
         {
-            // Get controller joystick input
-            if (rewiredPlayer.GetAxis("Horizontal") < 0)
-            {
-                //Debug.Log ("Horizontal: " + Input.GetAxis ("Horizontal"));
-                this.transform.Rotate(rotationSpeed * rotationModifier * Vector3.forward);
-            }
-            else if (rewiredPlayer.GetAxis("Horizontal") > 0)
-            {
-                //Debug.Log ("Horizontal: " + Input.GetAxis ("Horizontal"));
-                this.transform.Rotate(-rotationSpeed * rotationModifier * Vector3.forward);
-            }
-
-            // Restrict angle
-            currentAngle = this.transform.rotation.eulerAngles.z;
-            if (currentAngle < 0) { currentAngle += 360; }
-
-            //Debug.Log ("zAngle: " + zAngle);
-
-            if (currentAngle >= maxAngle && currentAngle <= maxAngle + 5)
-            {
-
-                this.transform.rotation = Quaternion.Euler(0, 0, maxAngle);
-            }
-            else if (currentAngle <= minAngle && currentAngle >= minAngle - 5)
-            {
-
-                this.transform.rotation = Quaternion.Euler(0, 0, minAngle);
-            }
-
-            if (rewiredPlayer.GetButtonDown("Fire"))
-            {
-                //Debug.Log ("Fire!");
-                StartCoroutine(TempDisableCollider());
-                ShootOutPlayer(storedLaser.GetComponentInChildren<Rigidbody2D>());
-                this.GetComponent<AudioSource>().pitch = Random.Range(0.5f, 1.5f);
-                this.GetComponent<AudioSource>().Play();
-            }
+            StartCoroutine(TempDisableCollider());
+            ShootOutPlayer(storedLaser.GetComponentInChildren<Rigidbody2D>());
+            this.GetComponent<AudioSource>().pitch = Random.Range(0.5f, 1.5f);
+            this.GetComponent<AudioSource>().Play();
         }
     }
+
+	void RestrictAngle () {
+
+		currentAngle = this.transform.rotation.eulerAngles.z;
+		if (currentAngle < 0) { currentAngle += 360; }
+
+		if (currentAngle >= maxAngle && currentAngle <= maxAngle + 5)
+		{
+			this.transform.rotation = Quaternion.Euler(0, 0, maxAngle);
+		}
+		else if (currentAngle <= minAngle && currentAngle >= minAngle - 5)
+		{
+			this.transform.rotation = Quaternion.Euler(0, 0, minAngle);
+		}
+	}
 
 	IEnumerator TempDisableCollider () {
 
@@ -203,14 +127,7 @@ public class Cannon : MonoBehaviour {
 		if (maxAngle < 0) { maxAngle += 360; }
 
 		// Change rotation modifier if upside down
-		if (this.transform.up == Vector3.down) {
-
-			rotationModifier = -1;
-		}
-		else {
-
-			rotationModifier = 1;
-		}
+		rotationModifier = (this.transform.up == Vector3.down) ? -1 : 1;
 	}
 
 	public int GetPlayerID () {

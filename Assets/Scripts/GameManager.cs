@@ -125,7 +125,7 @@ public class GameManager : MonoBehaviour {
         for (int i = 0; i < 4; i++) {
             if (playerState[i]) {
                 GameObject player = GameObject.Find("Cannon" + i);
-                player.GetComponent<Cannon>().gameOver = true;
+                //player.GetComponent<Cannon>().gameOver = true;
                 playerScores[i] = GameObject.Find("Laser" + i).GetComponent<Laser>().score;                                                     //Save the player's score.
                 GameObject score = GameObject.Find("FinalScore" + i);                                                                           
                 GameObject scoreBar = GameObject.Find("Bar" + i);
