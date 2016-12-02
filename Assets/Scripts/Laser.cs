@@ -12,11 +12,13 @@ public class Laser : MonoBehaviour
     [SerializeField] Text scoreText;
     [SerializeField] private Text comboText;
 
+
     Rigidbody2D rb2d;
 
     public int score = 0;
     public int comboCount = 0;
     private int crystalCount = 0;
+    public int myPlayerID = 0;
 
     void Awake()
     {
@@ -83,9 +85,9 @@ public class Laser : MonoBehaviour
 
 		// Enables the Paralysis script for a set period of time.
 		if (other.tag == "Paralysis") {
-			Destroy (other.gameObject);
-			GetComponentInParent<Paralysis> ().enabled = true;
-			StartCoroutine (DisableScript ());
+			//Destroy (other.gameObject);
+			//GetComponentInParent<Paralysis> ().enabled = true;
+			//StartCoroutine (DisableScript ());
 		}
     }
 
@@ -99,7 +101,7 @@ public class Laser : MonoBehaviour
             
     }
 
-	IEnumerator DisableScript()
+	/*IEnumerator DisableScript()
 	{
 		yield return new WaitForSeconds (paralysisTimer);
 		GetComponentInParent<Paralysis> ().enabled = false;
@@ -108,5 +110,5 @@ public class Laser : MonoBehaviour
 		GetComponentInParent<Paralysis> ().playerThree.GetComponent<CannonTester> ().enabled = true;
 		GetComponentInParent<Paralysis> ().playerFour.GetComponent<CannonTester> ().enabled = true;
 
-	}
+	}*/
 }

@@ -34,8 +34,15 @@ public class Cannon : MonoBehaviour {
 	void Awake ()
     {
         rewiredPlayer = ReInput.players.GetPlayer (playerId);
+        //Debug.Log(rewiredPlayer);
 		if (maxAngleOffset < 0) { maxAngleOffset *= -1; }
         SetNewBaseAngle();
+    }
+
+    void UpdateColor()
+    {
+        transform.Find("Cannon Sprite" + playerId).GetComponent<SpriteRenderer>().color =
+            gameObject.GetComponentInChildren<Laser>().GetComponent<SpriteRenderer>().color; //updates all parts of the cannon
     }
 
 	void Update ()
@@ -43,6 +50,7 @@ public class Cannon : MonoBehaviour {
 		if (storedLaser) {
 				
             ProcessInputs ();
+            UpdateColor();
         }
 	}
 
@@ -53,7 +61,8 @@ public class Cannon : MonoBehaviour {
 	}
 
 	void ProcessInputs ()
-    {
+	{
+	    
         // Get controller joystick input
 		if (rewiredPlayer.GetAxis ("Horizontal") < 0) {
 			
