@@ -9,10 +9,6 @@ public class ItemSpawner : MonoBehaviour {
 	[SerializeField] float spawnCooldown = 1.0f;
 
     private GameControllerParent gameManager;
-    private bool initial = true;
-    private bool cooldown = false;
-	private bool dontRunThisAlotOfTimes = false;
-	private int playerCount = 0;
 
 	void Start ()
     {
@@ -25,10 +21,14 @@ public class ItemSpawner : MonoBehaviour {
 		StartCoroutine ("RecursiveSpawner");
 	}
 	
-	void Update ()
-    {
+	IEnumerator RecursiveSpawner () {
 
-    }
+		StartCoroutine ("SpawnItem");
+
+		yield return new WaitForSeconds (Random.Range(spawnCooldown * 0.5f, spawnCooldown * 1.5f));
+
+		StartCoroutine ("RecursiveSpawner");
+	}
 
 	IEnumerator SpawnItem ()
     {
@@ -41,15 +41,5 @@ public class ItemSpawner : MonoBehaviour {
 		newItem.transform.SetParent(this.transform);
 
 		yield return new WaitForSeconds(spawnCooldown);
-        cooldown = true;
-	}
-
-	IEnumerator RecursiveSpawner () {
-
-		StartCoroutine ("SpawnItem");
-
-		yield return new WaitForSeconds (Random.Range(spawnCooldown * 0.5f, spawnCooldown * 1.5f));
-
-		StartCoroutine ("RecursiveSpawner");
 	}
 }

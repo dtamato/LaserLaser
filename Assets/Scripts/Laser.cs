@@ -13,18 +13,29 @@ public class Laser : MonoBehaviour
     [SerializeField] private Text comboText;
 
     Rigidbody2D rb2d;
+	Light light;
 
     public int score = 0;
     public int comboCount = 0;
-    private int crystalCount = 0;
+	private int diamondCount = 0;
 
     void Awake()
     {
 
         rb2d = this.GetComponentInChildren<Rigidbody2D>();
+		light = this.GetComponentInChildren<Light> ();
         this.GetComponentInChildren<TrailRenderer>().sortingLayerName = this.GetComponent<SpriteRenderer>().sortingLayerName;
         this.GetComponentInChildren<TrailRenderer>().sortingOrder = this.GetComponent<SpriteRenderer>().sortingOrder - 1;
     }
+
+	void Update()
+	{
+		if (SceneManager.GetActiveScene().buildIndex == 2)
+		{
+			comboText.text = "Combo: " + comboCount;
+			//Debug.Log(comboCount);
+		}
+	}
 
     void OnCollisionEnter2D(Collision2D other)
     {
@@ -37,17 +48,9 @@ public class Laser : MonoBehaviour
             cannon.transform.rotation = other.transform.rotation;
             this.transform.position = cannon.transform.position + 1.5f * cannon.transform.up;
             this.transform.GetComponent<SpriteRenderer>().enabled = false;
-            
-			if (cannon.GetComponentInChildren<Cannon> ()) {
-				
-				cannon.GetComponentInChildren<Cannon> ().SetNewBaseAngle ();
-			}
-			else if (cannon.GetComponentInChildren<CannonTester> ()) {
+			cannon.GetComponentInChildren<Cannon> ().SetNewBaseAngle ();
 
-				cannon.GetComponentInChildren<CannonTester> ().SetNewBaseAngle ();
-			}
-
-            if (crystalCount == 0)
+            if (diamondCount == 0)
             {
                 score += comboCount;
                 comboCount = 0;
@@ -55,30 +58,24 @@ public class Laser : MonoBehaviour
             else
             {
                 comboCount++;
-                crystalCount = 0;
+                diamondCount = 0;
             }
         }
     }
 
     void OnTriggerEnter2D(Collider2D other)
     {
-
-        //Destroy(this.gameObject);
-        if (other.CompareTag("Item"))
+        if (other.CompareTag("Diamond"))
         {
-            crystalCount++;
+            diamondCount++;
             //Debug.Log("I have a combo of: " + comboCount);
             score++;
             //Debug.Log(score);
-			if (cannon.GetComponent<Cannon> ()) {
-			
-				scoreText.text = "P" + (cannon.GetComponent<Cannon> ().GetPlayerID () + 1) + "- " + score.ToString ("00");
-			}
-			else if (cannon.GetComponent<CannonTester> ()) {
+			if (scoreText) { scoreText.text = "P" + (cannon.GetComponent<Cannon> ().GetPlayerID () + 1) + "- " + score.ToString ("00"); }
 
-				scoreText.text = "P" + (cannon.GetComponent<CannonTester> ().GetPlayerID () + 1) + "- " + score.ToString ("00");
-			}
-			//Camera.main.GetComponent<CameraEffects> ().ShakeCamera ();
+			StartCoroutine (PulsateLight ());
+
+			Camera.main.GetComponent<CameraEffects> ().ShakeCamera ();
         }
 
 		// Enables the Paralysis script for a set period of time.
@@ -89,24 +86,49 @@ public class Laser : MonoBehaviour
 		}
     }
 
-    void Update()
-    {
-        if (SceneManager.GetActiveScene().buildIndex == 2)
-        {
-            comboText.text = "Combo: " + comboCount;
-            //Debug.Log(comboCount);
-        }
-            
-    }
+	IEnumerator PulsateLight () {
+
+		// Save current light settings and create temp variables
+		float initialLightRange = light.range;
+		float initialLightIntensity = light.intensity;
+		float maxLightRangeSize = 2f;
+		float growSpeed = 50;
+		float waitTime = 0.25f;
+
+		// Intensify light
+		while(light.range < maxLightRangeSize * initialLightRange) {
+
+			light.range += growSpeed * Time.deltaTime;
+			light.intensity += growSpeed * Time.deltaTime;
+			yield return null;
+		}
+
+		yield return new WaitForSeconds (waitTime);
+
+		// Return light to initial settings
+		while(light.range > initialLightRange) {
+
+			light.range -= growSpeed * Time.deltaTime;
+			light.intensity -= growSpeed * Time.deltaTime;
+			yield return null;
+		}
+
+		light.range = initialLightRange;
+		light.intensity = initialLightIntensity;
+	}
 
 	IEnumerator DisableScript()
 	{
 		yield return new WaitForSeconds (paralysisTimer);
 		GetComponentInParent<Paralysis> ().enabled = false;
-		GetComponentInParent<Paralysis> ().playerOne.GetComponent<CannonTester> ().enabled = true;
-		GetComponentInParent<Paralysis> ().playerTwo.GetComponent<CannonTester> ().enabled = true;
-		GetComponentInParent<Paralysis> ().playerThree.GetComponent<CannonTester> ().enabled = true;
-		GetComponentInParent<Paralysis> ().playerFour.GetComponent<CannonTester> ().enabled = true;
+		GetComponentInParent<Paralysis> ().playerOne.GetComponent<Cannon> ().enabled = true;
+		GetComponentInParent<Paralysis> ().playerTwo.GetComponent<Cannon> ().enabled = true;
+		GetComponentInParent<Paralysis> ().playerThree.GetComponent<Cannon> ().enabled = true;
+		GetComponentInParent<Paralysis> ().playerFour.GetComponent<Cannon> ().enabled = true;
+	}
 
+	public void ChangeColor (Color newColor) {
+
+		this.GetComponent<SpriteRenderer> ().color = newColor;
 	}
 }

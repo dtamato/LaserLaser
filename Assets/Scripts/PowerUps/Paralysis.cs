@@ -12,26 +12,26 @@ public class Paralysis : MonoBehaviour
 	void Update () 
 	{
 		if (this.gameObject == playerOne) {
-			playerTwo.GetComponent<CannonTester> ().enabled = false;
-			playerThree.GetComponent<CannonTester> ().enabled = false;
-			playerFour.GetComponent<CannonTester> ().enabled =false;
+			playerTwo.GetComponent<Cannon> ().enabled = false;
+			playerThree.GetComponent<Cannon> ().enabled = false;
+			playerFour.GetComponent<Cannon> ().enabled =false;
 		}
 		if (this.gameObject == playerTwo) {
-			playerOne.GetComponent<CannonTester> ().enabled = false;
-			playerThree.GetComponent<CannonTester> ().enabled = false;
-			playerFour.GetComponent<CannonTester> ().enabled =false;
+			playerOne.GetComponent<Cannon> ().enabled = false;
+			playerThree.GetComponent<Cannon> ().enabled = false;
+			playerFour.GetComponent<Cannon> ().enabled =false;
 
 		}
 		if (this.gameObject == playerThree) {
-			playerOne.GetComponent<CannonTester> ().enabled = false;
-			playerTwo.GetComponent<CannonTester> ().enabled = false;
-			playerFour.GetComponent<CannonTester> ().enabled =false;
+			playerOne.GetComponent<Cannon> ().enabled = false;
+			playerTwo.GetComponent<Cannon> ().enabled = false;
+			playerFour.GetComponent<Cannon> ().enabled =false;
 
 		}
 		if (this.gameObject == playerFour) {
-			playerOne.GetComponent<CannonTester> ().enabled = false;
-			playerTwo.GetComponent<CannonTester> ().enabled = false;
-			playerThree.GetComponent<CannonTester> ().enabled =false;
+			playerOne.GetComponent<Cannon> ().enabled = false;
+			playerTwo.GetComponent<Cannon> ().enabled = false;
+			playerThree.GetComponent<Cannon> ().enabled =false;
 
 		}
 	}

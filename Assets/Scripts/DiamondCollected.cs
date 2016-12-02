@@ -2,7 +2,7 @@
 using System.Collections;
 
 [DisallowMultipleComponent]
-public class CrystalCollected : MonoBehaviour {
+public class DiamondCollected : MonoBehaviour {
 
 	void Awake () {
 		

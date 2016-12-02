@@ -7,33 +7,31 @@ using UnityEngine.UI;
 public class Cannon : MonoBehaviour {
 
 	[SerializeField] int playerId;
-	[SerializeField] float rotationSpeed = 2;
+	[SerializeField] float baseRotationSpeed = 2;
 	[SerializeField] float maxBlastForce = 2200;
 	[SerializeField] float maxAngleOffset = 70;
 
-    // Variables handling player rotation.
-	float currentRotation;
-	float accelerationModifier = 0.01f;
-	float currentAcceleration = 0;
+    // Rotation
+	float currentRotationSpeed;
 	int rotationModifier = 1;
+	float minRotationSpeed = 2f;
+	float maxRotationSpeed = 10.0f;
+
+	// Angles
 	float currentAngle;
 	float angleOffset;
 	float baseAngle;
 	float minAngle;
 	float maxAngle;
 
-	// UI variables
-    GameObject joinUI = null;
-    Text scoreUI = null;
-    Text comboUI = null;
-
-	// External References.
 	Player rewiredPlayer;
-	Laser storedLaser;
+	Laser pairedLaser; // Permanent reference to ball
+	Laser storedLaser; // Reference used to check if can fire
 
 	void Awake ()
     {
         rewiredPlayer = ReInput.players.GetPlayer (playerId);
+		currentRotationSpeed = baseRotationSpeed;
 		if (maxAngleOffset < 0) { maxAngleOffset *= -1; }
         SetNewBaseAngle();
     }
@@ -48,39 +46,47 @@ public class Cannon : MonoBehaviour {
 
 	void OnTriggerEnter2D(Collider2D other)
 	{
-		if (!storedLaser && other.CompareTag ("Player"))
-			storedLaser = other.GetComponentInChildren<Laser> ();
+		if (other.CompareTag ("Player")) {
+
+			if (!pairedLaser) {
+
+				pairedLaser = other.GetComponentInChildren<Laser> ();
+			}
+
+			if (!storedLaser) {
+
+				storedLaser = other.GetComponentInChildren<Laser> ();
+			}
+		}
 	}
 
+	#region Inputs
 	void ProcessInputs ()
     {
-        // Get controller joystick input
+        
+		GetRotationInput ();
+		RestrictAngle ();
+		GetFireInput ();
+    }
+
+	void GetRotationInput () {
+
+		// Get controller joystick input
 		if (rewiredPlayer.GetAxis ("Horizontal") < 0) {
-			
-			//Debug.Log ("Horizontal: " + Input.GetAxis ("Horizontal"));
-			rotationSpeed += accelerationModifier;
-			this.transform.Rotate (rotationSpeed * rotationModifier * Vector3.forward);
+
+			currentRotationSpeed = Mathf.Clamp(currentRotationSpeed, minRotationSpeed, maxRotationSpeed);
+			this.transform.Rotate (currentRotationSpeed * rotationModifier * Vector3.forward);
 		}
 		else if (rewiredPlayer.GetAxis ("Horizontal") > 0) {
-			
-			//Debug.Log ("Horizontal: " + Input.GetAxis ("Horizontal"));
-			this.transform.Rotate (-rotationSpeed * rotationModifier * Vector3.forward);
+
+			currentRotationSpeed = Mathf.Clamp(currentRotationSpeed, minRotationSpeed, maxRotationSpeed);
+			this.transform.Rotate (-currentRotationSpeed * rotationModifier * Vector3.forward);
 		}
 		else if (rewiredPlayer.GetAxis ("Horizontal") == 0) {
 
-			currentAcceleration = 0;
+			currentRotationSpeed = baseRotationSpeed;
 		}
-
-		RestrictAngle ();
-
-        if (rewiredPlayer.GetButtonDown("Fire"))
-        {
-            StartCoroutine(TempDisableCollider());
-            ShootOutPlayer(storedLaser.GetComponentInChildren<Rigidbody2D>());
-            this.GetComponent<AudioSource>().pitch = Random.Range(0.5f, 1.5f);
-            this.GetComponent<AudioSource>().Play();
-        }
-    }
+	}
 
 	void RestrictAngle () {
 
@@ -97,23 +103,35 @@ public class Cannon : MonoBehaviour {
 		}
 	}
 
+	void GetFireInput () {
+
+		if (rewiredPlayer.GetButtonDown ("Fire")) {
+
+			StartCoroutine(TempDisableCollider());
+
+			Rigidbody2D playerRigidbody = storedLaser.GetComponentInChildren<Rigidbody2D> ();
+			playerRigidbody.isKinematic = false;
+			playerRigidbody.AddForce (maxBlastForce * this.transform.up);
+
+			storedLaser.transform.GetComponent<SpriteRenderer>().enabled = true;
+			storedLaser = null;
+
+			this.GetComponent<AudioSource>().pitch = Random.Range(0.5f, 1.5f);
+			this.GetComponent<AudioSource>().Play();
+		}
+	}
+
 	IEnumerator TempDisableCollider () {
 
 		this.GetComponent<Collider2D> ().enabled = false;
 
-		yield return new WaitForSeconds (0.25f);
+		yield return new WaitForSeconds (0.15f);
 
 		this.GetComponent<Collider2D> ().enabled = true;
 	}
+	#endregion
 
-	void ShootOutPlayer (Rigidbody2D playerRigidbody) {
-
-		playerRigidbody.isKinematic = false;
-		playerRigidbody.AddForce (maxBlastForce * this.transform.up);
-		storedLaser.transform.GetComponent<SpriteRenderer>().enabled = true;
-		storedLaser = null;
-	}
-
+	#region Setters
 	// Called from Laser.cs
 	public void SetNewBaseAngle () {
 
@@ -130,8 +148,28 @@ public class Cannon : MonoBehaviour {
 		rotationModifier = (this.transform.up == Vector3.down) ? -1 : 1;
 	}
 
+	public void ChangeRotationSpeed (float increment) {
+
+		baseRotationSpeed += increment;
+		baseRotationSpeed = Mathf.Clamp (baseRotationSpeed, minRotationSpeed, maxRotationSpeed);
+	}
+
+	public void ChangeColor () {
+
+		// New color (Random for now, pull from an array later)
+		Color newColor = new Color(Random.Range(0, 1f), Random.Range(0, 1f), Random.Range(0, 1f));
+
+		// Change colors
+		SpriteRenderer[] spriteRenderers = this.GetComponentsInChildren<SpriteRenderer> ();
+		foreach (SpriteRenderer sprite in spriteRenderers) { sprite.color = newColor; }
+		storedLaser.ChangeColor (newColor);
+	}
+	#endregion
+
+	#region Getters
 	public int GetPlayerID () {
 
 		return playerId;
 	}
+	#endregion
 }

@@ -7,9 +7,10 @@ TagManager:
   - Cannon
   - Laser
   - Boundary
-  - Item
+  - Diamond
   - AudioManager
   - Paralysis
+  - GameManager
   layers:
   - Default
   - TransparentFX
@@ -24,7 +25,7 @@ TagManager:
   - Player3
   - Player4
   - Boundary
-  - Item
+  - Diamond
   - 
   - 
   - 
