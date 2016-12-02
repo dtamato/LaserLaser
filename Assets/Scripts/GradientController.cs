@@ -2,23 +2,18 @@
 using System.Collections;
 using UnityEngine.UI;
 
-public class GradientController : MonoBehaviour {
+public class GradientController : MonoBehaviour
+{
 
-    [SerializeField] private Color colourTop = Color.blue;
-    public Color colourBottom = Color.black;
-    public Color newColour;
-
-
-    public Material yourGradientMaterial;
+    [SerializeField] private Color colourTop;
 
     void Start()
     {
-        
-        yourGradientMaterial.SetColor("_Color2", Color.black); // the bottom color
+        gameObject.GetComponent<Image>().color = colourTop;
     }
 
     void Update()
     {
-        yourGradientMaterial.SetColor("_Color", colourTop); // the top color
+        
     }
 }
