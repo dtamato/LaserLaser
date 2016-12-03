@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 using Rewired;
 
 public class LobbyManager : MonoBehaviour {
@@ -78,19 +79,21 @@ public class LobbyManager : MonoBehaviour {
 
         }
 
-        if (_rewiredPlayer.GetButtonDown("StartGame") && !hasJoined)
+        if (_rewiredPlayer.GetButtonDown("Fire") && !hasJoined)
         {
             hasJoined = true;
-            
+            GameObject.Find("JoinText" + playerId).GetComponent<Text>().enabled = false;
+
         }
             
-        else if (_rewiredPlayer.GetButtonDown("StartGame") && hasJoined)
+        else if (_rewiredPlayer.GetButtonDown("Back") && hasJoined)
         {
             hasJoined = false;
-            GameObject.Find("Laser" + playerId).GetComponent<SpriteRenderer>().color = Color.gray;
-            GameObject.Find("Laser" + playerId).GetComponent<Rigidbody2D>().isKinematic = false;
-            GameObject.Find("Laser" + playerId).GetComponent<Rigidbody2D>().transform.position = resetPos;
-            
+            GameObject.Find("Laser" + playerId).GetComponent<SpriteRenderer>().color = Color.gray; //graying out the player to show that it is inactive
+            GameObject.Find("Laser" + playerId).GetComponent<Rigidbody2D>().isKinematic = false; // adding gravity so the player can fall into place
+            GameObject.Find("Laser" + playerId).GetComponent<Rigidbody2D>().transform.position = resetPos; //resetting the player's cannon to its original position
+            GameObject.Find("JoinText" + playerId).GetComponent<Text>().enabled = true; //the player's 'Press 'A' to join text'
+
         }
             
 
