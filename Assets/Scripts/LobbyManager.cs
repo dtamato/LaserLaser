@@ -85,7 +85,6 @@ public class LobbyManager : MonoBehaviour {
             GameObject.Find("JoinText" + playerId).GetComponent<Text>().enabled = false;
 
         }
-            
         else if (_rewiredPlayer.GetButtonDown("Back") && hasJoined)
         {
             hasJoined = false;
@@ -94,6 +93,11 @@ public class LobbyManager : MonoBehaviour {
             GameObject.Find("Laser" + playerId).GetComponent<Rigidbody2D>().transform.position = resetPos; //resetting the player's cannon to its original position
             GameObject.Find("JoinText" + playerId).GetComponent<Text>().enabled = true; //the player's 'Press 'A' to join text'
 
+        }
+
+        if (_rewiredPlayer.GetButtonDown("Setting"))
+        {
+            Debug.Log("Opening Settings...");
         }
             
 
