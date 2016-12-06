@@ -3,7 +3,7 @@ using System.Collections;
 
 public class GameControllerParent : MonoBehaviour {
 
-	protected GameObject[] playerArray;
+	protected GameObject[] playerArray = new GameObject[4];
 
 
 	public GameObject[] GetActivePlayers () {

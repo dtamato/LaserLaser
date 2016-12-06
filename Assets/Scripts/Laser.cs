@@ -7,7 +7,6 @@ using UnityEngine.SceneManagement;
 [RequireComponent(typeof(Collider2D), typeof(Rigidbody2D))]
 public class Laser : MonoBehaviour
 {
-	[SerializeField] float paralysisTimer = 2;
     [SerializeField] GameObject cannon;
     [SerializeField] Text scoreText;
     [SerializeField] private Text comboText;
@@ -77,13 +76,6 @@ public class Laser : MonoBehaviour
 
 			Camera.main.GetComponent<CameraEffects> ().ShakeCamera ();
         }
-
-		// Enables the Paralysis script for a set period of time.
-		if (other.tag == "Paralysis") {
-			Destroy (other.gameObject);
-			GetComponentInParent<Paralysis> ().enabled = true;
-			StartCoroutine (DisableScript ());
-		}
     }
 
 	IEnumerator PulsateLight () {
@@ -117,15 +109,6 @@ public class Laser : MonoBehaviour
 		light.intensity = initialLightIntensity;
 	}
 
-	IEnumerator DisableScript()
-	{
-		yield return new WaitForSeconds (paralysisTimer);
-		GetComponentInParent<Paralysis> ().enabled = false;
-		GetComponentInParent<Paralysis> ().playerOne.GetComponent<Cannon> ().enabled = true;
-		GetComponentInParent<Paralysis> ().playerTwo.GetComponent<Cannon> ().enabled = true;
-		GetComponentInParent<Paralysis> ().playerThree.GetComponent<Cannon> ().enabled = true;
-		GetComponentInParent<Paralysis> ().playerFour.GetComponent<Cannon> ().enabled = true;
-	}
 
 	public void ChangeColor (Color newColor) {
 

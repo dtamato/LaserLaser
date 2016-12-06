@@ -72,17 +72,17 @@ public class Cannon : MonoBehaviour {
 	void GetRotationInput () {
 
 		// Get controller joystick input
-		if (rewiredPlayer.GetAxis ("Horizontal") < 0) {
+		if (rewiredPlayer.GetAxisRaw ("Horizontal") < 0) {
 
 			currentRotationSpeed = Mathf.Clamp(currentRotationSpeed, minRotationSpeed, maxRotationSpeed);
 			this.transform.Rotate (currentRotationSpeed * rotationModifier * Vector3.forward);
 		}
-		else if (rewiredPlayer.GetAxis ("Horizontal") > 0) {
+		else if (rewiredPlayer.GetAxisRaw ("Horizontal") > 0) {
 
 			currentRotationSpeed = Mathf.Clamp(currentRotationSpeed, minRotationSpeed, maxRotationSpeed);
 			this.transform.Rotate (-currentRotationSpeed * rotationModifier * Vector3.forward);
 		}
-		else if (rewiredPlayer.GetAxis ("Horizontal") == 0) {
+		else if (rewiredPlayer.GetAxisRaw ("Horizontal") == 0) {
 
 			currentRotationSpeed = baseRotationSpeed;
 		}

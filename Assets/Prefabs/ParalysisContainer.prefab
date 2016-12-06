@@ -21,6 +21,8 @@ GameObject:
   - 4: {fileID: 4000011957730422}
   - 212: {fileID: 212000011093110514}
   - 58: {fileID: 58000013952621050}
+  - 114: {fileID: 114000012710931222}
+  - 114: {fileID: 114000011680542418}
   m_Layer: 13
   m_Name: ParalysisContainer
   m_TagString: Paralysis
@@ -55,6 +57,34 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 0.1
+--- !u!114 &114000011680542418
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000010131840992}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67a1957f2c71f7a48a2370b126c24a9e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  paralysisTimer: 2
+--- !u!114 &114000012710931222
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000010131840992}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e9bbf2f93928d644bec3efbcc1af7a6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  players:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
 --- !u!212 &212000011093110514
 SpriteRenderer:
   m_ObjectHideFlags: 1

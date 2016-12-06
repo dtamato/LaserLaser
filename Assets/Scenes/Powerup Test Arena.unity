@@ -492,7 +492,6 @@ GameObject:
   - 61: {fileID: 271962439}
   - 114: {fileID: 271962442}
   - 82: {fileID: 271962441}
-  - 114: {fileID: 271962438}
   m_Layer: 10
   m_Name: Cannon2
   m_TagString: Cannon
@@ -500,21 +499,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &271962438
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 271962437}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 67a1957f2c71f7a48a2370b126c24a9e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  playerOne: {fileID: 571366209}
-  playerTwo: {fileID: 2104336996}
-  playerThree: {fileID: 271962437}
-  playerFour: {fileID: 1447055553}
 --- !u!61 &271962439
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -630,7 +614,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerId: 2
-  rotationSpeed: 2
+  baseRotationSpeed: 2
   maxBlastForce: 2200
   maxAngleOffset: 70
 --- !u!1 &284740342
@@ -1294,7 +1278,6 @@ GameObject:
   - 61: {fileID: 571366211}
   - 114: {fileID: 571366215}
   - 82: {fileID: 571366212}
-  - 114: {fileID: 571366210}
   m_Layer: 8
   m_Name: Cannon0
   m_TagString: Cannon
@@ -1302,21 +1285,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &571366210
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 571366209}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 67a1957f2c71f7a48a2370b126c24a9e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  playerOne: {fileID: 571366209}
-  playerTwo: {fileID: 2104336996}
-  playerThree: {fileID: 271962437}
-  playerFour: {fileID: 1447055553}
 --- !u!61 &571366211
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1432,7 +1400,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerId: 0
-  rotationSpeed: 2
+  baseRotationSpeed: 2
   maxBlastForce: 2200
   maxAngleOffset: 70
 --- !u!1 &611191707
@@ -1668,7 +1636,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 37ecd38c199140843b4c50f01d25506e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  paralysisTimer: 2
   cannon: {fileID: 571366209}
   scoreText: {fileID: 1309312885}
   comboText: {fileID: 478471663}
@@ -1914,95 +1881,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 11
---- !u!1 &1060304266
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  serializedVersion: 4
-  m_Component:
-  - 4: {fileID: 1060304270}
-  - 212: {fileID: 1060304269}
-  - 58: {fileID: 1060304268}
-  - 114: {fileID: 1060304267}
-  m_Layer: 13
-  m_Name: ParalysisContainer
-  m_TagString: Paralysis
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1060304267
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1060304266}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3e9bbf2f93928d644bec3efbcc1af7a6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!58 &1060304268
-CircleCollider2D:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1060304266}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_UsedByEffector: 0
-  m_Offset: {x: 0, y: 0}
-  serializedVersion: 2
-  m_Radius: 0.1
---- !u!212 &1060304269
-SpriteRenderer:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1060304266}
-  m_Enabled: 1
-  m_CastShadows: 0
-  m_ReceiveShadows: 0
-  m_MotionVectors: 1
-  m_LightProbeUsage: 0
-  m_ReflectionProbeUsage: 0
-  m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
-  m_SubsetIndices: 
-  m_StaticBatchRoot: {fileID: 0}
-  m_ProbeAnchor: {fileID: 0}
-  m_LightProbeVolumeOverride: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_PreserveUVs: 0
-  m_IgnoreNormalsForChartDetection: 0
-  m_ImportantGI: 0
-  m_SelectedWireframeHidden: 1
-  m_MinimumChartSize: 4
-  m_AutoUVMaxDistance: 0.5
-  m_AutoUVMaxAngle: 89
-  m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: -505003231
-  m_SortingOrder: 1
-  m_Sprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_FlipX: 0
-  m_FlipY: 0
---- !u!4 &1060304270
-Transform:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1060304266}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.37, z: 0}
-  m_LocalScale: {x: 5, y: 5, z: 1}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 10
 --- !u!1 &1101000731
 GameObject:
   m_ObjectHideFlags: 0
@@ -2196,7 +2074,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 37ecd38c199140843b4c50f01d25506e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  paralysisTimer: 2
   cannon: {fileID: 2104336996}
   scoreText: {fileID: 1569694676}
   comboText: {fileID: 1622570078}
@@ -2372,7 +2249,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 37ecd38c199140843b4c50f01d25506e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  paralysisTimer: 2
   cannon: {fileID: 271962437}
   scoreText: {fileID: 1635529009}
   comboText: {fileID: 371359192}
@@ -2567,6 +2443,49 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1309312883}
+--- !u!1001 &1309564498
+Prefab:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 4000011957730422, guid: b8507fcf4d258f243a3fe5e3c3d0a89d, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4000011957730422, guid: b8507fcf4d258f243a3fe5e3c3d0a89d, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: 1.37
+      objectReference: {fileID: 0}
+    - target: {fileID: 4000011957730422, guid: b8507fcf4d258f243a3fe5e3c3d0a89d, type: 2}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4000011957730422, guid: b8507fcf4d258f243a3fe5e3c3d0a89d, type: 2}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4000011957730422, guid: b8507fcf4d258f243a3fe5e3c3d0a89d, type: 2}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4000011957730422, guid: b8507fcf4d258f243a3fe5e3c3d0a89d, type: 2}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4000011957730422, guid: b8507fcf4d258f243a3fe5e3c3d0a89d, type: 2}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4000011957730422, guid: b8507fcf4d258f243a3fe5e3c3d0a89d, type: 2}
+      propertyPath: m_RootOrder
+      value: 10
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 114000012710931222, guid: b8507fcf4d258f243a3fe5e3c3d0a89d, type: 2}
+  m_ParentPrefab: {fileID: 100100000, guid: b8507fcf4d258f243a3fe5e3c3d0a89d, type: 2}
+  m_IsPrefabParent: 0
 --- !u!1 &1447055553
 GameObject:
   m_ObjectHideFlags: 0
@@ -2578,7 +2497,6 @@ GameObject:
   - 61: {fileID: 1447055555}
   - 114: {fileID: 1447055558}
   - 82: {fileID: 1447055557}
-  - 114: {fileID: 1447055554}
   m_Layer: 11
   m_Name: Cannon3
   m_TagString: Cannon
@@ -2586,21 +2504,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1447055554
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1447055553}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 67a1957f2c71f7a48a2370b126c24a9e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  playerOne: {fileID: 571366209}
-  playerTwo: {fileID: 2104336996}
-  playerThree: {fileID: 271962437}
-  playerFour: {fileID: 1447055553}
 --- !u!61 &1447055555
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -2716,7 +2619,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerId: 3
-  rotationSpeed: 2
+  baseRotationSpeed: 2
   maxBlastForce: 2200
   maxAngleOffset: 70
 --- !u!1 &1519339677
@@ -3123,7 +3026,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 37ecd38c199140843b4c50f01d25506e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  paralysisTimer: 2
   cannon: {fileID: 1447055553}
   scoreText: {fileID: 284740344}
   comboText: {fileID: 2142692084}
@@ -3389,7 +3291,6 @@ GameObject:
   - 61: {fileID: 2104336998}
   - 114: {fileID: 2104337002}
   - 82: {fileID: 2104337000}
-  - 114: {fileID: 2104336997}
   m_Layer: 9
   m_Name: Cannon1
   m_TagString: Cannon
@@ -3397,21 +3298,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &2104336997
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 2104336996}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 67a1957f2c71f7a48a2370b126c24a9e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  playerOne: {fileID: 571366209}
-  playerTwo: {fileID: 2104336996}
-  playerThree: {fileID: 271962437}
-  playerFour: {fileID: 1447055553}
 --- !u!61 &2104336998
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -3526,8 +3412,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa3ff3de47eb3c04f92525c9f91d3466, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerId: 1
-  rotationSpeed: 2
+  playerId: 0
+  baseRotationSpeed: 2
   maxBlastForce: 2200
   maxAngleOffset: 70
 --- !u!1 &2142692083
