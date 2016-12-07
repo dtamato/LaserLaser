@@ -92,47 +92,49 @@ public class Laser : MonoBehaviour
 
 			Camera.main.GetComponent<CameraEffects> ().ShakeCamera ();
         }
+
+    IEnumerator PulsateLight()
+    {
+
+        // Save current light settings and create temp variables
+        float initialLightRange = light.range;
+        float initialLightIntensity = light.intensity;
+        float maxLightRangeSize = 2f;
+        float growSpeed = 50;
+        float waitTime = 0.25f;
+
+        // Intensify light
+        while (light.range < maxLightRangeSize * initialLightRange)
+        {
+
+            light.range += growSpeed * Time.deltaTime;
+            light.intensity += growSpeed * Time.deltaTime;
+            yield return null;
+        }
+
+        yield return new WaitForSeconds(waitTime);
+
+        // Return light to initial settings
+        while (light.range > initialLightRange)
+        {
+
+            light.range -= growSpeed * Time.deltaTime;
+            light.intensity -= growSpeed * Time.deltaTime;
+            yield return null;
+        }
+
+        light.range = initialLightRange;
+        light.intensity = initialLightIntensity;
     }
 
 
-	IEnumerator PulsateLight () {
+    public void ChangeColor(Color newColor)
+    {
 
-		// Save current light settings and create temp variables
-		float initialLightRange = light.range;
-		float initialLightIntensity = light.intensity;
-		float maxLightRangeSize = 2f;
-		float growSpeed = 50;
-		float waitTime = 0.25f;
+        this.GetComponent<SpriteRenderer>().color = newColor;
+    }
 
-		// Intensify light
-		while(light.range < maxLightRangeSize * initialLightRange) {
-
-			light.range += growSpeed * Time.deltaTime;
-			light.intensity += growSpeed * Time.deltaTime;
-			yield return null;
-		}
-
-		yield return new WaitForSeconds (waitTime);
-
-		// Return light to initial settings
-		while(light.range > initialLightRange) {
-
-			light.range -= growSpeed * Time.deltaTime;
-			light.intensity -= growSpeed * Time.deltaTime;
-			yield return null;
-		}
-
-		light.range = initialLightRange;
-		light.intensity = initialLightIntensity;
-	}
-
-
-	public void ChangeColor (Color newColor) {
-
-		this.GetComponent<SpriteRenderer> ().color = newColor;
-	}
-
-	/*IEnumerator DisableScript()
+    /*IEnumerator DisableScript()
 	{
 		yield return new WaitForSeconds (paralysisTimer);
 		GetComponentInParent<Paralysis> ().enabled = false;
@@ -142,4 +144,8 @@ public class Laser : MonoBehaviour
 		GetComponentInParent<Paralysis> ().playerFour.GetComponent<CannonTester> ().enabled = true;
 
 	}*/
+}
+
+
+
 
