@@ -31,9 +31,18 @@ public class Cannon : MonoBehaviour {
 	void Awake ()
     {
         rewiredPlayer = ReInput.players.GetPlayer (playerId);
+
 		currentRotationSpeed = baseRotationSpeed;
+
+        //Debug.Log(rewiredPlayer);
 		if (maxAngleOffset < 0) { maxAngleOffset *= -1; }
         SetNewBaseAngle();
+    }
+
+    void UpdateColor()
+    {
+        transform.Find("Cannon Sprite" + playerId).GetComponent<SpriteRenderer>().color =
+            gameObject.GetComponentInChildren<Laser>().GetComponent<SpriteRenderer>().color; //updates all parts of the cannon
     }
 
 	void Update ()
@@ -41,6 +50,7 @@ public class Cannon : MonoBehaviour {
 		if (storedLaser) {
 				
             ProcessInputs ();
+            UpdateColor();
         }
 	}
 
@@ -62,6 +72,7 @@ public class Cannon : MonoBehaviour {
 
 	#region Inputs
 	void ProcessInputs ()
+/*
     {
         
 		GetRotationInput ();
@@ -72,7 +83,23 @@ public class Cannon : MonoBehaviour {
 	void GetRotationInput () {
 
 		// Get controller joystick input
-		if (rewiredPlayer.GetAxisRaw ("Horizontal") < 0) {
+		if (rewiredPlayer.GetAxisRaw ("Horizontal") < 0) {*/
+
+	{
+	    
+        // Get controller joystick input
+		if (rewiredPlayer.GetAxis ("Horizontal") < 0) {
+			
+			//Debug.Log ("Horizontal: " + Input.GetAxis ("Horizontal"));
+			rotationSpeed += accelerationModifier;
+			this.transform.Rotate (rotationSpeed * rotationModifier * Vector3.forward);
+		}
+		else if (rewiredPlayer.GetAxis ("Horizontal") > 0) {
+			
+			//Debug.Log ("Horizontal: " + Input.GetAxis ("Horizontal"));
+			this.transform.Rotate (-rotationSpeed * rotationModifier * Vector3.forward);
+		}
+		else if (rewiredPlayer.GetAxis ("Horizontal") == 0) {
 
 			currentRotationSpeed = Mathf.Clamp(currentRotationSpeed, minRotationSpeed, maxRotationSpeed);
 			this.transform.Rotate (currentRotationSpeed * rotationModifier * Vector3.forward);
