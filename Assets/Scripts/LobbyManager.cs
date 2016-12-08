@@ -13,8 +13,9 @@ public class LobbyManager : MonoBehaviour {
     private bool canChange = false;
     private int colorIdx;
     private Player _rewiredPlayer;
-    private bool hasJoined = false;
+   [SerializeField] private bool hasJoined = false;
     public Vector3 resetPos;
+    public GameObject playerCannon; // reference to the player's cannon
 
 
     void Awake()
@@ -40,11 +41,11 @@ public class LobbyManager : MonoBehaviour {
             canChange = true;
             if (other.GetComponent<Laser>().myPlayerID == playerId)
             {
-                other.gameObject.GetComponent<Rigidbody2D>().transform.position = gameObject.transform.position; //setting the laser to the center of the field
+                playerCannon.GetComponentInChildren<Rigidbody2D>().transform.position = gameObject.transform.position; //setting the laser to the center of the field
             }
             else
             {
-                    other.GetComponent<Rigidbody2D>().AddForce(2200 * -this.transform.up); //bounce the player off the other's field
+                    other.GetComponentInChildren<Rigidbody2D>().AddForce(2200 * -this.transform.up); //bounce the player off the other's field
             }
 
         }
@@ -88,9 +89,9 @@ public class LobbyManager : MonoBehaviour {
         else if (_rewiredPlayer.GetButtonDown("Back") && hasJoined)
         {
             hasJoined = false;
-            GameObject.Find("Laser" + playerId).GetComponent<SpriteRenderer>().color = Color.gray; //graying out the player to show that it is inactive
-            GameObject.Find("Laser" + playerId).GetComponent<Rigidbody2D>().isKinematic = false; // adding gravity so the player can fall into place
-            GameObject.Find("Laser" + playerId).GetComponent<Rigidbody2D>().transform.position = resetPos; //resetting the player's cannon to its original position
+            playerCannon.GetComponentInChildren<SpriteRenderer>().color = Color.grey; //graying out the player to show that it is inactive
+            playerCannon.GetComponentInChildren<Rigidbody2D>().isKinematic = false; // adding gravity so the player can fall into place 
+            playerCannon.GetComponentInChildren<Rigidbody2D>().transform.position = resetPos; //resetting the player's cannon to its original position
             GameObject.Find("JoinText" + playerId).GetComponent<Text>().enabled = true; //the player's 'Press 'A' to join text'
 
         }
@@ -105,24 +106,28 @@ public class LobbyManager : MonoBehaviour {
 
     void PlayerActivationCheck()
     {
-        if (hasJoined)
-            GameObject.Find("Cannon" + playerId).GetComponent<Cannon>().enabled = true; //if the player has joined, allow them to control the cannon, else disable it  
+        if (hasJoined)  
+            playerCannon.GetComponent<Cannon>().enabled = true; //if the player has joined, allow them to control the cannon, else disable it
         else
-            GameObject.Find("Cannon" + playerId).GetComponent<Cannon>().enabled = false;
+            playerCannon.GetComponent<Cannon>().enabled = false;
     }
 
     void UpdateColor()
     {
-        if (GameObject.Find("Laser" + playerId) != null && hasJoined) //if we can find the laser within the scene, and it hasn't been destroyed
+        if (hasJoined) //if we can find the laser within the scene, and it hasn't been destroyed
         {
-            GameObject.Find("Laser" + playerId).GetComponent<SpriteRenderer>().color = GameObject.Find("ColorManager").GetComponent<ColorManager>()._colorlist[colorIdx]._color; //going to the list of available colours to set the player's colour correctly
+            playerCannon.transform.Find("Laser").GetComponentInChildren<SpriteRenderer>().color = GameObject.Find("ColorManager").GetComponent<ColorManager>()._colorlist[colorIdx]._color; //going to the list of available colours to set the player's colour correctly
+            playerCannon.transform.Find("Laser").GetComponent<TrailRenderer>().material.color = GameObject.Find("ColorManager").GetComponent<ColorManager>()._colorlist[colorIdx]._color;
             gameObject.GetComponent<SpriteRenderer>().color = GameObject.Find("ColorManager").GetComponent<ColorManager>()._colorlist[colorIdx]._color;
+            playerCannon.GetComponentInChildren<SpriteRenderer>().color = GameObject.Find("ColorManager").GetComponent<ColorManager>()._colorlist[colorIdx]._color;
             GameObject.Find("ColorManager").GetComponent<ColorManager>()._colorlist[colorIdx].isAvailable = false; //making sure other players cannot use the same colour
         }
-        if (GameObject.Find("Laser" + playerId) != null && !hasJoined) //if the player leaves, then return them to their position, disable their cannon (checked within PlayerActivationCheck()), and change their colour to grey
+        else //if the player leaves, then return them to their position, disable their cannon (checked within PlayerActivationCheck()), and change their colour to grey
         {
-            GameObject.Find("Cannon Sprite" + playerId).GetComponent<SpriteRenderer>().color = Color.gray;
-            gameObject.GetComponent<SpriteRenderer>().color = GameObject.Find("ColorManager").GetComponent<ColorManager>()._colorlist[colorIdx]._color;
+            playerCannon.GetComponentInChildren<SpriteRenderer>().color = Color.gray;
+            playerCannon.transform.Find("Laser").GetComponent<SpriteRenderer>().color = Color.grey;
+           // gameObject.GetComponent<SpriteRenderer>().color = GameObject.Find("ColorManager").GetComponent<ColorManager>()._colorlist[colorIdx]._color;
+            //playerCannon.GetComponentInChildren<SpriteRenderer>().color = GameObject.Find("ColorManager").GetComponent<ColorManager>()._colorlist[colorIdx]._color;
             GameObject.Find("ColorManager").GetComponent<ColorManager>()._colorlist[colorIdx].isAvailable = false;
         } 
     }

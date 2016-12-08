@@ -38,8 +38,8 @@ public class Cannon : MonoBehaviour {
 
     void UpdateColor()
     {
-        transform.Find("Cannon Sprite" + playerId).GetComponent<SpriteRenderer>().color =
-            gameObject.GetComponentInChildren<Laser>().GetComponent<SpriteRenderer>().color; //updates all parts of the cannon
+        //transform.Find("Cannon Sprite" + playerId).GetComponent<SpriteRenderer>().color =
+          //  gameObject.GetComponentInChildren<Laser>().GetComponent<SpriteRenderer>().color; //updates all parts of the cannon
     }
 
     void Update ()

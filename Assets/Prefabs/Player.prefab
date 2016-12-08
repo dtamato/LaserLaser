@@ -286,7 +286,7 @@ Light:
   m_Enabled: 1
   serializedVersion: 7
   m_Type: 2
-  m_Color: {r: 1, g: 0, b: 0, a: 1}
+  m_Color: {r: 0.30147058, g: 0.30147058, b: 0.30147058, a: 1}
   m_Intensity: 1
   m_Range: 2.5
   m_SpotAngle: 30
@@ -334,19 +334,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 37ecd38c199140843b4c50f01d25506e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  paralysisTimer: 2
   cannon: {fileID: 1000012362012830}
   scoreText: {fileID: 0}
   comboText: {fileID: 0}
   score: 0
   comboCount: 0
+  myPlayerID: 0
 --- !u!114 &114000012624769266
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1000012362012830}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fa3ff3de47eb3c04f92525c9f91d3466, type: 3}
   m_Name: 
