@@ -37,7 +37,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.37356418, g: 0.3811201, b: 0.3588767, a: 1}
+  m_IndirectSpecularColor: {r: 0.3735644, g: 0.38112032, b: 0.35887682, a: 1}
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
@@ -942,10 +942,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerId: 2
-  rotationSpeed: 2
+  baseRotationSpeed: 2
   maxBlastForce: 2200
   maxAngleOffset: 70
-  gameOver: 0
 --- !u!61 &271962439
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1918,10 +1917,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerId: 0
-  rotationSpeed: 2
+  baseRotationSpeed: 2
   maxBlastForce: 2200
   maxAngleOffset: 70
-  gameOver: 0
 --- !u!61 &571366211
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -2718,12 +2716,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 37ecd38c199140843b4c50f01d25506e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  paralysisTimer: 2
   cannon: {fileID: 571366209}
   scoreText: {fileID: 1309312885}
   comboText: {fileID: 478471663}
   score: 0
   comboCount: 0
+  myPlayerID: 0
 --- !u!96 &831401312
 TrailRenderer:
   m_ObjectHideFlags: 0
@@ -2858,7 +2856,7 @@ GameObject:
   - 222: {fileID: 1066185202}
   - 114: {fileID: 1066185201}
   m_Layer: 5
-  m_Name: Get Ready Text
+  m_Name: GetReadyText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3154,12 +3152,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 37ecd38c199140843b4c50f01d25506e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  paralysisTimer: 2
   cannon: {fileID: 2104336996}
   scoreText: {fileID: 1569694676}
   comboText: {fileID: 1622570078}
   score: 0
   comboCount: 0
+  myPlayerID: 0
 --- !u!50 &1131215737
 Rigidbody2D:
   serializedVersion: 2
@@ -3330,12 +3328,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 37ecd38c199140843b4c50f01d25506e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  paralysisTimer: 2
   cannon: {fileID: 271962437}
   scoreText: {fileID: 1635529009}
   comboText: {fileID: 371359192}
   score: 0
   comboCount: 0
+  myPlayerID: 0
 --- !u!50 &1143426526
 Rigidbody2D:
   serializedVersion: 2
@@ -3776,10 +3774,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerId: 3
-  rotationSpeed: 2
+  baseRotationSpeed: 2
   maxBlastForce: 2200
   maxAngleOffset: 70
-  gameOver: 0
 --- !u!61 &1447055555
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -4163,12 +4160,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 37ecd38c199140843b4c50f01d25506e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  paralysisTimer: 2
   cannon: {fileID: 1447055553}
   scoreText: {fileID: 284740344}
   comboText: {fileID: 2142692084}
   score: 0
   comboCount: 0
+  myPlayerID: 0
 --- !u!50 &1670502933
 Rigidbody2D:
   serializedVersion: 2
@@ -4482,10 +4479,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerId: 1
-  rotationSpeed: 2
+  baseRotationSpeed: 2
   maxBlastForce: 2200
   maxAngleOffset: 70
-  gameOver: 0
 --- !u!61 &2104336998
 BoxCollider2D:
   m_ObjectHideFlags: 0
