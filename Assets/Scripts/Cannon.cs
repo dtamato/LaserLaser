@@ -171,12 +171,22 @@ public class Cannon : MonoBehaviour {
 		foreach (SpriteRenderer sprite in spriteRenderers) { sprite.color = newColor; }
 		storedLaser.ChangeColor (newColor);
 	}
+
+	public void ModifyRotationSpeed(float newSpeed)
+	{
+		baseRotationSpeed = newSpeed;
+	}
 	#endregion
 
 	#region Getters
 	public int GetPlayerID () {
 
 		return playerId;
+	}
+
+	public float GetBaseSpeed()
+	{
+		return baseRotationSpeed;
 	}
 	#endregion
 }
