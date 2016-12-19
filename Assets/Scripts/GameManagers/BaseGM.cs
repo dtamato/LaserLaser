@@ -4,26 +4,39 @@ using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class BaseGameManager : MonoBehaviour
+public class BaseGM : MonoBehaviour
 {
+    #region Variables
+
+    //Scene build index integers.
+    public int menuSceneIndex;
+    public int mainGameSceneIndex;
+    public int FFALobbySceneIndex;
+    public int teamLobbySceneIndex;
+
     //External References.
-    public static BaseGameManager instance = null;
+    public static BaseGM instance = null;
     protected List<Text> HUDText;
     [SerializeField] protected List<PlayerDef> playerList;
     protected GameObject gameOverPanel;
     protected GameObject introText;
+    protected List<GameObject> Spawns;
+    public GameObject playerObj;
 
-    //Boolean flags.
+    //Boolean flags and other metrics.
     public bool inGame = false;        //True when in Main Game.
     public bool startGame = false;     //True once the startGameDelay / grace period has elapsed.
+    public int playerCount = 0;
 
     //Timer variables.
-    public float gameTimer;
     public float startGameDelay;
-        
+
+    #endregion
+
     //Class defining a player's attributes. Used to carry player preferences into the game scene from lobby.
     public class PlayerDef
     {
+        public GameObject obj;
         private int ID;
         private bool isActive;
         private int sensitivity;
@@ -82,8 +95,7 @@ public class BaseGameManager : MonoBehaviour
         }
 
         //Reset function reverts preferences to default if player leaves lobby.
-        public void reset()
-        {
+        public void reset() {
             ID = -1;
             isActive = false;
             sensitivity = 5;
@@ -93,7 +105,7 @@ public class BaseGameManager : MonoBehaviour
         }
     }
 
-
+    //Called immidiately when game manager is instantiated in Menu.
     void Awake()
     {
         //Ensures there is only one instance of the gameManager, and it isn't destroyed when changing scenes.
@@ -103,9 +115,9 @@ public class BaseGameManager : MonoBehaviour
             Destroy(gameObject);
         DontDestroyOnLoad(gameObject);
 
-        //Initialize HUD Text List, will be referenced upon entering game scene.
-        //Index 0-3 for player scores, Index 4 for timer.
-        HUDText = new List<Text>(5);
+        //Initialize HUD Text List and Spawn Points, will be referenced upon entering game scene.
+        HUDText = new List<Text>(4);
+        Spawns = new List<GameObject>(4);
 
         //Initialize Player List, holds preferences to instantiate each player in game scene.
         playerList = new List<PlayerDef>(4);
@@ -114,22 +126,92 @@ public class BaseGameManager : MonoBehaviour
         }    
     }
 
-	
+    #region Lobby Scene
+
+    //Called from Cannon.cs when a player enters the lobby.
+    public void playerJoin(int pID, int teamNo, Color color) {
+        playerList[pID].setID(pID);
+        playerList[pID].setTeam(teamNo);
+        playerList[pID].setColor(color);
+    }
+
+    //Called from Cannon.cs when a player leaves the lobby.
+    public void playerLeave(int pID) {
+        playerList[pID].reset();
+    }
+
+    //Called from Cannon.cs when a player changes their color.
+    public void setColor(int pID, Color color) {
+        playerList[pID].setColor(color);
+    }
+
+    //Called from Cannon.cs when a player changes their sensitivity.
+    public void setSensitivity(int pID, int sens) {
+        playerList[pID].setSensitivity(sens);
+    }
+
+    //Called from Cannon.cs when a player changes their invertedness.
+    public void setInvert(int pID, bool state) {
+        playerList[pID].setInverted(state);
+    }
+
+    //Called from Cannon.cs when a player changes their team in Team Play.
+    public void setTeam(int pID, int team) {
+        playerList[pID].setTeam(team);
+    }
+
+
+
+    //Called from Cannon.cs when player presses start to begin game.
+    public void changeSceneToGame()
+    {
+        //Check to make sure at least 2 players have joined.
+        int activePlayerCount = 0;
+        for (int i = 0; i <= 3; i++) {
+            if (playerList[i].active()) {
+                activePlayerCount++;
+            }
+        }
+
+        if (activePlayerCount >= 2) {
+            //If the active scene is the FFA lobby.
+            if (SceneManager.GetActiveScene().buildIndex == FFALobbySceneIndex)
+            {
+                SceneManager.LoadScene(mainGameSceneIndex);     //Load Main Game.
+            }
+            //If the active scene is the team lobby.
+            else if (SceneManager.GetActiveScene().buildIndex == teamLobbySceneIndex)
+            {
+                
+                
+                
+                
+                //Check at least one player is on each team.
+
+
+
+
+                SceneManager.LoadScene(mainGameSceneIndex);     //Load Main Game.
+            }
+        }
+    }
+
+    #endregion
+
+    #region MainGame Scene
+
     //Called when entering game scene, initializes players, HUD and timer.
     protected void initializeGame()
     {
         //Set game state to In Game.
         inGame = true;
 
-        //Reference members of HUD.
+        //Reference members of HUD and Spawns.
         for (int i = 0; i <= 3; i++) {
             HUDText[i] = GameObject.Find("PlayerScore" + i).GetComponent<Text>();
+            Spawns[i] = GameObject.Find("SP" + i);
         }
-        HUDText[4] = GameObject.Find("TimeText").GetComponent<Text>();
         introText = GameObject.Find("GetReadyText");
-
-        //Put the time on the clock.
-        HUDText[4].text = gameTimer.ToString("F1");
 
         //Initialize the game over panel. Likely to be altered / removed in future commit.
         gameOverPanel = GameObject.Find("GameOverPanel");
@@ -137,13 +219,20 @@ public class BaseGameManager : MonoBehaviour
             GameObject scoreBar = GameObject.Find("ScoreBar" + i);
             GameObject score = GameObject.Find("FinalScore" + i);
             //Check if each player is active, and deactivate the score summaries for those who aren't active
-            if (!playerList[i].active())
-            {
+            if (!playerList[i].active()) {
+                playerCount++;
                 scoreBar.SetActive(false);
                 score.SetActive(false);
             }
         }
         gameOverPanel.SetActive(false);
+
+        //Set the locations of the spawn points, relative to the parent object located at the lower left corner of the arena.
+        float dist = 19.4f / (2 * playerCount);
+        for (int i = 0; i < playerCount; i++) {
+            float newX = (dist * i) + dist;
+            Spawns[i].transform.position.Set(newX, 0, 0);
+        }
 
         /////////////////
 
@@ -220,4 +309,12 @@ public class BaseGameManager : MonoBehaviour
 
         ///////////////////
     }
+
+    //Called in Main Game Scene once game is over and all players have pressed "A".
+    public void changeSceneToMenu()
+    {
+        SceneManager.LoadScene(menuSceneIndex);     //Load Main Menu.
+    }
+
+    #endregion
 }
