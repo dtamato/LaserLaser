@@ -37,7 +37,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.37356418, g: 0.3811201, b: 0.3588767, a: 1}
+  m_IndirectSpecularColor: {r: 0.37356454, g: 0.38112053, b: 0.3588771, a: 1}
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
@@ -140,7 +140,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerId: 1
   mycolor: {r: 1, g: 1, b: 1, a: 1}
-  hasJoined: 0
   resetPos: {x: -2.5, y: -5.2, z: 0}
   playerCannon: {fileID: 615492931}
 --- !u!212 &32115664
@@ -266,7 +265,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerId: 0
   mycolor: {r: 1, g: 1, b: 1, a: 1}
-  hasJoined: 0
   resetPos: {x: -7.5, y: -4.5, z: 0}
   playerCannon: {fileID: 1758283406}
 --- !u!61 &195425714
@@ -314,7 +312,7 @@ RectTransform:
   - {fileID: 1176445705}
   - {fileID: 1235602911}
   m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_RootOrder: 7
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: -248.66663, y: -179.66664}
@@ -419,7 +417,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4000014272126910, guid: 76f68068a86b4d14598968aa340a5996, type: 2}
       propertyPath: m_RootOrder
-      value: 12
+      value: 11
       objectReference: {fileID: 0}
     - target: {fileID: 1000012362012830, guid: 76f68068a86b4d14598968aa340a5996, type: 2}
       propertyPath: m_Name
@@ -446,6 +444,11 @@ Prefab:
     - target: {fileID: 1000012362012830, guid: 76f68068a86b4d14598968aa340a5996, type: 2}
       propertyPath: m_Layer
       value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 114000011582327276, guid: 76f68068a86b4d14598968aa340a5996,
+        type: 2}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 76f68068a86b4d14598968aa340a5996, type: 2}
@@ -936,7 +939,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4000014272126910, guid: 76f68068a86b4d14598968aa340a5996, type: 2}
       propertyPath: m_RootOrder
-      value: 11
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1000012362012830, guid: 76f68068a86b4d14598968aa340a5996, type: 2}
       propertyPath: m_Name
@@ -963,6 +966,11 @@ Prefab:
     - target: {fileID: 1000012362012830, guid: 76f68068a86b4d14598968aa340a5996, type: 2}
       propertyPath: m_Layer
       value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 114000011582327276, guid: 76f68068a86b4d14598968aa340a5996,
+        type: 2}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 76f68068a86b4d14598968aa340a5996, type: 2}
@@ -1276,7 +1284,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerId: 2
   mycolor: {r: 1, g: 1, b: 1, a: 1}
-  hasJoined: 0
   resetPos: {x: 2.5, y: -5.2, z: 0}
   playerCannon: {fileID: 1235386049}
 --- !u!212 &1176445704
@@ -1375,7 +1382,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerId: 3
   mycolor: {r: 1, g: 1, b: 1, a: 1}
-  hasJoined: 0
   resetPos: {x: 7.5, y: -5.2, z: 0}
   playerCannon: {fileID: 6844803}
 --- !u!212 &1235602910
@@ -1455,7 +1461,7 @@ RectTransform:
   - {fileID: 938027705}
   - {fileID: 857545483}
   m_Father: {fileID: 0}
-  m_RootOrder: 9
+  m_RootOrder: 8
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: -8288.888, y: -5988.8877}
@@ -1699,7 +1705,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4000014272126910, guid: 76f68068a86b4d14598968aa340a5996, type: 2}
       propertyPath: m_RootOrder
-      value: 10
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 114000012624769266, guid: 76f68068a86b4d14598968aa340a5996,
         type: 2}
@@ -2344,7 +2350,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4000014272126910, guid: 76f68068a86b4d14598968aa340a5996, type: 2}
       propertyPath: m_RootOrder
-      value: 13
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 1000012362012830, guid: 76f68068a86b4d14598968aa340a5996, type: 2}
       propertyPath: m_Name
@@ -2371,6 +2377,11 @@ Prefab:
     - target: {fileID: 1000012362012830, guid: 76f68068a86b4d14598968aa340a5996, type: 2}
       propertyPath: m_Layer
       value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 114000011582327276, guid: 76f68068a86b4d14598968aa340a5996,
+        type: 2}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 76f68068a86b4d14598968aa340a5996, type: 2}
@@ -2414,7 +2425,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 13
 --- !u!1001 &1952761803
 Prefab:
   m_ObjectHideFlags: 0
