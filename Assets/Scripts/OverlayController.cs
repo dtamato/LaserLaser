@@ -16,11 +16,13 @@ public class OverlayController : MonoBehaviour
             playerCannon.GetComponent<CannonCustomization>().canChange = true;
             if (other.GetComponent<Laser>().myPlayerID == playerId)
             {
-                other.GetComponentInChildren<Rigidbody2D>().transform.position = gameObject.transform.position; //setting the laser to the center of the field
+                other.GetComponent<Rigidbody2D>().transform.position = gameObject.transform.position; //setting the laser to the center of the field
+                //Debug.Log("Match! [ " + "My ID: " + playerId + ", Laser ID: " + other.GetComponent<Laser>().myPlayerID + "]");
             }
             else
             {
-                other.GetComponentInChildren<Rigidbody2D>().AddForce(2200 * -this.transform.up); //bounce the player off the other's field
+                other.GetComponent<Rigidbody2D>().AddForce(2200 * -this.transform.up); //bounce the player off the other's field
+               // Debug.Log("Error, ID's do not match! [ " + "My ID: " + playerId + ", Laser ID: " + other.GetComponent<Laser>().myPlayerID + "]");
             }
         }
     }

@@ -106,7 +106,7 @@ GameObject:
   - 212: {fileID: 32115664}
   - 61: {fileID: 32115662}
   - 114: {fileID: 32115666}
-  m_Layer: 8
+  m_Layer: 14
   m_Name: Player2 Overlay
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -198,7 +198,7 @@ GameObject:
   - 212: {fileID: 195425711}
   - 61: {fileID: 195425714}
   - 114: {fileID: 195425710}
-  m_Layer: 8
+  m_Layer: 14
   m_Name: Player1 Overlay
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1268,7 +1268,7 @@ GameObject:
   - 212: {fileID: 1176445704}
   - 61: {fileID: 1176445702}
   - 114: {fileID: 1176445706}
-  m_Layer: 8
+  m_Layer: 14
   m_Name: Player3 Overlay
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1365,7 +1365,7 @@ GameObject:
   - 212: {fileID: 1235602910}
   - 61: {fileID: 1235602908}
   - 114: {fileID: 1235602912}
-  m_Layer: 8
+  m_Layer: 14
   m_Name: Player4 Overlay
   m_TagString: Untagged
   m_Icon: {fileID: 0}
