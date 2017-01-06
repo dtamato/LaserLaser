@@ -1,146 +1,108 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
 using Rewired;
 
+public class ColorList
+{
+    public bool isAvailable = true;
+    public Color _color;
+
+    public ColorList(bool avail, Color col)
+    {
+        isAvailable = avail; //controls whether or not the player can actually access the colour (making sure no two players can have the same colour)
+        _color = col; //The colour the player can choose
+    }
+}
+
+
 public class LobbyManager : MonoBehaviour {
 
-    
-    [SerializeField] int playerId = 0;
 
-    public Color mycolor;
+    void FFAColourList() //The available colours for the FFA lobby
+    {
+        _colorlist[0] = new ColorList(false, Color.red);
+        _colorlist[1] = new ColorList(false, Color.blue);
+        _colorlist[2] = new ColorList(false, Color.green);
+        _colorlist[3] = new ColorList(false, Color.magenta);
+        _colorlist[4] = new ColorList(true, Color.yellow); //need to change due to it being too close to the crystal's colour
+        _colorlist[5] = new ColorList(true, Color.cyan);
+        _colorlist[6] = new ColorList(true, new Color(0.29f, 0.35f, 0.67f, 1f));
+        _colorlist[7] = new ColorList(true, new Color(0.95f, 0.62f, 0f, 1f));
+        _colorlist[8] = new ColorList(true, new Color(0f, 0.95f, 0.7f, 1f));
+        _colorlist[9] = new ColorList(true, new Color(0.65f, 0f, 0.73f, 1f));
+    }
+
+
     private bool playerReady;
-    private bool canChange = false;
-    private int colorIdx;
-    private Player _rewiredPlayer;
-   [SerializeField] private bool hasJoined = false;
-    public Vector3 resetPos;
-    public GameObject playerCannon; // reference to the player's cannon
+    private GameObject[] playerCannons; // reference to the player's cannon
+    public GameObject player1;
+    public GameObject player2;
+    public GameObject player3;
+    public GameObject player4;
 
+    public ColorList[] _colorlist = new ColorList[10];
 
-    void Awake()
+    
+
+    void Start()
     {
-        _rewiredPlayer = ReInput.players.GetPlayer(playerId);
-    }
+        FFAColourList();
+        playerCannons = new GameObject[4]; 
+        playerCannons[0] = player1;
+        playerCannons[1] = player2;
+        playerCannons[2] = player3;
+        playerCannons[3] = player4;
 
-    // Use this for initialization
-    private void Start()
-    {
-        colorIdx = playerId;
-    }
-
-    private void OnTriggerExit2D(Collider2D other)
-    {
-        canChange = false; //make sure the player cannot change their colour unles they're in range of their field
-    }
-
-    private void OnTriggerEnter2D(Collider2D other)
-    {
-        if (other.tag == "Player")
+        for (int i = 0; i < playerCannons.Length; i++) //iterating through each player to set their colour to grey.
         {
-            canChange = true;
-            if (other.GetComponent<Laser>().myPlayerID == playerId)
-            {
-                playerCannon.GetComponentInChildren<Rigidbody2D>().transform.position = gameObject.transform.position; //setting the laser to the center of the field
-            }
-            else
-            {
-                    other.GetComponentInChildren<Rigidbody2D>().AddForce(2200 * -this.transform.up); //bounce the player off the other's field
-            }
-
+            playerCannons[i].GetComponentInChildren<SpriteRenderer>().color = Color.gray;
+            playerCannons[i].transform.Find("Laser").GetComponent<SpriteRenderer>().color = Color.grey;
+            playerCannons[i].transform.Find("Laser").GetComponent<TrailRenderer>().material.color = Color.grey;
         }
         
     }
 
-    void ProcessInputs()
+    public int IncrementIndex(int idx) //if the player wants to change their colour forward ->
     {
-        if (_rewiredPlayer.GetButtonDown("RButt") && canChange) //can only change if the player is within the field
+        _colorlist[idx].isAvailable = true; //accessing the array of available colours contained within ColorManager
+        do
         {
-            GameObject.Find("ColorManager").GetComponent<ColorManager>()._colorlist[colorIdx].isAvailable = true; //accessing the array of available colours contained within ColorManager
-            do
-            {
-                colorIdx++;
-                colorIdx %= 10;
-                //Debug.Log(colorIdx);
-            } while (!GameObject.Find("ColorManager").GetComponent<ColorManager>()._colorlist[colorIdx].isAvailable);
-
-        }
-
-        if (_rewiredPlayer.GetButtonDown("LButt") && canChange)
-        {
-            GameObject.Find("ColorManager").GetComponent<ColorManager>()._colorlist[colorIdx].isAvailable = true;
-            do
-            {
-
-                colorIdx = (colorIdx - 1) % 10;
-                colorIdx = colorIdx < 0 ? colorIdx + 10 : colorIdx; //is check 1 true? if yes, use check 2 (wraps around back to the end of the array when you're decrementing past the first element)
-
-                //Debug.Log(colorIdx);
-            } while (!GameObject.Find("ColorManager").GetComponent<ColorManager>()._colorlist[colorIdx].isAvailable);
-
-        }
-
-        if (_rewiredPlayer.GetButtonDown("Fire") && !hasJoined)
-        {
-            hasJoined = true;
-            GameObject.Find("JoinText" + playerId).GetComponent<Text>().enabled = false;
-
-        }
-        else if (_rewiredPlayer.GetButtonDown("Back") && hasJoined)
-        {
-            hasJoined = false;
-            playerCannon.GetComponentInChildren<SpriteRenderer>().color = Color.grey; //graying out the player to show that it is inactive
-            playerCannon.GetComponentInChildren<Rigidbody2D>().isKinematic = false; // adding gravity so the player can fall into place 
-            playerCannon.GetComponentInChildren<Rigidbody2D>().transform.position = resetPos; //resetting the player's cannon to its original position
-            GameObject.Find("JoinText" + playerId).GetComponent<Text>().enabled = true; //the player's 'Press 'A' to join text'
-
-        }
-
-        if (_rewiredPlayer.GetButtonDown("Setting"))
-        {
-            Debug.Log("Opening Settings...");
-        }
-            
-
+            idx++;
+            idx %= 10;
+        } while (!_colorlist[idx].isAvailable);
+        return idx;
     }
 
-    void PlayerActivationCheck()
+    public int DecrementIndex(int idx) //if the player wants to change their colour backward <-
     {
-        if (hasJoined)  
-            playerCannon.GetComponent<Cannon>().enabled = true; //if the player has joined, allow them to control the cannon, else disable it
-        else
-            playerCannon.GetComponent<Cannon>().enabled = false;
-    }
-
-    void UpdateColor()
-    {
-        if (hasJoined) //if we can find the laser within the scene, and it hasn't been destroyed
+        _colorlist[idx].isAvailable = true;
+        do
         {
-            playerCannon.transform.Find("Laser").GetComponentInChildren<SpriteRenderer>().color = GameObject.Find("ColorManager").GetComponent<ColorManager>()._colorlist[colorIdx]._color; //going to the list of available colours to set the player's colour correctly
-            playerCannon.transform.Find("Laser").GetComponent<TrailRenderer>().material.color = GameObject.Find("ColorManager").GetComponent<ColorManager>()._colorlist[colorIdx]._color;
-            gameObject.GetComponent<SpriteRenderer>().color = GameObject.Find("ColorManager").GetComponent<ColorManager>()._colorlist[colorIdx]._color;
-            playerCannon.GetComponentInChildren<SpriteRenderer>().color = GameObject.Find("ColorManager").GetComponent<ColorManager>()._colorlist[colorIdx]._color;
-            GameObject.Find("ColorManager").GetComponent<ColorManager>()._colorlist[colorIdx].isAvailable = false; //making sure other players cannot use the same colour
-        }
-        else //if the player leaves, then return them to their position, disable their cannon (checked within PlayerActivationCheck()), and change their colour to grey
-        {
-            playerCannon.GetComponentInChildren<SpriteRenderer>().color = Color.gray;
-            playerCannon.transform.Find("Laser").GetComponent<SpriteRenderer>().color = Color.grey;
-           // gameObject.GetComponent<SpriteRenderer>().color = GameObject.Find("ColorManager").GetComponent<ColorManager>()._colorlist[colorIdx]._color;
-            //playerCannon.GetComponentInChildren<SpriteRenderer>().color = GameObject.Find("ColorManager").GetComponent<ColorManager>()._colorlist[colorIdx]._color;
-            GameObject.Find("ColorManager").GetComponent<ColorManager>()._colorlist[colorIdx].isAvailable = false;
-        } 
+            idx = (idx - 1) % 10;
+            idx = idx < 0 ? idx + 10 : idx; //is check 1 true? if yes, use check 2 (wraps around back to the end of the array when you're decrementing past the first element)
+        } while (!_colorlist[idx].isAvailable);
+        return idx;
     }
 
-    // Update is called once per frame
-	void Update ()
+    public void UnjoinColour(int cIdx,int pId) //if the player leaves then return them to their position, disable their cannon (checked within PlayerActivationCheck()), and change their colour to grey
     {
-        ProcessInputs();
-        PlayerActivationCheck();
-        UpdateColor();
-
+        playerCannons[pId].GetComponentInChildren<SpriteRenderer>().color = Color.gray;
+        playerCannons[pId].transform.Find("Laser").GetComponent<SpriteRenderer>().color = Color.grey;
+        playerCannons[pId].transform.Find("Laser").GetComponent<TrailRenderer>().material.color = Color.grey;
+        playerCannons[pId].GetComponentInChildren<Rigidbody2D>().isKinematic = false; // adding gravity so the player can fall into place 
+        playerCannons[pId].GetComponentInChildren<Rigidbody2D>().transform.position = GameObject.Find("Player" + (pId + 1) + " Overlay").GetComponent<OverlayController>().resetPos; //resetting the player's cannon to its original position
+        GameObject.Find("JoinText" + pId).GetComponent<Text>().enabled = true; //the player's 'Press 'A' to join text'
     }
 
-
+    public void UpdateColour(int cIdx, int pId) //if the player tries to change their colour, it will be updated here. Also, if the player joins too. 
+    {
+        playerCannons[pId].transform.Find("Laser").GetComponentInChildren<SpriteRenderer>().color = _colorlist[cIdx]._color; //Laser colour
+        playerCannons[pId].transform.Find("Laser").GetComponent<TrailRenderer>().material.color = _colorlist[cIdx]._color; //Trail renderer colour
+        GameObject.Find("Player" + (pId + 1) + " Overlay").GetComponent<SpriteRenderer>().color = _colorlist[cIdx]._color; //Overlay colour
+        playerCannons[pId].GetComponentInChildren<SpriteRenderer>().color = _colorlist[cIdx]._color; //Cannon colour
+        _colorlist[cIdx].isAvailable = false; //making sure other players cannot use the same colour
+    }
 
 }

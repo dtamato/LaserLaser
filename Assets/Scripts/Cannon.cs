@@ -11,8 +11,9 @@ public class Cannon : MonoBehaviour {
 	[SerializeField] float maxBlastForce = 2200;
 	[SerializeField] float maxAngleOffset = 70;
 
+
     // Rotation
-	float currentRotationSpeed;
+    float currentRotationSpeed;
 	int rotationModifier = 1;
 	float minRotationSpeed = 2f;
 	float maxRotationSpeed = 10.0f;
@@ -36,18 +37,11 @@ public class Cannon : MonoBehaviour {
         SetNewBaseAngle();
     }
 
-    void UpdateColor()
-    {
-        //transform.Find("Cannon Sprite" + playerId).GetComponent<SpriteRenderer>().color =
-          //  gameObject.GetComponentInChildren<Laser>().GetComponent<SpriteRenderer>().color; //updates all parts of the cannon
-    }
-
     void Update ()
     {
 		if (storedLaser) {
-				
             ProcessInputs ();
-            UpdateColor();
+            
         }
 	}
 
@@ -67,14 +61,17 @@ public class Cannon : MonoBehaviour {
 		}
 	}
 
-	#region Inputs
-	void ProcessInputs ()
+
+
+    #region Inputs
+    void ProcessInputs ()
     {
-        
-		GetRotationInput ();
-		RestrictAngle ();
-		GetFireInput ();
+            GetRotationInput();
+            RestrictAngle();
+            GetFireInput();
     }
+
+ 
 
 	void GetRotationInput () {
 

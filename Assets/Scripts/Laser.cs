@@ -21,7 +21,7 @@ public class Laser : MonoBehaviour
 	private int diamondCount = 0;
 
     private int crystalCount = 0;
-    public int myPlayerID = 0;
+    public int myPlayerID;
 
 
     void Awake()
