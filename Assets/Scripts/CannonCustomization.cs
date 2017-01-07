@@ -11,7 +11,7 @@ public class CannonCustomization : MonoBehaviour {
     [SerializeField] private Color myColour; //will be used by the gameplay manager to control the user's colour upon initialization
 
     private bool isInLobby = true; //to check whether or not the player can change their colour/rotation speed
-    [SerializeField] private bool hasJoined = false; //whether or not the player can control their cannon
+    public bool hasJoined = false; //whether or not the player can control their cannon
     public bool canChange = false; //whether or not the player can change their colour
 
     public int colorIdx; //the player's position within the colour array

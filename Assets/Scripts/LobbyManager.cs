@@ -44,6 +44,7 @@ public class LobbyManager : MonoBehaviour {
 
     public ColorList[] _colorlist = new ColorList[10];
 
+    public int readyPlayers;
     
 
     void Start()
@@ -105,4 +106,16 @@ public class LobbyManager : MonoBehaviour {
         _colorlist[cIdx].isAvailable = false; //making sure other players cannot use the same colour
     }
 
+    void PlayerReadyCheck()
+    {
+        if (readyPlayers > 1)
+        {
+            //Debug.Log("Press Start to play!");//future implementation of lobby progression
+        }
+    }
+
+    void Update()
+    {
+       PlayerReadyCheck();
+    }
 }

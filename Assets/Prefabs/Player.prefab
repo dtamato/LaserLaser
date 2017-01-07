@@ -323,6 +323,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rotationSpeedIncrement: 0.5
+  myColour: {r: 0, g: 0, b: 0, a: 0}
+  hasJoined: 0
+  canChange: 0
+  colorIdx: 0
 --- !u!114 &114000012008568226
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -346,7 +350,7 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1000012362012830}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fa3ff3de47eb3c04f92525c9f91d3466, type: 3}
   m_Name: 
@@ -385,7 +389,7 @@ SpriteRenderer:
   m_SortingLayerID: -505003231
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: e0a349a1f5ee8b34da3eec093d4df152, type: 3}
-  m_Color: {r: 1, g: 0.25, b: 0.25, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
 --- !u!212 &212000013183806612
@@ -418,6 +422,6 @@ SpriteRenderer:
   m_SortingLayerID: -505003231
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: ec17d2846849fbe4aa34d18ceaf96eeb, type: 3}
-  m_Color: {r: 1, g: 0, b: 0, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
