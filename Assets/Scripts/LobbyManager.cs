@@ -44,7 +44,7 @@ public class LobbyManager : MonoBehaviour {
 
     public ColorList[] _colorlist = new ColorList[10];
 
-    public int readyPlayers;
+    public int joinedPlayers;
     public int team1Players;
     public int team2Players;
 
@@ -153,17 +153,17 @@ public class LobbyManager : MonoBehaviour {
 
     void PlayerReadyCheck()
     {
-        if (readyPlayers > 1)
+        if (joinedPlayers > 1)
         {
             //Debug.Log("Press Start to play!");//future implementation of lobby progression
         }
-    }
+    } //perhaps for future use? The plan was to see if all of the players were ready before proceeding to the game
 
     public void StartGameCheck()
     {
         if (gameType == "TB")
         {
-            if (team1Players > 0 && team2Players > 0)
+            if (team1Players > 0 && team2Players > 0 && (team1Players+team2Players) == joinedPlayers)
                 Debug.Log("ready");
             else
                 Debug.Log("Not ready");

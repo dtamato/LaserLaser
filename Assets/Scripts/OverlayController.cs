@@ -17,7 +17,7 @@ public class OverlayController : MonoBehaviour
             if (other.GetComponent<Laser>().myPlayerID == playerId)
             {
                 other.GetComponent<Rigidbody2D>().transform.position = gameObject.transform.position; //setting the laser to the center of the field
-                GameObject.Find("LobbyManager").GetComponent<LobbyManager>().readyPlayers++;
+                //GameObject.Find("LobbyManager").GetComponent<LobbyManager>().readyPlayers++;
                 //Debug.Log("Match! [ " + "My ID: " + playerId + ", Laser ID: " + other.GetComponent<Laser>().myPlayerID + "]");
             }
             else
@@ -33,7 +33,7 @@ public class OverlayController : MonoBehaviour
     private void OnTriggerExit2D(Collider2D other)
     {
         playerCannon.GetComponent<CannonCustomization>().canChange = false; //make sure the player cannot change their colour unles they're in range of their field
-        GameObject.Find("LobbyManager").GetComponent<LobbyManager>().readyPlayers--;
+        //GameObject.Find("LobbyManager").GetComponent<LobbyManager>().readyPlayers--;
     }
 
 }

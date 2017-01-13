@@ -70,12 +70,14 @@ public class CannonCustomization : MonoBehaviour {
             GameObject.Find("LobbyManager").GetComponent<LobbyManager>().UpdateColour(colorIdx, myID); //switching from grey to their default colour (Initially controlled via player ID)
             hasJoined = true; //Letting the player control their cannon
             GameObject.Find("JoinText" + myID).GetComponent<Text>().enabled = false; //Hiding the "press 'A' to join text"
+            GameObject.Find("LobbyManager").GetComponent<LobbyManager>().joinedPlayers++;
         }
 
         else if (rewiredPlayer.GetButtonDown("Back") && hasJoined) //if the player presses 'B' to leave
         {
             hasJoined = false; //Revoking the ability for the user to control their cannon
             GameObject.Find("LobbyManager").GetComponent<LobbyManager>().UnjoinColour(colorIdx, myID);
+            GameObject.Find("LobbyManager").GetComponent<LobbyManager>().joinedPlayers++;
         }
 
         if (rewiredPlayer.GetButtonDown("RButt") && canChange) //can only change if the player is within the field, incrementing colour ->
