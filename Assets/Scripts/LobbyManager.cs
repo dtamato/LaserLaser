@@ -45,6 +45,10 @@ public class LobbyManager : MonoBehaviour {
     public ColorList[] _colorlist = new ColorList[10];
 
     public int readyPlayers;
+    public int team1Players;
+    public int team2Players;
+
+    public string gameType = "FFA";
     
 
     void Start()
@@ -56,11 +60,15 @@ public class LobbyManager : MonoBehaviour {
         playerCannons[2] = player3;
         playerCannons[3] = player4;
 
+        if (gameType == "FFA")
+            FFASwitch();
+
         for (int i = 0; i < playerCannons.Length; i++) //iterating through each player to set their colour to grey.
         {
             playerCannons[i].GetComponentInChildren<SpriteRenderer>().color = Color.gray;
             playerCannons[i].transform.Find("Laser").GetComponent<SpriteRenderer>().color = Color.grey;
             playerCannons[i].transform.Find("Laser").GetComponent<TrailRenderer>().material.color = Color.grey;
+            playerCannons[i].transform.Find("ColourBand").GetComponent<SpriteRenderer>().color = new Color(0f,0f,0f,0f);
         }
         
     }
@@ -106,11 +114,59 @@ public class LobbyManager : MonoBehaviour {
         _colorlist[cIdx].isAvailable = false; //making sure other players cannot use the same colour
     }
 
+    public void FFASwitch() //switch to FFA
+    {
+        GameObject.Find("GameType").GetComponent<Text>().text = "Free For All!";
+        for (int x = 1; x < 3; x++)
+        {
+            GameObject.Find("Team" + x).GetComponent<SpriteRenderer>().enabled = false;
+            GameObject.Find("Team" + x).GetComponent<BoxCollider2D>().enabled = false;
+        }
+        for (int i = 0; i < 4; i++)
+        {
+            GameObject.Find("Player" + (i + 1) + " Overlay").GetComponent<SpriteRenderer>().enabled = true;
+            GameObject.Find("Player" + (i + 1) + " Overlay").GetComponent<BoxCollider2D>().enabled = true;
+
+            GameObject.Find("Player " + "(" + i + ")").GetComponent<CannonCustomization>().team = 0;
+            GameObject.Find("Player " + "(" + i + ")").transform.Find("ColourBand").GetComponent<SpriteRenderer>().color = new Color(0f, 0f, 0f, 0f);
+
+        } 
+    }
+
+    public void TBSwitch() //Switch to TB
+    {
+        GameObject.Find("GameType").GetComponent<Text>().text = "Team Battle!";
+        for (int x = 1; x < 3; x++)
+        {
+            GameObject.Find("Team" + x).GetComponent<SpriteRenderer>().enabled = true;
+            GameObject.Find("Team" + x).GetComponent<BoxCollider2D>().enabled = true;
+        }
+        for (int i = 0; i < 4; i++)
+        {
+            GameObject.Find("Player" + (i + 1) + " Overlay").GetComponent<SpriteRenderer>().enabled = false;
+            GameObject.Find("Player" + (i + 1) + " Overlay").GetComponent<BoxCollider2D>().enabled = false;
+            GameObject.Find("Player " + "(" + i + ")").GetComponent<CannonCustomization>().canChange = false;
+            GameObject.Find("Player " + "(" + i + ")").transform.Find("ColourBand").GetComponent<SpriteRenderer>().color = new Color(0.8f,0.8f,0.8f,1f);
+
+        }
+    }
+
     void PlayerReadyCheck()
     {
         if (readyPlayers > 1)
         {
             //Debug.Log("Press Start to play!");//future implementation of lobby progression
+        }
+    }
+
+    public void StartGameCheck()
+    {
+        if (gameType == "TB")
+        {
+            if (team1Players > 0 && team2Players > 0)
+                Debug.Log("ready");
+            else
+                Debug.Log("Not ready");
         }
     }
 

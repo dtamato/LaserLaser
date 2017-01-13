@@ -13,6 +13,7 @@ public class CannonCustomization : MonoBehaviour {
     private bool isInLobby = true; //to check whether or not the player can change their colour/rotation speed
     public bool hasJoined = false; //whether or not the player can control their cannon
     public bool canChange = false; //whether or not the player can change their colour
+    public int team;
 
     public int colorIdx; //the player's position within the colour array
     private int myID;
@@ -22,6 +23,8 @@ public class CannonCustomization : MonoBehaviour {
 	// External references
 	GameControllerParent gameController;
 	Player rewiredPlayer;
+
+
 
 	void Awake () {
 
@@ -89,11 +92,46 @@ public class CannonCustomization : MonoBehaviour {
             myColour = GameObject.Find("LobbyManager").GetComponent<LobbyManager>()._colorlist[colorIdx]._color;
         }
 
+        if (rewiredPlayer.GetButtonDown("LTrigg"))
+        {
+            //Debug.Log("Left!");
+            if (GameObject.Find("LobbyManager").GetComponent<LobbyManager>().gameType == "FFA")
+            {
+                GameObject.Find("LobbyManager").GetComponent<LobbyManager>().TBSwitch();
+                GameObject.Find("LobbyManager").GetComponent<LobbyManager>().gameType = "TB";
+            }
+            else
+            {
+                GameObject.Find("LobbyManager").GetComponent<LobbyManager>().FFASwitch();
+                GameObject.Find("LobbyManager").GetComponent<LobbyManager>().gameType = "FFA";
+            }
+        }
+
+        if (rewiredPlayer.GetButtonDown("RTrigg"))
+        {
+            //Debug.Log("Right!");
+            if (GameObject.Find("LobbyManager").GetComponent<LobbyManager>().gameType == "TB")
+            {
+                GameObject.Find("LobbyManager").GetComponent<LobbyManager>().FFASwitch();
+                GameObject.Find("LobbyManager").GetComponent<LobbyManager>().gameType = "FFA";
+            }
+            else
+            {
+                GameObject.Find("LobbyManager").GetComponent<LobbyManager>().TBSwitch();
+                GameObject.Find("LobbyManager").GetComponent<LobbyManager>().gameType = "TB";
+            }
+        }
+
 
 
         if (rewiredPlayer.GetButtonDown("Setting")) //for future use, when the player will change their sensitivity, etc. from within the game
         {
             Debug.Log("Opening Settings...");
+        }
+
+        if (rewiredPlayer.GetButtonDown("StartGame"))
+        {
+            GameObject.Find("LobbyManager").GetComponent<LobbyManager>().StartGameCheck();
         }
 
 

@@ -8,7 +8,7 @@ public class OverlayController : MonoBehaviour
     public GameObject playerCannon; // reference to the player's cannon
     public Vector2 resetPos;
 
-
+    
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.tag == "Player")
