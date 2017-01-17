@@ -19,9 +19,9 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 4000013592455232}
-  - 114: {fileID: 114000011071884514}
+  - 114: {fileID: 114000012455943666}
   m_Layer: 0
-  m_Name: GameManager
+  m_Name: TimedGM
   m_TagString: GameManager
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -40,7 +40,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
---- !u!114 &114000011071884514
+--- !u!114 &114000012455943666
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -48,11 +48,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 1000010725953750}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: db4c67cf2046d2b49bf1d27d8a84fe8e, type: 3}
+  m_Script: {fileID: 11500000, guid: 22041f15d6cb36a489fe087d3ed59d61, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerState: 
-  playerScores: 
+  menuSceneIndex: 0
+  mainGameSceneIndex: 0
+  FFALobbySceneIndex: 0
+  teamLobbySceneIndex: 0
   inGame: 0
   startGame: 0
-  timer: 0
+  startGameDelay: 0
+  gameTimer: 0

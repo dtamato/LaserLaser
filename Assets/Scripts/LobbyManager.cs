@@ -34,7 +34,7 @@ public class LobbyManager : MonoBehaviour {
         _colorlist[9] = new ColorList(true, new Color(0.65f, 0f, 0.73f, 1f));
     }
 
-
+    private BaseGM gameManager;
     private bool playerReady;
     private GameObject[] playerCannons; // reference to the player's cannon
     public GameObject player1;
@@ -48,20 +48,18 @@ public class LobbyManager : MonoBehaviour {
     public int team1Players;
     public int team2Players;
 
-    public string gameType = "FFA";
+    public string gameType;      //Passed from GM.
     
 
     void Start()
     {
+        gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<BaseGM>();
         FFAColourList();
         playerCannons = new GameObject[4]; 
         playerCannons[0] = player1;
         playerCannons[1] = player2;
         playerCannons[2] = player3;
         playerCannons[3] = player4;
-
-        if (gameType == "FFA")
-            FFASwitch();
 
         for (int i = 0; i < playerCannons.Length; i++) //iterating through each player to set their colour to grey.
         {
@@ -112,66 +110,79 @@ public class LobbyManager : MonoBehaviour {
         GameObject.Find("Player" + (pId + 1) + " Overlay").GetComponent<SpriteRenderer>().color = _colorlist[cIdx]._color; //Overlay colour
         playerCannons[pId].GetComponentInChildren<SpriteRenderer>().color = _colorlist[cIdx]._color; //Cannon colour
         _colorlist[cIdx].isAvailable = false; //making sure other players cannot use the same colour
+        playerCannons[pId].GetComponent<CannonCustomization>().myColor = _colorlist[cIdx]._color;   //Update Color variable, to be passed to the GM.
     }
 
-    public void FFASwitch() //switch to FFA
+    public void SwitchTeamMode()
     {
-        GameObject.Find("GameType").GetComponent<Text>().text = "Free For All!";
-        for (int x = 1; x < 3; x++)
-        {
-            GameObject.Find("Team" + x).GetComponent<SpriteRenderer>().enabled = false;
-            GameObject.Find("Team" + x).GetComponent<BoxCollider2D>().enabled = false;
+        if (gameType == "FFA") {    //If the game is in FFA Mode. Now changing to TB Mode.
+            GameObject.Find("GameType").GetComponent<Text>().text = "Team Battle!";
+            //Turn on the TB overlays / Team Zones.
+            for (int x = 1; x < 3; x++) {
+                GameObject teamOverlay = GameObject.Find("Team" + x);
+                teamOverlay.GetComponent<SpriteRenderer>().enabled = true;
+                teamOverlay.GetComponent<BoxCollider2D>().enabled = true;
+            }
+            //Turn off the FFA overlays.
+            for (int i = 0; i < 4; i++) {
+                GameObject ffaOverlay = GameObject.Find("Player" + (i + 1) + " Overlay");
+                ffaOverlay.GetComponent<SpriteRenderer>().enabled = false;
+                ffaOverlay.GetComponent<BoxCollider2D>().enabled = false;
+                GameObject player = GameObject.Find("Player " + "(" + i + ")");
+                player.GetComponent<CannonCustomization>().canChange = false;
+                player.transform.Find("ColourBand").GetComponent<SpriteRenderer>().color = new Color(0.8f, 0.8f, 0.8f, 1f);     //???
+            }
+
+            gameType = "TB";
+            gameManager.gameMode = "TB";
+            for (int i = 0; i < 4; i++) {
+                playerCannons[i].GetComponent<CannonCustomization>().team = 0;
+                gameManager.setTeam(i, 0);
+            }
         }
-        for (int i = 0; i < 4; i++)
-        {
-            GameObject.Find("Player" + (i + 1) + " Overlay").GetComponent<SpriteRenderer>().enabled = true;
-            GameObject.Find("Player" + (i + 1) + " Overlay").GetComponent<BoxCollider2D>().enabled = true;
 
-            GameObject.Find("Player " + "(" + i + ")").GetComponent<CannonCustomization>().team = 0;
-            GameObject.Find("Player " + "(" + i + ")").transform.Find("ColourBand").GetComponent<SpriteRenderer>().color = new Color(0f, 0f, 0f, 0f);
+        else {                      //Else the game is in TB Mode. Now changing to FFA Mode.
+            GameObject.Find("GameType").GetComponent<Text>().text = "Free For All!";
+            //Turn off the TB overlays / Team Zones.
+            for (int x = 1; x < 3; x++) {
+                GameObject teamOverlay = GameObject.Find("Team" + x);
+                teamOverlay.GetComponent<SpriteRenderer>().enabled = false;
+                teamOverlay.GetComponent<BoxCollider2D>().enabled = false;
+                team1Players = 0;
+                team2Players = 0;
+            }
+            //Turn on the FFA overlays.
+            for (int i = 0; i < 4; i++) {
+                GameObject ffaOverlay = GameObject.Find("Player" + (i + 1) + " Overlay");
+                ffaOverlay.GetComponent<SpriteRenderer>().enabled = true;
+                ffaOverlay.GetComponent<BoxCollider2D>().enabled = true;
+                GameObject player = GameObject.Find("Player " + "(" + i + ")");
+                player.GetComponent<CannonCustomization>().team = 0;
+                player.GetComponent<CannonCustomization>().canChange = true;
+                player.transform.Find("ColourBand").GetComponent<SpriteRenderer>().color = new Color(0f, 0f, 0f, 0f);           //???
+            }
 
-        } 
+            gameType = "FFA";
+            gameManager.gameMode = "FFA";
+            for (int i = 0; i < 4; i++) {
+                playerCannons[i].GetComponent<CannonCustomization>().team = i;
+                gameManager.setTeam(i, (i + 1));
+            }
+        }
     }
 
-    public void TBSwitch() //Switch to TB
-    {
-        GameObject.Find("GameType").GetComponent<Text>().text = "Team Battle!";
-        for (int x = 1; x < 3; x++)
-        {
-            GameObject.Find("Team" + x).GetComponent<SpriteRenderer>().enabled = true;
-            GameObject.Find("Team" + x).GetComponent<BoxCollider2D>().enabled = true;
-        }
-        for (int i = 0; i < 4; i++)
-        {
-            GameObject.Find("Player" + (i + 1) + " Overlay").GetComponent<SpriteRenderer>().enabled = false;
-            GameObject.Find("Player" + (i + 1) + " Overlay").GetComponent<BoxCollider2D>().enabled = false;
-            GameObject.Find("Player " + "(" + i + ")").GetComponent<CannonCustomization>().canChange = false;
-            GameObject.Find("Player " + "(" + i + ")").transform.Find("ColourBand").GetComponent<SpriteRenderer>().color = new Color(0.8f,0.8f,0.8f,1f);
-
-        }
-    }
-
-    void PlayerReadyCheck()
-    {
-        if (joinedPlayers > 1)
-        {
-            //Debug.Log("Press Start to play!");//future implementation of lobby progression
-        }
-    } //perhaps for future use? The plan was to see if all of the players were ready before proceeding to the game
-
+    //Called from CannonCustomization.cs. When player presses 'Start'.
     public void StartGameCheck()
     {
-        if (gameType == "TB")
-        {
-            if (team1Players > 0 && team2Players > 0 && (team1Players+team2Players) == joinedPlayers)
-                Debug.Log("ready");
-            else
-                Debug.Log("Not ready");
+        //Requires 2 players to have joined the game.
+        if (gameType == "FFA") {
+            if (joinedPlayers >= 2)
+                gameManager.changeScene(gameManager.mainGameSceneIndex);
         }
-    }
-
-    void Update()
-    {
-       PlayerReadyCheck();
+        //Requires at least 1 player on each team.
+        else if (gameType == "TB") {
+            if (team1Players > 0 && team2Players > 0 && (team1Players+team2Players) == joinedPlayers)
+                gameManager.changeScene(gameManager.mainGameSceneIndex);
+        }
     }
 }

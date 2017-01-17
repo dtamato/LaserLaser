@@ -34,7 +34,7 @@ public class Cannon : MonoBehaviour {
         rewiredPlayer = ReInput.players.GetPlayer (playerId);
 		currentRotationSpeed = baseRotationSpeed;
 		if (maxAngleOffset < 0) { maxAngleOffset *= -1; }
-        SetNewBaseAngle();
+            SetNewBaseAngle();
     }
 
     void Update ()
