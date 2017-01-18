@@ -106,7 +106,7 @@ public class BaseGM : MonoBehaviour
         }
     }
 
-    //Called immidiately when game manager is instantiated in Menu.
+    //Called immediately when game manager is instantiated in Menu.
     void Awake()
     {
         //Ensures there is only one instance of the gameManager, and it isn't destroyed when changing scenes.

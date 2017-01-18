@@ -68,7 +68,8 @@ public class LobbyManager : MonoBehaviour {
             playerCannons[i].transform.Find("Laser").GetComponent<TrailRenderer>().material.color = Color.grey;
             playerCannons[i].transform.Find("ColourBand").GetComponent<SpriteRenderer>().color = new Color(0f,0f,0f,0f);
         }
-        
+        gameType = "TB";
+        SwitchTeamMode();
     }
 
     public int IncrementIndex(int idx) //if the player wants to change their colour forward ->
@@ -158,8 +159,8 @@ public class LobbyManager : MonoBehaviour {
                 ffaOverlay.GetComponent<BoxCollider2D>().enabled = true;
                 GameObject player = GameObject.Find("Player " + "(" + i + ")");
                 player.GetComponent<CannonCustomization>().team = 0;
-                player.GetComponent<CannonCustomization>().canChange = true;
-                player.transform.Find("ColourBand").GetComponent<SpriteRenderer>().color = new Color(0f, 0f, 0f, 0f);           //???
+                player.GetComponent<CannonCustomization>().canChange = false;
+                player.transform.Find("ColourBand").GetComponent<SpriteRenderer>().color = new Color(0f, 0f, 0f, 0f); //making the colour bands invisible
             }
 
             gameType = "FFA";
