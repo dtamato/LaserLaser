@@ -52,10 +52,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   menuSceneIndex: 0
+  LobbySceneIndex: 1
   mainGameSceneIndex: 0
-  FFALobbySceneIndex: 0
-  teamLobbySceneIndex: 0
+  playerList: []
+  playerObj: {fileID: 1000012362012830, guid: 76f68068a86b4d14598968aa340a5996, type: 2}
   inGame: 0
   startGame: 0
+  gameOver: 0
+  playerCount: 0
+  gameMode: 
   startGameDelay: 0
   gameTimer: 0

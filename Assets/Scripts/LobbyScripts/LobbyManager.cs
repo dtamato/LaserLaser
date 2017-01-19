@@ -178,7 +178,10 @@ public class LobbyManager : MonoBehaviour {
         //Requires 2 players to have joined the game.
         if (gameType == "FFA") {
             if (joinedPlayers >= 2)
+            {
+                Debug.Log("changing to game");
                 gameManager.changeScene(gameManager.mainGameSceneIndex);
+            }
         }
         //Requires at least 1 player on each team.
         else if (gameType == "TB") {
