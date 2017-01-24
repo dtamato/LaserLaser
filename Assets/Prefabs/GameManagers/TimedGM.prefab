@@ -53,7 +53,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   menuSceneIndex: 0
   LobbySceneIndex: 1
-  mainGameSceneIndex: 0
+  mainGameSceneIndex: 2
   playerList: []
   playerObj: {fileID: 1000012362012830, guid: 76f68068a86b4d14598968aa340a5996, type: 2}
   inGame: 0
