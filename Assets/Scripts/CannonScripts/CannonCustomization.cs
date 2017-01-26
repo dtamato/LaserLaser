@@ -20,7 +20,7 @@ public class CannonCustomization : MonoBehaviour
     public Color myTeamColor;
     public int myID;
     private Cannon cannon;
-    private GameObject inputText;
+    public GameObject inputText;
 
     // External references
     private BaseGM gameManager;
@@ -63,6 +63,7 @@ public class CannonCustomization : MonoBehaviour
                 team = myID + 1;
             else
                 team = 0;
+            gameManager.playerCount++;
             gameManager.playerJoin(myID, team, myColor,myTeamColor);    //Pass to GM.
         }
 
@@ -72,6 +73,7 @@ public class CannonCustomization : MonoBehaviour
             lobbyManager.UnjoinColour(colorIdx, myID);                                  //Makes the player's color available to other players.
             lobbyManager.joinedPlayers--;
             hasJoined = false;
+            gameManager.playerCount--;
             gameManager.playerLeave(myID);      //Pass to GM.
         }
 

@@ -237,7 +237,6 @@ public class BaseGM : MonoBehaviour
             //Check if each player is active, and deactivate the score summaries for those who aren't active
             if (!playerList[i].active())
             {
-                playerCount++;
                 scoreBar.SetActive(false);
                 score.SetActive(false);
             }
@@ -264,7 +263,10 @@ public class BaseGM : MonoBehaviour
             playerList[i].obj.GetComponent<Cannon>().playerId = prefs.myID;
             playerList[i].obj.GetComponent<Cannon>().rewiredPlayer = ReInput.players.GetPlayer(prefs.myID);
 
-
+            Laser laserScript = playerList[i].obj.transform.Find("Laser").GetComponent<Laser>();
+            laserScript.myPlayerID = prefs.myID;
+            laserScript.scoreText = GameObject.Find("PlayerScore" + prefs.myID).GetComponent<Text>();
+            laserScript.comboText = GameObject.Find("PlayerCombo" + prefs.myID).GetComponent<Text>();
             playerList[i].obj.transform.Find("ColourBand").GetComponent<SpriteRenderer>().color = prefs.myTeamColor;
             playerList[i].obj.transform.Find("Laser").GetComponentInChildren<SpriteRenderer>().color = prefs.myColor; //Laser color
             playerList[i].obj.transform.Find("Laser").GetComponent<TrailRenderer>().material.color = prefs.myColor; //Trail renderer color
