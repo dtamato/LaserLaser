@@ -112,6 +112,7 @@ public class LobbyManager : MonoBehaviour {
         playerCannons[pId].GetComponentInChildren<SpriteRenderer>().color = _colorlist[cIdx]._color; //Cannon colour
         _colorlist[cIdx].isAvailable = false; //making sure other players cannot use the same colour
         playerCannons[pId].GetComponent<CannonCustomization>().myColor = _colorlist[cIdx]._color;   //Update Color variable, to be passed to the GM.
+        playerCannons[pId].GetComponent<CannonCustomization>().inputText.GetComponent<Text>().color = _colorlist[cIdx]._color;
     }
 
     public void SwitchTeamMode()

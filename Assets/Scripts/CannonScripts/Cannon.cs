@@ -3,22 +3,23 @@ using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+
 [DisallowMultipleComponent]
 public class Cannon : MonoBehaviour
 {
+    BaseGM gameManager;
+
+    public int playerId;
+    [SerializeField] float baseRotationSpeed = 2;
+    [SerializeField] float maxBlastForce = 2200;
+    [SerializeField] float maxAngleOffset = 70;
     
-     public int playerId;
-    [SerializeField]
-    float baseRotationSpeed = 2;
-    [SerializeField]
-    float maxBlastForce = 2200;
-    [SerializeField]
-    float maxAngleOffset = 70;
     // Rotation
     float currentRotationSpeed;
     int rotationModifier = 1;
     float minRotationSpeed = 2f;
     float maxRotationSpeed = 10.0f;
+    
     // Angles
     float currentAngle;
     float angleOffset;
@@ -28,14 +29,18 @@ public class Cannon : MonoBehaviour
     public Player rewiredPlayer;
     Laser pairedLaser; // Permanent reference to ball
     Laser storedLaser; // Reference used to check if can fire
-    BaseGM gameManager;
+    
 
     void Awake()
     {
         gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<BaseGM>();
 
         if (SceneManager.GetActiveScene().buildIndex == gameManager.LobbySceneIndex)
+        {
             rewiredPlayer = ReInput.players.GetPlayer(playerId);
+            
+            Debug.Log("Rewired ID join: " + rewiredPlayer.id);
+        }
         currentRotationSpeed = baseRotationSpeed;
         if (maxAngleOffset < 0)
         {

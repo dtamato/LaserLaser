@@ -6,16 +6,19 @@ public class InputTextScript : MonoBehaviour
     public int ID;
     public float displayTime = 2.0f;
     public bool check1, check2;
+
     void Start()
     {
         this.GetComponent<Text>().enabled = false;
         check1 = false;
         check2 = true;
     }
+
     void Update()
     {
         gameObject.GetComponent<Text>().color = GameObject.Find("Player" + (ID + 1) + " Overlay").GetComponent<SpriteRenderer>().color;
     }
+   
     //Adds time to the coroutine if the player is adjusting their settings many times in quick succession.
     public void checkText()
     {
@@ -27,6 +30,7 @@ public class InputTextScript : MonoBehaviour
         else
             check2 = true;
     }
+
     IEnumerator showText()
     {
         Debug.Log("ran");
