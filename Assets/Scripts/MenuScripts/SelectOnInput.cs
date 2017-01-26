@@ -7,13 +7,14 @@ public class SelectOnInput : MonoBehaviour
 
     public EventSystem eventSystem;
     public GameObject selectedObject;
+    public GameObject defaultButton;
 
     private bool buttonSelected;
 
     // Use this for initialization
     void Start()
     {
-
+        EventSystem.current.SetSelectedGameObject(defaultButton);
     }
 
     // Update is called once per frame

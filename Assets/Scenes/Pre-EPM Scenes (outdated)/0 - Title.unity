@@ -629,6 +629,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 1279052714}
   - 114: {fileID: 1279052713}
+  - 114: {fileID: 1279052715}
   m_Layer: 0
   m_Name: Title Screen Controller
   m_TagString: GameManager
@@ -660,6 +661,17 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 5
+--- !u!114 &1279052715
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1279052712}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: adc01dc9e8d8b794a83554222241536a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1459860013
 GameObject:
   m_ObjectHideFlags: 0
