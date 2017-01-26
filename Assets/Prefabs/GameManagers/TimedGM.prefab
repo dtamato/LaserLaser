@@ -61,5 +61,5 @@ MonoBehaviour:
   gameOver: 0
   playerCount: 0
   gameMode: 
-  startGameDelay: 0
+  startGameDelay: 3
   gameTimer: 0

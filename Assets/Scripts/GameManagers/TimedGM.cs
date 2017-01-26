@@ -54,20 +54,13 @@ public class TimedGM : BaseGM
             initialized = true;
         }
         //Core game loop once in the game scene. inGame is set in BaseGM.initializeGame().
-        else if (inGame && !gameOver)
+        else if (inGame && startGame && !gameOver)
         {
-
-            
             gameTimer -= Time.deltaTime;
-           
-
-
             timeText.text = gameTimer.ToString("F1");
 
             if (gameTimer <= 0)
                 GameOver();
-            
-            
         }
 
         #endregion
