@@ -38,6 +38,7 @@ public class TBOverlay : MonoBehaviour
         //other.transform.Find("ColourBand").GetComponent<SpriteRenderer>().color = teamColour;
         playerCannons[other.GetComponent<Laser>().myPlayerID].GetComponent<CannonCustomization>().team = team;
         playerCannons[other.GetComponent<Laser>().myPlayerID].GetComponent<CannonCustomization>().canChange = true;
+        playerCannons[other.GetComponent<Laser>().myPlayerID].GetComponent<CannonCustomization>().myTeamColor = teamColour;
     }
 
     private void OnTriggerExit2D(Collider2D other)
@@ -47,6 +48,7 @@ public class TBOverlay : MonoBehaviour
         else
             GameObject.Find("LobbyManager").GetComponent<LobbyManager>().team2Players--;
         playerCannons[other.GetComponent<Laser>().myPlayerID].transform.transform.Find("ColourBand").GetComponent<SpriteRenderer>().color = new Color(0.8f, 0.8f, 0.8f, 1f);
+        playerCannons[other.GetComponent<Laser>().myPlayerID].GetComponent<CannonCustomization>().myTeamColor = new Color(0.8f,0.8f,0.8f,1f);
         playerCannons[other.GetComponent<Laser>().myPlayerID].GetComponent<CannonCustomization>().team = 0;
         playerCannons[other.GetComponent<Laser>().myPlayerID].GetComponent<CannonCustomization>().canChange = false;
     }
