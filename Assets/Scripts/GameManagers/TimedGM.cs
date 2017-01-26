@@ -57,7 +57,7 @@ public class TimedGM : BaseGM
         else if (inGame && !gameOver)
         {
 
-            Debug.Log("timedGM update");
+            //Debug.Log("timedGM update");
             gameTimer -= Time.deltaTime;
            
 

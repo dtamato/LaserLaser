@@ -68,7 +68,7 @@ public class LobbyManager : MonoBehaviour {
             playerCannons[i].transform.Find("Laser").GetComponent<TrailRenderer>().material.color = Color.grey;
             playerCannons[i].transform.Find("ColourBand").GetComponent<SpriteRenderer>().color = new Color(0f,0f,0f,0f);
         }
-        gameType = "TB";
+        gameType = "FFA";
         SwitchTeamMode();
     }
 
@@ -101,6 +101,7 @@ public class LobbyManager : MonoBehaviour {
         playerCannons[pId].transform.Find("Laser").GetComponent<TrailRenderer>().material.color = Color.grey;
         playerCannons[pId].GetComponentInChildren<Rigidbody2D>().isKinematic = false; // adding gravity so the player can fall into place 
         playerCannons[pId].GetComponentInChildren<Rigidbody2D>().transform.position = GameObject.Find("Player" + (pId + 1) + " Overlay").GetComponent<OverlayController>().resetPos; //resetting the player's cannon to its original position
+        playerCannons[pId].transform.Find("ColourBand").GetComponent<SpriteRenderer>().color = new Color(0.8f,0.8f,0.8f,1f);
         GameObject.Find("JoinText" + pId).GetComponent<Text>().enabled = true; //the player's 'Press 'A' to join text'
     }
 
@@ -161,6 +162,7 @@ public class LobbyManager : MonoBehaviour {
                 player.GetComponent<CannonCustomization>().team = 0;
                 player.GetComponent<CannonCustomization>().canChange = false;
                 player.transform.Find("ColourBand").GetComponent<SpriteRenderer>().color = new Color(0f, 0f, 0f, 0f); //making the colour bands invisible
+                player.GetComponent<CannonCustomization>().myTeamColor = new Color(0f,0f,0f,0f);
             }
 
             gameType = "FFA";

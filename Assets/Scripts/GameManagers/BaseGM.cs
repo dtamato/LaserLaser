@@ -50,6 +50,9 @@ public class BaseGM : MonoBehaviour
         private Color color;
         [SerializeField]
         private int score;
+        [SerializeField]
+        private Color teamColor;
+
         //Constructor sets defaults for player settings.
         public PlayerDef()
         {
@@ -90,6 +93,11 @@ public class BaseGM : MonoBehaviour
         {
             score = value;
         }
+
+        public void setTeamColor(Color value)
+        {
+            teamColor = value;
+        }
         //List of getters for private variables.
         public int getID()
         {
@@ -119,6 +127,11 @@ public class BaseGM : MonoBehaviour
         {
             return color;
         }
+
+        public Color getTeamColor()
+        {
+            return teamColor;
+        }
         //Reset function reverts preferences to default if player leaves lobby.
         public void reset()
         {
@@ -128,6 +141,7 @@ public class BaseGM : MonoBehaviour
             inverted = false;
             team = -1;
             color = Color.grey;
+            teamColor = new Color(0.8f,0.8f,0.8f,1f);
         }
     }
     //Called immediately when game manager is instantiated in Menu.
@@ -157,11 +171,12 @@ public class BaseGM : MonoBehaviour
     //These functions are called based on player input in the lobby.
     #region Lobby Scene
     //Called from Cannon.cs when a player enters the lobby.
-    public void playerJoin(int pID, int teamNo, Color color)
+    public void playerJoin(int pID, int teamNo, Color color, Color teamColor)
     {
         playerList[pID].setID(pID);
         playerList[pID].setTeam(teamNo);
         playerList[pID].setColor(color);
+        playerList[pID].setTeamColor(teamColor);
         playerList[pID].setActive(true);
     }
     //Called from Cannon.cs when a player leaves the lobby.
@@ -174,6 +189,7 @@ public class BaseGM : MonoBehaviour
     {
         playerList[pID].setColor(color);
     }
+
     //Called from Cannon.cs when a player changes their sensitivity.
     public void setSensitivity(int pID, int sens)
     {
@@ -192,6 +208,11 @@ public class BaseGM : MonoBehaviour
     public void setID(int pID)
     {
         playerList[pID].setID(pID);
+    }
+
+    public void setTeamColour(int pId, Color color)
+    {
+        playerList[pId].setTeamColor(color);
     }
     #endregion
     #region MainGame Scene
@@ -239,11 +260,12 @@ public class BaseGM : MonoBehaviour
             prefs.inverted = playerList[i].getInverted();
             prefs.myColor = playerList[i].getColor();
             prefs.team = playerList[i].getTeam();
+            prefs.myTeamColor = playerList[i].getTeamColor();
             playerList[i].obj.GetComponent<Cannon>().playerId = prefs.myID;
             playerList[i].obj.GetComponent<Cannon>().rewiredPlayer = ReInput.players.GetPlayer(prefs.myID);
 
 
-
+            playerList[i].obj.transform.Find("ColourBand").GetComponent<SpriteRenderer>().color = prefs.myTeamColor;
             playerList[i].obj.transform.Find("Laser").GetComponentInChildren<SpriteRenderer>().color = prefs.myColor; //Laser color
             playerList[i].obj.transform.Find("Laser").GetComponent<TrailRenderer>().material.color = prefs.myColor; //Trail renderer color
             GameObject.Find("PlayerScore" + i).GetComponent<Text>().color = prefs.myColor; //Score color

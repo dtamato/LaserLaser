@@ -17,6 +17,7 @@ public class CannonCustomization : MonoBehaviour
     public int sensitivity = 1;
     public int colorIdx; //the player's position within the colour array
     public Color myColor;
+    public Color myTeamColor;
     public int myID;
     private Cannon cannon;
     private GameObject inputText;
@@ -52,8 +53,7 @@ public class CannonCustomization : MonoBehaviour
     }
     void LobbyInputs()
     {
-        if (rewiredPlayer.GetButtonDown("Fire") && !hasJoined)
-        {    //If player presses 'A', and they are NOT currently in game.
+        if (rewiredPlayer.GetButtonDown("Fire") && !hasJoined){    //If player presses 'A', and they are NOT currently in game.
             lobbyManager.UpdateColour(colorIdx, myID);                                  //Switching from grey to their default colour (Initially controlled via player ID).
             gameObject.GetComponent<Cannon>().enabled = true;                           //Letting the player control their cannon.
             GameObject.Find("JoinText" + myID).GetComponent<Text>().enabled = false;    //Hiding the "press 'A' to join text".
@@ -63,7 +63,7 @@ public class CannonCustomization : MonoBehaviour
                 team = myID + 1;
             else
                 team = 0;
-            gameManager.playerJoin(myID, team, myColor);    //Pass to GM.
+            gameManager.playerJoin(myID, team, myColor,myTeamColor);    //Pass to GM.
         }
 
         if (rewiredPlayer.GetButtonDown("Back") && hasJoined)
@@ -91,7 +91,8 @@ public class CannonCustomization : MonoBehaviour
 
         if (rewiredPlayer.GetButtonDown("LTrigg"))
         {                //If the player presses 'Left Trigger'.
-            lobbyManager.SwitchTeamMode();                                              //Switch the team mode in LobbyManager.cs.
+            lobbyManager.SwitchTeamMode(); //Switch the team mode in LobbyManager.cs.
+
             //Team info is passed to GM from the lobbyManager.
         }
 
