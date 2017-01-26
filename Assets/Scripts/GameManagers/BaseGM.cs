@@ -191,6 +191,7 @@ public class BaseGM : MonoBehaviour
     //Called when entering game scene, initializes players, HUD and timer.
     protected void initializeGame()
     {
+        Debug.Log(playerCount);
         //Make reference to In Game HUD.
         inGame = true;
         introText = GameObject.Find("GetReadyText");
@@ -209,7 +210,6 @@ public class BaseGM : MonoBehaviour
 
             //Check if each player is active, and deactivate the score summaries for those who aren't active
             if (!playerList[i].active()) {
-                playerCount++;
                 scoreBar.SetActive(false);
                 score.SetActive(false);
             }
@@ -238,15 +238,18 @@ public class BaseGM : MonoBehaviour
             playerList[i].obj.GetComponent<Cannon>().playerId = prefs.myID;
             playerList[i].obj.GetComponent<Cannon>().rewiredPlayer = ReInput.players.GetPlayer(prefs.myID);
 
-
+            Laser laserScript = playerList[i].obj.transform.Find("Laser").GetComponent<Laser>();
+            laserScript.myPlayerID = prefs.myID;
+            laserScript.scoreText = GameObject.Find("PlayerScore" + prefs.myID).GetComponent<Text>();
+            laserScript.comboText = GameObject.Find("PlayerCombo" + prefs.myID).GetComponent<Text>();
+            laserScript.scoreText.color = prefs.myColor;
+            laserScript.comboText.color = prefs.myColor;
 
             playerList[i].obj.transform.Find("Laser").GetComponentInChildren<SpriteRenderer>().color = prefs.myColor; //Laser color
             playerList[i].obj.transform.Find("Laser").GetComponent<TrailRenderer>().material.color = prefs.myColor; //Trail renderer color
-            GameObject.Find("PlayerScore" + i).GetComponent<Text>().color = prefs.myColor; //Score color
-            GameObject.Find("PlayerCombo" + i).GetComponent<Text>().color = prefs.myColor; //Combo color
             playerList[i].obj.GetComponentInChildren<SpriteRenderer>().color = prefs.myColor; //Cannon color
 
-            Debug.Log("player added");
+            Debug.Log("player added, ID: " );
         }
 
         //Start the countdown to gameplay.

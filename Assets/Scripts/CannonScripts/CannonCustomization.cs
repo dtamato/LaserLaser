@@ -24,7 +24,7 @@ public class CannonCustomization : MonoBehaviour
     private Player rewiredPlayer;
     private LobbyManager lobbyManager;
     private Cannon cannon;
-    private GameObject inputText;
+    public GameObject inputText;
 
     void Awake()
     {
@@ -43,7 +43,6 @@ public class CannonCustomization : MonoBehaviour
         if (SceneManager.GetActiveScene().buildIndex == gameManager.LobbySceneIndex) {
             myID = cannon.GetPlayerID();
             colorIdx = myID;
-            inputText = GameObject.Find("InputText" + myID);
         }
     }
 
@@ -68,6 +67,8 @@ public class CannonCustomization : MonoBehaviour
             else
                 team = 0;
             gameManager.playerJoin(myID, team, myColor);                                //Pass to GM.
+            gameManager.playerCount++;
+            Debug.Log("Player joined, ID: " + myID + ", team: " + team + ", color: " + myColor.ToString());
         }
 
         if (rewiredPlayer.GetButtonDown("Back") && hasJoined) {     //If the player presses 'B', and they ARE currently in game.
@@ -76,6 +77,7 @@ public class CannonCustomization : MonoBehaviour
             lobbyManager.joinedPlayers--;
             hasJoined = false;
             gameManager.playerLeave(myID);                                              //Pass to GM.
+            gameManager.playerCount--;
         }
 
         if (rewiredPlayer.GetButtonDown("RButt") && canChange) {   //If the player presses 'Right Bumper', and are currently in their team zone.

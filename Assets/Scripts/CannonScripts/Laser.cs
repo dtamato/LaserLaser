@@ -8,10 +8,8 @@ public class Laser : MonoBehaviour
 {
     [SerializeField]
     GameObject cannon;
-    [SerializeField]
-    Text scoreText;
-    [SerializeField]
-    private Text comboText;
+    public Text scoreText;
+    public Text comboText;
     Rigidbody2D rb2d;
     Light light;
     public int score = 0;
@@ -28,10 +26,11 @@ public class Laser : MonoBehaviour
         light = this.GetComponentInChildren<Light>();
         this.GetComponentInChildren<TrailRenderer>().sortingLayerName = this.GetComponent<SpriteRenderer>().sortingLayerName;
         this.GetComponentInChildren<TrailRenderer>().sortingOrder = this.GetComponent<SpriteRenderer>().sortingOrder - 1;
+        /*
         if (SceneManager.GetActiveScene().buildIndex == gameManager.mainGameSceneIndex) {
             comboText = GameObject.Find("PlayerCombo" + myPlayerID).GetComponent<Text>();
             scoreText = GameObject.Find("PlayerScore" + myPlayerID).GetComponent<Text>();
-        }
+        }   */
     }
     void Update()
     {

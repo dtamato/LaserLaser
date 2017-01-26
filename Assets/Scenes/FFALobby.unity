@@ -37,7 +37,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.3735644, g: 0.38112032, b: 0.35887682, a: 1}
+  m_IndirectSpecularColor: {r: 0.37356424, g: 0.3811201, b: 0.35887662, a: 1}
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
@@ -223,7 +223,7 @@ RectTransform:
   m_RootOrder: 2
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -671.46857, y: -485.1406}
+  m_AnchoredPosition: {x: 251.3, y: -485.1406}
   m_SizeDelta: {x: 100, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &49109752
@@ -301,7 +301,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: Pres 'A' to Join
+  m_Text: Input Text
 --- !u!222 &49109756
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -363,7 +363,7 @@ RectTransform:
   m_RootOrder: 3
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -671.46857, y: -485.1406}
+  m_AnchoredPosition: {x: 669.9, y: -485.1406}
   m_SizeDelta: {x: 100, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &63403702
@@ -441,7 +441,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: Pres 'A' to Join
+  m_Text: Input Text
 --- !u!222 &63403706
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -738,6 +738,16 @@ Prefab:
       propertyPath: colorIdx
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 114000011582327276, guid: 76f68068a86b4d14598968aa340a5996,
+        type: 2}
+      propertyPath: myID
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 114000011582327276, guid: 76f68068a86b4d14598968aa340a5996,
+        type: 2}
+      propertyPath: inputText
+      value: 
+      objectReference: {fileID: 49109750}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 76f68068a86b4d14598968aa340a5996, type: 2}
   m_IsPrefabParent: 0
@@ -1411,6 +1421,16 @@ Prefab:
       propertyPath: colorIdx
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 114000011582327276, guid: 76f68068a86b4d14598968aa340a5996,
+        type: 2}
+      propertyPath: myID
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114000011582327276, guid: 76f68068a86b4d14598968aa340a5996,
+        type: 2}
+      propertyPath: inputText
+      value: 
+      objectReference: {fileID: 1901952397}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 76f68068a86b4d14598968aa340a5996, type: 2}
   m_IsPrefabParent: 0
@@ -2196,6 +2216,11 @@ Prefab:
       propertyPath: m_Name
       value: Player (0)
       objectReference: {fileID: 0}
+    - target: {fileID: 114000011582327276, guid: 76f68068a86b4d14598968aa340a5996,
+        type: 2}
+      propertyPath: inputText
+      value: 
+      objectReference: {fileID: 1832481733}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 76f68068a86b4d14598968aa340a5996, type: 2}
   m_IsPrefabParent: 0
@@ -2958,6 +2983,16 @@ Prefab:
       propertyPath: colorIdx
       value: 3
       objectReference: {fileID: 0}
+    - target: {fileID: 114000011582327276, guid: 76f68068a86b4d14598968aa340a5996,
+        type: 2}
+      propertyPath: myID
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 114000011582327276, guid: 76f68068a86b4d14598968aa340a5996,
+        type: 2}
+      propertyPath: inputText
+      value: 
+      objectReference: {fileID: 63403700}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 76f68068a86b4d14598968aa340a5996, type: 2}
   m_IsPrefabParent: 0
@@ -3105,7 +3140,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: Pres 'A' to Join
+  m_Text: Input Text
 --- !u!222 &1832481739
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -3167,7 +3202,7 @@ RectTransform:
   m_RootOrder: 1
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -671.46857, y: -485.1406}
+  m_AnchoredPosition: {x: -226.58, y: -485.1406}
   m_SizeDelta: {x: 100, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1901952399
@@ -3245,7 +3280,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: Pres 'A' to Join
+  m_Text: Input Text
 --- !u!222 &1901952403
 CanvasRenderer:
   m_ObjectHideFlags: 0

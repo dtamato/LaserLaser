@@ -36,7 +36,11 @@ public class Cannon : MonoBehaviour
         gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<BaseGM>();
 
         if (SceneManager.GetActiveScene().buildIndex == gameManager.LobbySceneIndex)
+        {
             rewiredPlayer = ReInput.players.GetPlayer(playerId);
+            
+            Debug.Log("Rewired ID join: " + rewiredPlayer.id);
+        }
         currentRotationSpeed = baseRotationSpeed;
         if (maxAngleOffset < 0)
         {
