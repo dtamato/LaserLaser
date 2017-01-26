@@ -221,27 +221,19 @@ public class BaseGM : MonoBehaviour
     {
         //Set game state to In Game.
         inGame = true;
+
         //Reference members of HUD and Spawns.
         for (int i = 0; i <= 3; i++)
         {
             HUDText[i] = GameObject.Find("PlayerScore" + i).GetComponent<Text>();
             spawns[i] = GameObject.Find("SP" + i);
         }
+
+        //Reference the game over panel and get ready text.
         introText = GameObject.Find("GetReadyText");
-        //Initialize the game over panel. Likely to be altered / removed in future commit.
         gameOverPanel = GameObject.Find("GameOverPanel");
-        for (int i = 0; i <= 3; i++)
-        {
-            GameObject scoreBar = GameObject.Find("ScoreBar" + i);
-            GameObject score = GameObject.Find("FinalScore" + i);
-            //Check if each player is active, and deactivate the score summaries for those who aren't active
-            if (!playerList[i].active())
-            {
-                scoreBar.SetActive(false);
-                score.SetActive(false);
-            }
-        }
         gameOverPanel.SetActive(false);
+
         //Set the locations of the spawn points, relative to the parent object located at the lower left corner of the arena.
         float dist = 19.4f / (2 * playerCount);
         for (int i = 0; i < playerCount; i++)
@@ -249,6 +241,7 @@ public class BaseGM : MonoBehaviour
             float newX = (dist * i) + dist;
             spawns[i].transform.position.Set(newX, 0, 0);
         }
+
         //Instantiate the player objects, and assign their preferences.
         for (int i = 0; i < playerCount; i++)
         {
@@ -276,6 +269,7 @@ public class BaseGM : MonoBehaviour
 
             Debug.Log("player added");
         }
+
         //Start the countdown to gameplay.
         StartCoroutine("CountDown");
     }
@@ -287,35 +281,12 @@ public class BaseGM : MonoBehaviour
         introText.SetActive(false);
         startGame = true;       //Once this is toggled, players have input.
     }
+
+    //Called from each subclass GM.
     public void GameOver()
     {
         gameOver = true;
-        gameOverPanel.SetActive(true);
-        GameObject topBarGroup = GameObject.Find("Top Bar Group");
-        if (topBarGroup)
-        {
-            topBarGroup.SetActive(false);
-        }
-        //Iterate through each active player.
-        for (int i = 0; i <= 3; i++)
-        {
-            //If the player is active.
-            if (!playerList[i].active())
-            {
-
-                ///////////////////
-                //Current gameOver handling, likely to be altered or removed in future commit.
-                GameObject scoreObj = GameObject.Find("FinalScore" + i);
-                GameObject scoreBar = GameObject.Find("Bar" + i);
-                scoreObj.GetComponent<Text>().text = (playerList[i].getScore()).ToString();
-                scoreBar.GetComponent<RectTransform>().SetInsetAndSizeFromParentEdge(RectTransform.Edge.Bottom, 0, (3 * playerList[i].getScore()));
-                ///////////////////
-            }
-            else
-                playerList[i].setScore(0);    //If no player was active in a slot, set their score to 0.
-        }
-        ///////////////////
-        //Current gameOver handling, likely to be altered or removed in future commit.
+        
         //Determine who was the winner.
         int highScore = 0;
         int winner = 0;
@@ -328,13 +299,18 @@ public class BaseGM : MonoBehaviour
                 winner = i;
             }
         }
+
+        //Display the results.
+        gameOverPanel.SetActive(true);
+
         //Set the Winner Text.
-        Text winnerText = GameObject.Find("WinnerText").GetComponent<Text>();
-        winnerText.text = ("Player " + (winner + 1) + " Wins!");
+        GameObject.Find("WinnerText").GetComponent<Text>().text = ("Player " + (winner + 1) + " Wins!");
+        GameObject.Find("FinalScoreText").GetComponent<Text>().text += highScore;
+        
         //Set the panel color to that of the winner.
-        Image panel1 = GameObject.Find("GameOverPanel").GetComponent<Image>();
-        panel1.color = new Color32(74, 68, 249, 255);
-        ///////////////////
+        GameObject.Find("GameOverPanel").GetComponent<Image>().color = playerList[winner].getColor();
+
+        Debug.Log("Game Over, Results Displayed.");
     }
     #endregion
     //Called from Cannon.cs.
@@ -342,6 +318,16 @@ public class BaseGM : MonoBehaviour
     {
         SceneManager.LoadScene(index);
     }
+
+    //Returns to menu and destroys GM and rewired manager.
+    public void returnToMenu()
+    {
+        SceneManager.LoadScene(menuSceneIndex);
+        Destroy(GameObject.Find("Rewired Input Manager"));
+        Debug.Log("Goodbye cruel world.");
+        Destroy(gameObject);
+    }
+
     //Called from Laser.cs
     public void addScore(int pID, int score)
     {

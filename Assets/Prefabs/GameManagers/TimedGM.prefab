@@ -62,4 +62,4 @@ MonoBehaviour:
   playerCount: 0
   gameMode: 
   startGameDelay: 3
-  gameTimer: 0
+  gameTimer: 10

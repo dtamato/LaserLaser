@@ -17,7 +17,6 @@ public class TimedGM : BaseGM
     void Awake()
     {
         base.Awake();
-        gameTimer = 60.0f;
     }
 
 
@@ -43,7 +42,7 @@ public class TimedGM : BaseGM
             timeText = GameObject.Find("TimeText").GetComponent<Text>();
             timeText.text = gameTimer.ToString("F1");
             
-            //
+            //Deactivate inactive player's scores.
             for (int i = 0; i <= 3; i++) {
                 GameObject scorebar = GameObject.Find("PlayerScore" + i);
                 if (!playerList[i].active())

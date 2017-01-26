@@ -26,22 +26,12 @@ public class Laser : MonoBehaviour
         light = this.GetComponentInChildren<Light>();
         this.GetComponentInChildren<TrailRenderer>().sortingLayerName = this.GetComponent<SpriteRenderer>().sortingLayerName;
         this.GetComponentInChildren<TrailRenderer>().sortingOrder = this.GetComponent<SpriteRenderer>().sortingOrder - 1;
-        /*
-        if (SceneManager.GetActiveScene().buildIndex == gameManager.mainGameSceneIndex) {
-            comboText = GameObject.Find("PlayerCombo" + myPlayerID).GetComponent<Text>();
-            scoreText = GameObject.Find("PlayerScore" + myPlayerID).GetComponent<Text>();
-        }   */
     }
     void Update()
     {
-        if (SceneManager.GetActiveScene().buildIndex == 2)
-        {
+        if (SceneManager.GetActiveScene().buildIndex == 2) {
             comboText.text = "Combo: " + comboCount;
-            //Debug.Log(comboCount);
         }
-        //When the game is over, send the results to the gameManager.
-        if (gameManager.gameOver == true && sendResults == false)
-            gameManager.addScore(myPlayerID, score);
     }
     void OnCollisionEnter2D(Collision2D other)
     {
@@ -69,23 +59,25 @@ public class Laser : MonoBehaviour
     {
         if (other.CompareTag("Diamond"))
         {
-            diamondCount++;
-            //Debug.Log("I have a combo of: " + comboCount);
+            diamondCount++;     //For combo tracking.
             score++;
-            //Debug.Log(score);
-            if (scoreText)
-            {
+            gameManager.addScore(myPlayerID, score);
+
+            if (scoreText) {
                 scoreText.text = "P" + (cannon.GetComponent<Cannon>().GetPlayerID() + 1) + "- " + score.ToString("00");
             }
+
             StartCoroutine(PulsateLight());
-            // Enables the Paralysis script for a set period of time.
-            if (other.tag == "Paralysis")
-            {
-                //Destroy (other.gameObject);
-                //GetComponentInParent<Paralysis> ().enabled = true;
-                //StartCoroutine (DisableScript ());
-            }
         }
+
+        // Enables the Paralysis script for a set period of time.
+        else if (other.tag == "Paralysis")
+        {
+            //Destroy (other.gameObject);
+            //GetComponentInParent<Paralysis> ().enabled = true;
+            //StartCoroutine (DisableScript ());
+        }
+
         Camera.main.GetComponent<CameraEffects>().ShakeCamera();
     }
     IEnumerator PulsateLight()

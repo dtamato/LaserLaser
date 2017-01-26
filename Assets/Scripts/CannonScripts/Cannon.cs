@@ -119,9 +119,9 @@ public class Cannon : MonoBehaviour
     }
     void GetFireInput()
     {
-        if (gameManager.gameOver == true) {
+        if (gameManager.gameOver == true && rewiredPlayer.GetButtonDown("StartGame")) {
             Debug.Log("changing to menu");
-            gameManager.changeScene(gameManager.menuSceneIndex);
+            gameManager.returnToMenu();
         }
         if (rewiredPlayer.GetButtonDown("Fire"))
         {
