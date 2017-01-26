@@ -6,7 +6,9 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/3 - Main Menu.unity
+    path: Assets/Scenes/Pre-EPM Scenes (outdated)/0 - Title.unity
+  - enabled: 1
+    path: Assets/Scenes/MainMenu.unity
   - enabled: 1
     path: Assets/Scenes/FFALobby.unity
   - enabled: 1
