@@ -18,8 +18,10 @@ public class BaseGM : MonoBehaviour
     protected LobbyManager lobbyManager;
     protected List<Text> HUDText;
     [SerializeField] protected List<PlayerDef> playerList;
+	protected GameObject[] activePlayersArray;
     protected GameObject gameOverPanel;
     protected GameObject introText;
+	protected GameObject whiteBorder;
     protected List<GameObject> spawns;
     public GameObject playerObj;
     //Boolean flags and other metrics.
@@ -231,6 +233,7 @@ public class BaseGM : MonoBehaviour
 
         //Reference the game over panel and get ready text.
         introText = GameObject.Find("GetReadyText");
+		whiteBorder = GameObject.Find ("White Border");
         gameOverPanel = GameObject.Find("GameOverPanel");
         gameOverPanel.SetActive(false);
 
@@ -270,9 +273,26 @@ public class BaseGM : MonoBehaviour
             Debug.Log("player added");
         }
 
+		FillActivePlayersArray ();
+
         //Start the countdown to gameplay.
         StartCoroutine("CountDown");
     }
+
+	void FillActivePlayersArray () {
+
+		List<GameObject> activePlayersList = new List<GameObject> ();
+
+		for (int i = 0; i < playerList.Count; i++) {
+
+			if (playerList [i].obj != null) {
+
+				activePlayersList.Add (playerList [i].obj);
+			}
+		}
+
+		activePlayersArray = activePlayersList.ToArray ();
+	}
 
     //Brief grace period before diamonds start spawning.
     IEnumerator CountDown()
@@ -332,5 +352,31 @@ public class BaseGM : MonoBehaviour
     public void addScore(int pID, int score)
     {
         playerList[pID].setScore(score);
+		UpdateWhiteBorder ();
     }
+
+	void UpdateWhiteBorder () {
+
+		int winningScore = -1;
+		int winningPlayerIndex = -1;
+
+		for (int i = 0; i < playerList.Count; i++) {
+
+			if (playerList [i].getScore () > winningScore) {
+
+				winningScore = playerList [i].getScore ();
+				winningPlayerIndex = i;
+				whiteBorder.GetComponent<SpriteRenderer> ().color = playerList [i].getColor ();
+			}
+			else if (playerList [i].getScore () == winningScore) {
+
+				whiteBorder.GetComponent<SpriteRenderer> ().color = Color.white;
+			}
+		}
+	}
+
+	public GameObject[] GetActivePlayers () {
+
+		return activePlayersArray;
+	}
 }

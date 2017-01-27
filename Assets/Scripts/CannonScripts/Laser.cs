@@ -15,7 +15,6 @@ public class Laser : MonoBehaviour
     public int score = 0;
     public int comboCount = 0;
     private int diamondCount = 0;
-    private int crystalCount = 0;
     public int myPlayerID;
     BaseGM gameManager;
     private bool sendResults;
@@ -67,15 +66,7 @@ public class Laser : MonoBehaviour
                 scoreText.text = "P" + (cannon.GetComponent<Cannon>().GetPlayerID() + 1) + "- " + score.ToString("00");
             }
 
-            StartCoroutine(PulsateLight());
-        }
-
-        // Enables the Paralysis script for a set period of time.
-        else if (other.tag == "Paralysis")
-        {
-            //Destroy (other.gameObject);
-            //GetComponentInParent<Paralysis> ().enabled = true;
-            //StartCoroutine (DisableScript ());
+            //StartCoroutine(PulsateLight());
         }
 
         Camera.main.GetComponent<CameraEffects>().ShakeCamera();
@@ -110,13 +101,4 @@ public class Laser : MonoBehaviour
     {
         this.GetComponent<SpriteRenderer>().color = newColor;
     }
-    /*IEnumerator DisableScript()
-    {
-        yield return new WaitForSeconds (paralysisTimer);
-        GetComponentInParent<Paralysis> ().enabled = false;
-        GetComponentInParent<Paralysis> ().playerOne.GetComponent<CannonTester> ().enabled = true;
-        GetComponentInParent<Paralysis> ().playerTwo.GetComponent<CannonTester> ().enabled = true;
-        GetComponentInParent<Paralysis> ().playerThree.GetComponent<CannonTester> ().enabled = true;
-        GetComponentInParent<Paralysis> ().playerFour.GetComponent<CannonTester> ().enabled = true;
-    }*/
 }

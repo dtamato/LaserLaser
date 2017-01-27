@@ -78,7 +78,8 @@ public class Cannon : MonoBehaviour
     void ProcessInputs()
     {
         //Once game is over, don't allow movement.
-        if (gameManager.gameOver == false)
+		if ((SceneManager.GetActiveScene().buildIndex == gameManager.LobbySceneIndex && this.GetComponent<CannonCustomization>().hasJoined) ||
+			(SceneManager.GetActiveScene().buildIndex == gameManager.mainGameSceneIndex && gameManager.gameOver == false))
         {
             GetRotationInput();
             RestrictAngle();
