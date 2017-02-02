@@ -128,7 +128,8 @@ public class Cannon : MonoBehaviour
         {
             StartCoroutine(TempDisableCollider());
             Rigidbody2D playerRigidbody = storedLaser.GetComponentInChildren<Rigidbody2D>();
-            playerRigidbody.isKinematic = false;
+            //playerRigidbody.isKinematic = false;
+            playerRigidbody.bodyType = RigidbodyType2D.Dynamic; 
             playerRigidbody.AddForce(maxBlastForce * this.transform.up);
             storedLaser.transform.GetComponent<SpriteRenderer>().enabled = true;
             storedLaser = null;
@@ -173,6 +174,11 @@ public class Cannon : MonoBehaviour
     public void ModifyRotationSpeed(float newSpeed)
     {
         baseRotationSpeed = newSpeed;
+    }
+    public void SetStoredLaser(Laser laser)
+    { 
+
+        storedLaser = laser;
     }
     #endregion
     #region Getters
