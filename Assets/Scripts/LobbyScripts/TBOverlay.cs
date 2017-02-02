@@ -3,6 +3,7 @@ using System.Collections;
 
 public class TBOverlay : MonoBehaviour
 {
+    private BaseGM gameManager;
 
     [SerializeField] private int team;
 
@@ -17,6 +18,8 @@ public class TBOverlay : MonoBehaviour
 
     void Start()
     {
+        gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<BaseGM>();
+
         if (team == 1)
             teamColour = Color.blue;
         else
@@ -30,26 +33,43 @@ public class TBOverlay : MonoBehaviour
     }
     void OnTriggerEnter2D(Collider2D other)
     {
+        //Adjust the number of players on the team joined.
         if (team == 1)
             GameObject.Find("LobbyManager").GetComponent<LobbyManager>().team1Players++;
         else
             GameObject.Find("LobbyManager").GetComponent<LobbyManager>().team2Players++;
-        playerCannons[other.GetComponent<Laser>().myPlayerID].transform.transform.Find("ColourBand").GetComponent<SpriteRenderer>().color = teamColour;
-        //other.transform.Find("ColourBand").GetComponent<SpriteRenderer>().color = teamColour;
-        playerCannons[other.GetComponent<Laser>().myPlayerID].GetComponent<CannonCustomization>().team = team;
-        playerCannons[other.GetComponent<Laser>().myPlayerID].GetComponent<CannonCustomization>().canChange = true;
-        playerCannons[other.GetComponent<Laser>().myPlayerID].GetComponent<CannonCustomization>().myTeamColor = teamColour;
+
+        int pID = other.gameObject.GetComponentInParent<CannonCustomization>().myID;
+        playerCannons[pID].transform.transform.Find("ColourBand").GetComponent<SpriteRenderer>().color = teamColour;
+
+        CannonCustomization player = playerCannons[pID].GetComponent<CannonCustomization>();
+        player.team = team;
+        player.canChange = true;
+        player.myTeamColor = teamColour;
+
+        //Send team info to the GM.
+        gameManager.setTeam(pID, team);
+        gameManager.setTeamColour(pID, teamColour);
     }
 
     private void OnTriggerExit2D(Collider2D other)
     {
+        //Adjust the number of players on the team joined.
         if (team == 1)
             GameObject.Find("LobbyManager").GetComponent<LobbyManager>().team1Players--;
         else
             GameObject.Find("LobbyManager").GetComponent<LobbyManager>().team2Players--;
-        playerCannons[other.GetComponent<Laser>().myPlayerID].transform.transform.Find("ColourBand").GetComponent<SpriteRenderer>().color = new Color(0.8f, 0.8f, 0.8f, 1f);
-        playerCannons[other.GetComponent<Laser>().myPlayerID].GetComponent<CannonCustomization>().myTeamColor = new Color(0.8f,0.8f,0.8f,1f);
-        playerCannons[other.GetComponent<Laser>().myPlayerID].GetComponent<CannonCustomization>().team = 0;
-        playerCannons[other.GetComponent<Laser>().myPlayerID].GetComponent<CannonCustomization>().canChange = false;
+
+        int pID = other.GetComponent<Laser>().myPlayerID;
+        playerCannons[pID].transform.transform.Find("ColourBand").GetComponent<SpriteRenderer>().color = new Color(0.8f, 0.8f, 0.8f, 1f);
+
+        CannonCustomization player = playerCannons[pID].GetComponent<CannonCustomization>();
+        player.myTeamColor = new Color(0.8f,0.8f,0.8f,1f);
+        player.team = 0;
+        player.canChange = false;
+
+        //Send team info to the GM.
+        gameManager.setTeam(pID, 0);
+        gameManager.setTeamColour(pID, new Color(0.8f, 0.8f, 0.8f, 1f));
     }
 }

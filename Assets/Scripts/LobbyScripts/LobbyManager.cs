@@ -182,14 +182,17 @@ public class LobbyManager : MonoBehaviour {
         if (gameType == "FFA") {
             if (joinedPlayers >= 2)
             {
-                Debug.Log("changing to game");
+                Debug.Log("changing to FFA game");
                 gameManager.changeScene(gameManager.mainGameSceneIndex);
             }
         }
         //Requires at least 1 player on each team.
         else if (gameType == "TB") {
-            if (team1Players > 0 && team2Players > 0 && (team1Players+team2Players) == joinedPlayers)
+            if (team1Players > 0 && team2Players > 0 && (team1Players + team2Players) == joinedPlayers)
+            {
+                Debug.Log("changing to TB game");
                 gameManager.changeScene(gameManager.mainGameSceneIndex);
+            }
         }
     }
 }

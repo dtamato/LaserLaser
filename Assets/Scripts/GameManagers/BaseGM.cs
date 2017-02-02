@@ -9,10 +9,12 @@ using Rewired;
 public class BaseGM : MonoBehaviour
 {
     #region Variables
+
     //Scene build index integers.
     public int menuSceneIndex = 0;
     public int LobbySceneIndex = 1;
     public int mainGameSceneIndex = 2;
+   
     //External References.
     public static BaseGM instance = null;
     protected LobbyManager lobbyManager;
@@ -24,15 +26,20 @@ public class BaseGM : MonoBehaviour
 	protected GameObject whiteBorder;
     protected List<GameObject> spawns;
     public GameObject playerObj;
+
     //Boolean flags and other metrics.
     public bool inGame = false;        //True when in Main Game.
     public bool startGame = false;     //True once the startGameDelay / grace period has elapsed.
     public bool gameOver = false;
     public int playerCount = 0;
     public string gameMode;
+    public int team1Score, team2Score;  //Only used in TB mode.
+
     //Timer variables.
     public float startGameDelay;
+    
     #endregion
+
     //Class defining a player's attributes. Used to carry player preferences into the game scene from lobby.
     [System.Serializable]
     public class PlayerDef
@@ -146,6 +153,7 @@ public class BaseGM : MonoBehaviour
             teamColor = new Color(0.8f,0.8f,0.8f,1f);
         }
     }
+
     //Called immediately when game manager is instantiated in Menu.
     protected void Awake()
     {
@@ -170,8 +178,10 @@ public class BaseGM : MonoBehaviour
         /// Set gameMode based on main menu preferences. Must be set to opposite of intended mode. Running the switch function in LobbyManager sets it properly.
         ///
     }
+
     //These functions are called based on player input in the lobby.
     #region Lobby Scene
+
     //Called from Cannon.cs when a player enters the lobby.
     public void playerJoin(int pID, int teamNo, Color color, Color teamColor)
     {
@@ -248,32 +258,66 @@ public class BaseGM : MonoBehaviour
         //Instantiate the player objects, and assign their preferences.
         for (int i = 0; i < playerCount; i++)
         {
+            //Spawn the player object.
             playerList[i].obj = Instantiate(playerObj, spawns[i].transform.position, spawns[i].transform.rotation) as GameObject;
+
+            //Pair the CannonCustomization script.
             CannonCustomization prefs = playerList[i].obj.GetComponent<CannonCustomization>();
+
+            //Apply the settings to the player object from the GM stored preferences.
             prefs.myID = playerList[i].getID();
             prefs.sensitivity = playerList[i].getSensitivity();
             prefs.inverted = playerList[i].getInverted();
             prefs.myColor = playerList[i].getColor();
             prefs.team = playerList[i].getTeam();
             prefs.myTeamColor = playerList[i].getTeamColor();
+
+            //Set the player's ID, and pair their controls.
             playerList[i].obj.GetComponent<Cannon>().playerId = prefs.myID;
             playerList[i].obj.GetComponent<Cannon>().rewiredPlayer = ReInput.players.GetPlayer(prefs.myID);
 
+            //Apply all the colour changes to the player's laser and cannon.
             Laser laserScript = playerList[i].obj.transform.Find("Laser").GetComponent<Laser>();
             laserScript.myPlayerID = prefs.myID;
-            laserScript.scoreText = GameObject.Find("PlayerScore" + prefs.myID).GetComponent<Text>();
-            laserScript.comboText = GameObject.Find("PlayerCombo" + prefs.myID).GetComponent<Text>();
-            playerList[i].obj.transform.Find("ColourBand").GetComponent<SpriteRenderer>().color = prefs.myTeamColor;
+            laserScript.myTeam = prefs.team;
             playerList[i].obj.transform.Find("Laser").GetComponentInChildren<SpriteRenderer>().color = prefs.myColor; //Laser color
             playerList[i].obj.transform.Find("Laser").GetComponent<TrailRenderer>().material.color = prefs.myColor; //Trail renderer color
-            GameObject.Find("PlayerScore" + i).GetComponent<Text>().color = prefs.myColor; //Score color
-            GameObject.Find("PlayerCombo" + i).GetComponent<Text>().color = prefs.myColor; //Combo color
             playerList[i].obj.GetComponentInChildren<SpriteRenderer>().color = prefs.myColor; //Cannon color
+            
+            //If the mode is Team, set the player's colourband, otherwise disable it.
+            if (gameMode == "TB") {
+                playerList[i].obj.transform.Find("ColourBand").GetComponent<SpriteRenderer>().color = prefs.myTeamColor;
+                laserScript.scoreText = GameObject.Find("PlayerScore" + (prefs.team - 1)).GetComponent<Text>();   //Laser reference for team score updates.
+                laserScript.comboText = GameObject.Find("PlayerCombo" + (prefs.team - 1)).GetComponent<Text>();   //Laser reference for team combo updates.
+            }
+            //Else, in FFA set each player's score and combo color seperately.
+            else {
+                playerList[i].obj.transform.Find("ColourBand").gameObject.SetActive(false);
+                GameObject.Find("PlayerScore" + i).GetComponent<Text>().color = prefs.myColor; //Score color
+                GameObject.Find("PlayerCombo" + i).GetComponent<Text>().color = prefs.myColor; //Combo color
+                laserScript.scoreText = GameObject.Find("PlayerScore" + prefs.myID).GetComponent<Text>();   //Laser reference for score updates.
+                laserScript.comboText = GameObject.Find("PlayerCombo" + prefs.myID).GetComponent<Text>();   //Laser reference for combo updates.
+            }
 
             Debug.Log("player added");
         }
 
-		FillActivePlayersArray ();
+        //In team mode, only use 2 score overlays, one per team.
+        if (gameMode == "TB")
+        {
+            //Disable unused HUD.
+            GameObject.Find("PlayerScore" + 2).SetActive(false);
+            GameObject.Find("PlayerScore" + 3).SetActive(false);
+            GameObject.Find("PlayerCombo" + 0).SetActive(false);
+            GameObject.Find("PlayerCombo" + 1).SetActive(false);
+
+            GameObject.Find("PlayerScore" + 0).GetComponent<Text>().text = "Team 1: " + team1Score;
+            GameObject.Find("PlayerScore" + 0).GetComponent<Text>().color = Color.blue;
+            GameObject.Find("PlayerScore" + 1).GetComponent<Text>().text = "Team 2: " + team2Score;
+            GameObject.Find("PlayerScore" + 1).GetComponent<Text>().color = Color.red;
+        }
+
+        FillActivePlayersArray ();
 
         //Start the countdown to gameplay.
         StartCoroutine("CountDown");
@@ -310,25 +354,48 @@ public class BaseGM : MonoBehaviour
         //Determine who was the winner.
         int highScore = 0;
         int winner = 0;
-        for (int i = 0; i < 4; i++)
-        {
-            int score = playerList[i].getScore();
-            if (score > highScore)
-            {
-                highScore = score;
-                winner = i;
-            }
-        }
 
         //Display the results.
         gameOverPanel.SetActive(true);
 
-        //Set the Winner Text.
-        GameObject.Find("WinnerText").GetComponent<Text>().text = ("Player " + (winner + 1) + " Wins!");
-        GameObject.Find("FinalScoreText").GetComponent<Text>().text += highScore;
+        //Scoring for FFA.
+        if (gameMode == "FFA")
+        {
+            for (int i = 0; i < 4; i++)
+            {
+                int score = playerList[i].getScore();
+                if (score > highScore)
+                {
+                    highScore = score;
+                    winner = i;
+                }
+            }
+
+            //Set the Winner Text.
+            GameObject.Find("WinnerText").GetComponent<Text>().text = ("Player " + (winner + 1) + " Wins!");
+            GameObject.Find("FinalScoreText").GetComponent<Text>().text += highScore;
+
+            //Set the panel color to that of the winner.
+            GameObject.Find("GameOverPanel").GetComponent<Image>().color = playerList[winner].getColor();
+        }
+
+        //Scoring for TB.
+        else
+        {
+            //Determine winning team.
+            winner = team1Score > team2Score ? 1 : 2;
+            highScore = team1Score > team2Score ? team1Score : team2Score;
+
+            //Set the Winner Text.
+            GameObject.Find("WinnerText").GetComponent<Text>().text = ("Team " + (winner) + " Wins!");
+            GameObject.Find("FinalScoreText").GetComponent<Text>().text += highScore;
+
+            //Set the panel color to that of the winner.
+            Color winColor = winner == 1 ? Color.blue : Color.red;
+            GameObject.Find("GameOverPanel").GetComponent<Image>().color = winColor;
+        }
+
         
-        //Set the panel color to that of the winner.
-        GameObject.Find("GameOverPanel").GetComponent<Image>().color = playerList[winner].getColor();
 
         Debug.Log("Game Over, Results Displayed.");
     }
