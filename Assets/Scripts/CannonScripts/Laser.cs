@@ -59,15 +59,20 @@ public class Laser : MonoBehaviour
             this.transform.position = cannon.transform.position + 1.5f * cannon.transform.up;
             this.transform.GetComponent<SpriteRenderer>().enabled = false;
             cannon.GetComponentInChildren<Cannon>().SetNewBaseAngle();
-            if (diamondCount == 0)
+
+            //Only implement combos in FFA.
+            if (gameMode == "FFA")
             {
-                score += comboCount;
-                comboCount = 0;
-            }
-            else
-            {
-                comboCount++;
-                diamondCount = 0;
+                if (diamondCount == 0)
+                {
+                    score += comboCount;
+                    comboCount = 0;
+                }
+                else
+                {
+                    comboCount++;
+                    diamondCount = 0;
+                }
             }
         }
     }
@@ -78,11 +83,13 @@ public class Laser : MonoBehaviour
         {
             diamondCount++;     //For combo tracking.
 
+            //FFA scoring.
             if (gameMode == "FFA")
             {
                 score++;
                 gameManager.addScore(myPlayerID, score);
             }
+            //Team scoring.
             else
             {
                 if (myTeam == 1)
@@ -90,14 +97,6 @@ public class Laser : MonoBehaviour
                 else
                     gameManager.team2Score++;
             }
-
-
-
-            if (scoreText) {
-                scoreText.text = "P" + (cannon.GetComponent<Cannon>().GetPlayerID() + 1) + "- " + score.ToString("00");
-            }
-
-            //StartCoroutine(PulsateLight());
         }
 
         Camera.main.GetComponent<CameraEffects>().ShakeCamera();

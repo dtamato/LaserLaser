@@ -305,11 +305,16 @@ public class BaseGM : MonoBehaviour
         //In team mode, only use 2 score overlays, one per team.
         if (gameMode == "TB")
         {
+            //Disable unused HUD.
             GameObject.Find("PlayerScore" + 2).SetActive(false);
             GameObject.Find("PlayerScore" + 3).SetActive(false);
+            GameObject.Find("PlayerCombo" + 0).SetActive(false);
+            GameObject.Find("PlayerCombo" + 1).SetActive(false);
 
-            GameObject.Find("PlayerScore" + 0).GetComponent<Text>().text = "Team 1 Score: " + team1Score;
-            GameObject.Find("PlayerScore" + 1).GetComponent<Text>().text = "Team 2 Score: " + team2Score;
+            GameObject.Find("PlayerScore" + 0).GetComponent<Text>().text = "Team 1: " + team1Score;
+            GameObject.Find("PlayerScore" + 0).GetComponent<Text>().color = Color.blue;
+            GameObject.Find("PlayerScore" + 1).GetComponent<Text>().text = "Team 2: " + team2Score;
+            GameObject.Find("PlayerScore" + 1).GetComponent<Text>().color = Color.red;
         }
 
         FillActivePlayersArray ();
@@ -386,7 +391,7 @@ public class BaseGM : MonoBehaviour
             GameObject.Find("FinalScoreText").GetComponent<Text>().text += highScore;
 
             //Set the panel color to that of the winner.
-            Color winColor = winner == 1 ? Color.red : Color.blue;
+            Color winColor = winner == 1 ? Color.blue : Color.red;
             GameObject.Find("GameOverPanel").GetComponent<Image>().color = winColor;
         }
 
