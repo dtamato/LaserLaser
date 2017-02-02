@@ -6,18 +6,25 @@ using UnityEngine.SceneManagement;
 [RequireComponent(typeof(Collider2D), typeof(Rigidbody2D))]
 public class Laser : MonoBehaviour
 {
-    [SerializeField]
-    GameObject cannon;
-    public Text scoreText;
-    public Text comboText;
+    //External References.
+    BaseGM gameManager;
+    [SerializeField] GameObject cannon;
     Rigidbody2D rb2d;
     Light light;
+
+    //Set Dynamically from GameManager.
+    public Text scoreText;
+    public Text comboText;
+
+    //Score and other metrics.
     public int score = 0;
     public int comboCount = 0;
     private int diamondCount = 0;
     public int myPlayerID;
-    BaseGM gameManager;
+    public int myTeam;
     private bool sendResults;
+    private string gameMode;
+
     void Awake()
     {
         gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<BaseGM>();
@@ -25,13 +32,23 @@ public class Laser : MonoBehaviour
         light = this.GetComponentInChildren<Light>();
         this.GetComponentInChildren<TrailRenderer>().sortingLayerName = this.GetComponent<SpriteRenderer>().sortingLayerName;
         this.GetComponentInChildren<TrailRenderer>().sortingOrder = this.GetComponent<SpriteRenderer>().sortingOrder - 1;
+
+        //Record the game mode, for scoring purposes.
+        gameMode = gameManager.gameMode;
     }
+
     void Update()
     {
-        if (SceneManager.GetActiveScene().buildIndex == 2) {
-            comboText.text = "Combo: " + comboCount;
+        if (SceneManager.GetActiveScene().buildIndex == 2)
+        {
+            if (gameMode == "FFA")
+            {
+                scoreText.text = "P" + (myPlayerID + 1) + ": " + score;
+                comboText.text = "Combo: " + comboCount;
+            }
         }
     }
+
     void OnCollisionEnter2D(Collision2D other)
     {
         if (other.transform.CompareTag("Boundary"))
@@ -54,13 +71,27 @@ public class Laser : MonoBehaviour
             }
         }
     }
+
     void OnTriggerEnter2D(Collider2D other)
     {
         if (other.CompareTag("Diamond"))
         {
             diamondCount++;     //For combo tracking.
-            score++;
-            gameManager.addScore(myPlayerID, score);
+
+            if (gameMode == "FFA")
+            {
+                score++;
+                gameManager.addScore(myPlayerID, score);
+            }
+            else
+            {
+                if (myTeam == 1)
+                    gameManager.team1Score++;
+                else
+                    gameManager.team2Score++;
+            }
+
+
 
             if (scoreText) {
                 scoreText.text = "P" + (cannon.GetComponent<Cannon>().GetPlayerID() + 1) + "- " + score.ToString("00");
@@ -71,6 +102,7 @@ public class Laser : MonoBehaviour
 
         Camera.main.GetComponent<CameraEffects>().ShakeCamera();
     }
+
     IEnumerator PulsateLight()
     {
         // Save current light settings and create temp variables
@@ -97,6 +129,7 @@ public class Laser : MonoBehaviour
         light.range = initialLightRange;
         light.intensity = initialLightIntensity;
     }
+
     public void ChangeColor(Color newColor)
     {
         this.GetComponent<SpriteRenderer>().color = newColor;

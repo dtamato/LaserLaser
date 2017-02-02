@@ -41,12 +41,16 @@ public class TimedGM : BaseGM
             //Put the time on the clock.
             timeText = GameObject.Find("TimeText").GetComponent<Text>();
             timeText.text = gameTimer.ToString("F1");
-            
-            //Deactivate inactive player's scores.
-            for (int i = 0; i <= 3; i++) {
-                GameObject scorebar = GameObject.Find("PlayerScore" + i);
-                if (!playerList[i].active())
-                    scorebar.SetActive(false);
+
+            //Deactivate inactive player's scores. FFA Only.
+            if (gameMode == "FFA")
+            {
+                for (int i = 0; i <= 3; i++)
+                {
+                    GameObject scorebar = GameObject.Find("PlayerScore" + i);
+                    if (!playerList[i].active())
+                        scorebar.SetActive(false);
+                }
             }
 
             //Ensures this process runs once.
@@ -57,6 +61,13 @@ public class TimedGM : BaseGM
         {
             gameTimer -= Time.deltaTime;
             timeText.text = gameTimer.ToString("F1");
+
+            //If in TeamMode update the team's scores.
+            if (gameMode == "TB")
+            {
+                HUDText[0].text = "Team 1: " + team1Score;
+                HUDText[1].text = "Team 2: " + team2Score;
+            }
 
             if (gameTimer <= 0)
                 GameOver();
