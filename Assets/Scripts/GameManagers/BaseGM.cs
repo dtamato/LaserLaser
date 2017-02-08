@@ -420,10 +420,10 @@ public class BaseGM : MonoBehaviour
     public void addScore(int pID, int score)
     {
         playerList[pID].setScore(score);
-		UpdateWhiteBorder ();
+		UpdateWhiteBorderFFA ();
     }
 
-	void UpdateWhiteBorder () {
+	void UpdateWhiteBorderFFA () {
 
 		int winningScore = -1;
 		int winningPlayerIndex = -1;
@@ -440,6 +440,36 @@ public class BaseGM : MonoBehaviour
 
 				whiteBorder.GetComponent<SpriteRenderer> ().color = Color.white;
 			}
+		}
+	}
+
+	public void addToTeamScore(bool isTeam1) {
+
+		if (isTeam1) {
+
+			team1Score++;
+		}
+		else {
+
+			team2Score++;
+		}
+
+		UpdateWhiteBorderTB ();
+	}
+
+	void UpdateWhiteBorderTB () {
+
+		if (team1Score > team2Score) {
+
+			whiteBorder.GetComponent<SpriteRenderer> ().color = Color.red;
+		}
+		else if (team2Score > team1Score) {
+
+			whiteBorder.GetComponent<SpriteRenderer> ().color = Color.blue;
+		}
+		else {
+
+			whiteBorder.GetComponent<SpriteRenderer> ().color = Color.white;
 		}
 	}
 

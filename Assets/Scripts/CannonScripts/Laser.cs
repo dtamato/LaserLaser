@@ -94,10 +94,7 @@ public class Laser : MonoBehaviour
             //Team scoring.
             else
             {
-                if (myTeam == 1)
-                    gameManager.team1Score++;
-                else
-                    gameManager.team2Score++;
+				gameManager.addToTeamScore (myTeam == 1);
             }
         }
 

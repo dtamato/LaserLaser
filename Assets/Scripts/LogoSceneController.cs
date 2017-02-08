@@ -9,7 +9,6 @@ public class LogoSceneController : MonoBehaviour {
 	[SerializeField] float changeColorDelay = 0.1f;
 	[SerializeField] Color[] colorOptions;
 	[SerializeField] float sceneLoadDelay = 3;
-	[SerializeField] string sceneToLoad;
 
 	[Header("References")]
 	[SerializeField] SpriteRenderer outlineSprite;
@@ -42,6 +41,6 @@ public class LogoSceneController : MonoBehaviour {
 	IEnumerator DelayLoadScene () {
 
 		yield return new WaitForSeconds (sceneLoadDelay);
-		SceneManager.LoadScene (sceneToLoad);
+		SceneManager.LoadScene (SceneManager.GetActiveScene().buildIndex + 1);
 	}
 }
