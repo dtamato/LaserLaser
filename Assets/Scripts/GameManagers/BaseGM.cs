@@ -71,6 +71,7 @@ public class BaseGM : MonoBehaviour
             inverted = false;
             team = -1;
             color = Color.grey;
+            teamColor = new Color(0.8f, 0.8f, 0.8f, 0f);
             score = 0;
         }
         //List of setters for private members.
@@ -150,7 +151,7 @@ public class BaseGM : MonoBehaviour
             inverted = false;
             team = -1;
             color = Color.grey;
-            teamColor = new Color(0.8f,0.8f,0.8f,1f);
+            teamColor = new Color(0.8f,0.8f,0.8f,0f);
         }
     }
 
