@@ -38,7 +38,7 @@ public class TBOverlay : MonoBehaviour
             GameObject.Find("LobbyManager").GetComponent<LobbyManager>().team1Players++;
         else
             GameObject.Find("LobbyManager").GetComponent<LobbyManager>().team2Players++;
-
+        if (!other.gameObject.GetComponent<CannonCustomization>()) return;
         int pID = other.gameObject.GetComponentInParent<CannonCustomization>().myID;
         playerCannons[pID].transform.transform.Find("ColourBand").GetComponent<SpriteRenderer>().color = teamColour;
 
@@ -59,7 +59,7 @@ public class TBOverlay : MonoBehaviour
             GameObject.Find("LobbyManager").GetComponent<LobbyManager>().team1Players--;
         else
             GameObject.Find("LobbyManager").GetComponent<LobbyManager>().team2Players--;
-
+        if (!other.gameObject.GetComponent<Laser>()) return;
         int pID = other.GetComponent<Laser>().myPlayerID;
         playerCannons[pID].transform.transform.Find("ColourBand").GetComponent<SpriteRenderer>().color = new Color(0.8f, 0.8f, 0.8f, 1f);
 
