@@ -20,7 +20,7 @@ public class PowerupSpawner : MonoBehaviour
 			float newX = Random.Range (spawnerBounds.min.x, spawnerBounds.max.x);
 			float newY = Random.Range (spawnerBounds.min.y, spawnerBounds.max.y);
 			Vector3 powerUpLocation = new Vector3 (newX, newY, 0);
-			GameObject powerUp = Instantiate (powerUpPrefabs [Random.Range (0, powerUpPrefabs.Length)], powerUpLocation, Quaternion.identity) as GameObject;
+			GameObject powerUp = Instantiate (powerUpPrefabs [Random.Range (0, powerUpPrefabs.Length - 1)], powerUpLocation, Quaternion.identity) as GameObject;
 			powerUp.transform.SetParent (this.transform);
 		}
 

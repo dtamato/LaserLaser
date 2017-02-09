@@ -11,6 +11,8 @@ TagManager:
   - AudioManager
   - Paralysis
   - GameManager
+  - Slow
+  - BigBall
   layers:
   - Default
   - TransparentFX
