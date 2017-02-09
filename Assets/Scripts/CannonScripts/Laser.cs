@@ -53,12 +53,14 @@ public class Laser : MonoBehaviour
     {
         if (other.transform.CompareTag("Boundary"))
         {
-            rb2d.isKinematic = true;
+            //rb2d.isKinematic = true;
+            rb2d.bodyType = RigidbodyType2D.Static; // HERE
             cannon.transform.position = other.contacts[0].point;
             cannon.transform.rotation = other.transform.rotation;
             this.transform.position = cannon.transform.position + 1.5f * cannon.transform.up;
             this.transform.GetComponent<SpriteRenderer>().enabled = false;
             cannon.GetComponentInChildren<Cannon>().SetNewBaseAngle();
+            cannon.GetComponentInChildren<Cannon>().SetStoredLaser(this);
 
             //Only implement combos in FFA.
             if (gameMode == "FFA")
