@@ -19,6 +19,7 @@ public class BaseGM : MonoBehaviour
     public static BaseGM instance = null;
     protected LobbyManager lobbyManager;
     protected List<Text> HUDText;
+    protected List<Text> ComboText;
     [SerializeField] protected List<PlayerDef> playerList;
 	protected GameObject[] activePlayersArray;
     protected GameObject gameOverPanel;
@@ -75,6 +76,7 @@ public class BaseGM : MonoBehaviour
             score = 0;
         }
         //List of setters for private members.
+#region Setters
         public void setID(int value)
         {
             ID = value;
@@ -108,6 +110,9 @@ public class BaseGM : MonoBehaviour
         {
             teamColor = value;
         }
+        #endregion
+
+#region Getters
         //List of getters for private variables.
         public int getID()
         {
@@ -137,11 +142,12 @@ public class BaseGM : MonoBehaviour
         {
             return color;
         }
-
         public Color getTeamColor()
         {
             return teamColor;
         }
+        #endregion
+
         //Reset function reverts preferences to default if player leaves lobby.
         public void reset()
         {
@@ -166,6 +172,7 @@ public class BaseGM : MonoBehaviour
         DontDestroyOnLoad(gameObject);
         //Initialize HUD Text List and Spawn Points, will be referenced upon entering game scene.
         HUDText = new List<Text>(4);
+        ComboText = new List<Text>(4);
         spawns = new List<GameObject>(4);
         //Initialize Player List, holds preferences to instantiate each player in game scene.
         playerList = new List<PlayerDef>(4);
@@ -173,6 +180,7 @@ public class BaseGM : MonoBehaviour
         {
             playerList.Add(new PlayerDef());
             HUDText.Add(null);
+            ComboText.Add(null);
             spawns.Add(null);
         }
         ///
@@ -239,6 +247,7 @@ public class BaseGM : MonoBehaviour
         for (int i = 0; i <= 3; i++)
         {
             HUDText[i] = GameObject.Find("PlayerScore" + i).GetComponent<Text>();
+            ComboText[i] = GameObject.Find("PlayerCombo" + i).GetComponent<Text>();
             spawns[i] = GameObject.Find("SP" + i);
         }
 
@@ -421,6 +430,12 @@ public class BaseGM : MonoBehaviour
     {
         playerList[pID].setScore(score);
 		UpdateWhiteBorderFFA ();
+        HUDText[pID].text = "P1- " + score.ToString();
+    }
+
+    public void addCombo(int Pid, int combo)
+    {
+        ComboText[Pid].text = "Combo: " + combo.ToString();
     }
 
 	void UpdateWhiteBorderFFA () {

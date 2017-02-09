@@ -56,10 +56,19 @@ public class TBOverlay : MonoBehaviour
     {
         //Adjust the number of players on the team joined.
         if (team == 1)
+        {
             GameObject.Find("LobbyManager").GetComponent<LobbyManager>().team1Players--;
+            Debug.Log("This is being called");
+
+        }
         else
+        {
             GameObject.Find("LobbyManager").GetComponent<LobbyManager>().team2Players--;
+            
+        }
+
         if (!other.gameObject.GetComponent<Laser>()) return;
+
         int pID = other.GetComponent<Laser>().myPlayerID;
         playerCannons[pID].transform.transform.Find("ColourBand").GetComponent<SpriteRenderer>().color = new Color(0.8f, 0.8f, 0.8f, 1f);
 

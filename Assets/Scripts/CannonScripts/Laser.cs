@@ -69,10 +69,12 @@ public class Laser : MonoBehaviour
                 {
                     score += comboCount;
                     comboCount = 0;
+                    gameManager.addCombo(myPlayerID, comboCount); //this is where combo text is set
                 }
                 else
                 {
                     comboCount++;
+                    gameManager.addCombo(myPlayerID, comboCount); 
                     diamondCount = 0;
                 }
             }
@@ -89,7 +91,7 @@ public class Laser : MonoBehaviour
             if (gameMode == "FFA")
             {
                 score++;
-                gameManager.addScore(myPlayerID, score);
+                gameManager.addScore(myPlayerID, score);//this is where score text is set
             }
             //Team scoring.
             else
