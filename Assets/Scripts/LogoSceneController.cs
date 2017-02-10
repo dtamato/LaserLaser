@@ -9,15 +9,46 @@ public class LogoSceneController : MonoBehaviour {
 	[SerializeField] float changeColorDelay = 0.1f;
 	[SerializeField] Color[] colorOptions;
 	[SerializeField] float sceneLoadDelay = 3;
+	[SerializeField] float fadeSpeed = 0.1f;
 
 	[Header("References")]
 	[SerializeField] SpriteRenderer outlineSprite;
 	[SerializeField] SpriteRenderer faceSprite;
+	[SerializeField] SpriteRenderer cameraOverlay;
 
 	void Start () {
 
+		StartCoroutine (FadeScreen ());
 		StartCoroutine (ChangeColor ());
-		StartCoroutine (DelayLoadScene ());
+	}
+
+	IEnumerator FadeScreen () {
+
+		cameraOverlay.gameObject.SetActive (true);
+		cameraOverlay.color = Color.black;
+
+		yield return new WaitForSeconds (1);
+
+		// Fade in
+		while (cameraOverlay.color.a > 0) {
+
+			float newAlpha = cameraOverlay.color.a - fadeSpeed * Time.deltaTime;
+			cameraOverlay.color = new Color (0, 0, 0, newAlpha);
+			yield return null;
+		}
+
+		// Pause
+		yield return new WaitForSeconds (1);
+
+		// Fade out
+		while (cameraOverlay.color.a < 1) {
+
+			float newAlpha = cameraOverlay.color.a + fadeSpeed * Time.deltaTime;
+			cameraOverlay.color = new Color (0, 0, 0, newAlpha);
+			yield return null;
+		}
+
+		SceneManager.LoadScene (SceneManager.GetActiveScene().buildIndex + 1);
 	}
 
 	IEnumerator ChangeColor () {
@@ -36,11 +67,5 @@ public class LogoSceneController : MonoBehaviour {
 		yield return new WaitForSeconds (changeColorDelay);
 
 		StartCoroutine (ChangeColor ());
-	}
-
-	IEnumerator DelayLoadScene () {
-
-		yield return new WaitForSeconds (sceneLoadDelay);
-		SceneManager.LoadScene (SceneManager.GetActiveScene().buildIndex + 1);
 	}
 }

@@ -25,7 +25,7 @@ public class ObstacleSpawner : MonoBehaviour {
 			float newY = Random.Range (spawnerBounds.min.y, spawnerBounds.max.y);
 			Vector3 randomLocation = new Vector3 (newX, newY, 0);
 			GameObject newObstacle = Instantiate (obstaclePrefabs [Random.Range (0, obstaclePrefabs.Length)], randomLocation, Quaternion.identity) as GameObject;
-			newObstacle.transform.SetParent (this.transform);
+			//newObstacle.transform.SetParent (this.transform);
 		}
 
 		yield return new WaitForSeconds (Random.Range(spawnRate * 0.5f, spawnRate * 1.5f));

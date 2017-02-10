@@ -17,7 +17,7 @@ public class TitleSceneController : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-		if (player.GetButton ("StartGame")) {
+		if (player.GetAnyButton()) {
 
 			SceneManager.LoadScene (SceneManager.GetActiveScene ().buildIndex + 1);
 		}

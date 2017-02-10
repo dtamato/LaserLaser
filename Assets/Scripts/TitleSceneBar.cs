@@ -13,6 +13,8 @@ public class TitleSceneBar : MonoBehaviour {
 	[SerializeField] Transform startPointTransform;
 	[SerializeField] Transform endPointTransform;
 
+	// Privates
+	bool movingOut = true;
 
 	void Start () {
 
@@ -22,9 +24,32 @@ public class TitleSceneBar : MonoBehaviour {
 
 	void Update () {
 
-		if(Time.time > startDelay && colorBar.transform.localPosition != endPointTransform.localPosition) {
+		if(Time.time > startDelay) {
 
-			colorBar.transform.localPosition = Vector3.Lerp(colorBar.transform.localPosition, endPointTransform.localPosition, moveSpeed * Time.deltaTime);
+			if (movingOut) {
+				
+				if (Vector3.Distance(colorBar.transform.localPosition, endPointTransform.localPosition) > 0.1f) {
+
+					colorBar.transform.localPosition = Vector3.Slerp (colorBar.transform.localPosition, endPointTransform.localPosition, moveSpeed * Time.deltaTime);
+				}
+				else {
+
+					movingOut = !movingOut;
+					moveSpeed = Random.Range(moveSpeed * 0.5f, moveSpeed * 1.25f);
+				}
+			}
+			else {
+
+				if (Vector3.Distance(colorBar.transform.localPosition, startPointTransform.localPosition) > 0.1f) {
+
+					colorBar.transform.localPosition = Vector3.Slerp (colorBar.transform.localPosition, startPointTransform.localPosition, moveSpeed * Time.deltaTime);
+				}
+				else {
+
+					movingOut = !movingOut;
+					moveSpeed = Random.Range(moveSpeed * 0.5f, moveSpeed * 1.25f);
+				}
+			}
 		}
 	}
 }

@@ -19,7 +19,6 @@ public class BaseGM : MonoBehaviour
     public static BaseGM instance = null;
     protected LobbyManager lobbyManager;
     protected List<Text> HUDText;
-    protected List<Text> ComboText;
     [SerializeField] protected List<PlayerDef> playerList;
 	protected GameObject[] activePlayersArray;
     protected GameObject gameOverPanel;
@@ -172,7 +171,6 @@ public class BaseGM : MonoBehaviour
         DontDestroyOnLoad(gameObject);
         //Initialize HUD Text List and Spawn Points, will be referenced upon entering game scene.
         HUDText = new List<Text>(4);
-        ComboText = new List<Text>(4);
         spawns = new List<GameObject>(4);
         //Initialize Player List, holds preferences to instantiate each player in game scene.
         playerList = new List<PlayerDef>(4);
@@ -180,7 +178,6 @@ public class BaseGM : MonoBehaviour
         {
             playerList.Add(new PlayerDef());
             HUDText.Add(null);
-            ComboText.Add(null);
             spawns.Add(null);
         }
         ///
@@ -247,7 +244,6 @@ public class BaseGM : MonoBehaviour
         for (int i = 0; i <= 3; i++)
         {
             HUDText[i] = GameObject.Find("PlayerScore" + i).GetComponent<Text>();
-            ComboText[i] = GameObject.Find("PlayerCombo" + i).GetComponent<Text>();
             spawns[i] = GameObject.Find("SP" + i);
         }
 
@@ -298,15 +294,12 @@ public class BaseGM : MonoBehaviour
             if (gameMode == "TB") {
                 playerList[i].obj.transform.Find("ColourBand").GetComponent<SpriteRenderer>().color = prefs.myTeamColor;
                 laserScript.scoreText = GameObject.Find("PlayerScore" + (prefs.team - 1)).GetComponent<Text>();   //Laser reference for team score updates.
-                laserScript.comboText = GameObject.Find("PlayerCombo" + (prefs.team - 1)).GetComponent<Text>();   //Laser reference for team combo updates.
             }
             //Else, in FFA set each player's score and combo color seperately.
             else {
                 playerList[i].obj.transform.Find("ColourBand").gameObject.SetActive(false);
                 GameObject.Find("PlayerScore" + i).GetComponent<Text>().color = prefs.myColor; //Score color
-                GameObject.Find("PlayerCombo" + i).GetComponent<Text>().color = prefs.myColor; //Combo color
                 laserScript.scoreText = GameObject.Find("PlayerScore" + prefs.myID).GetComponent<Text>();   //Laser reference for score updates.
-                laserScript.comboText = GameObject.Find("PlayerCombo" + prefs.myID).GetComponent<Text>();   //Laser reference for combo updates.
             }
 
             Debug.Log("player added");
@@ -318,8 +311,6 @@ public class BaseGM : MonoBehaviour
             //Disable unused HUD.
             GameObject.Find("PlayerScore" + 2).SetActive(false);
             GameObject.Find("PlayerScore" + 3).SetActive(false);
-            GameObject.Find("PlayerCombo" + 0).SetActive(false);
-            GameObject.Find("PlayerCombo" + 1).SetActive(false);
 
             GameObject.Find("PlayerScore" + 0).GetComponent<Text>().text = "Team 1: " + team1Score;
             GameObject.Find("PlayerScore" + 0).GetComponent<Text>().color = Color.blue;
@@ -430,12 +421,7 @@ public class BaseGM : MonoBehaviour
     {
         playerList[pID].setScore(score);
 		UpdateWhiteBorderFFA ();
-        HUDText[pID].text = "P1- " + score.ToString();
-    }
-
-    public void addCombo(int Pid, int combo)
-    {
-        ComboText[Pid].text = "Combo: " + combo.ToString();
+        HUDText[pID].text = "P1- " + score.ToString("00");
     }
 
 	void UpdateWhiteBorderFFA () {
@@ -476,11 +462,11 @@ public class BaseGM : MonoBehaviour
 
 		if (team1Score > team2Score) {
 
-			whiteBorder.GetComponent<SpriteRenderer> ().color = Color.red;
+			whiteBorder.GetComponent<SpriteRenderer> ().color = Color.blue;
 		}
 		else if (team2Score > team1Score) {
 
-			whiteBorder.GetComponent<SpriteRenderer> ().color = Color.blue;
+			whiteBorder.GetComponent<SpriteRenderer> ().color = Color.red;
 		}
 		else {
 

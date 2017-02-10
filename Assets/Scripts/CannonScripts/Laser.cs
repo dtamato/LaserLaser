@@ -14,7 +14,6 @@ public class Laser : MonoBehaviour
 
     //Set Dynamically from GameManager.
     public Text scoreText;
-    public Text comboText;
 
     //Score and other metrics.
     public int score = 0;
@@ -44,7 +43,6 @@ public class Laser : MonoBehaviour
             if (gameMode == "FFA")
             {
                 scoreText.text = "P" + (myPlayerID + 1) + ": " + score;
-                comboText.text = "Combo: " + comboCount;
             }
         }
     }
@@ -69,12 +67,10 @@ public class Laser : MonoBehaviour
                 {
                     score += comboCount;
                     comboCount = 0;
-                    gameManager.addCombo(myPlayerID, comboCount); //this is where combo text is set
                 }
                 else
                 {
                     comboCount++;
-                    gameManager.addCombo(myPlayerID, comboCount); 
                     diamondCount = 0;
                 }
             }
