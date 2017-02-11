@@ -132,6 +132,7 @@ public class Cannon : MonoBehaviour
             playerRigidbody.bodyType = RigidbodyType2D.Dynamic; 
             playerRigidbody.AddForce(maxBlastForce * this.transform.up);
             storedLaser.transform.GetComponent<SpriteRenderer>().enabled = true;
+			storedLaser.transform.GetComponent<TrailRenderer> ().enabled = true;
             storedLaser = null;
             this.GetComponent<AudioSource>().pitch = Random.Range(0.5f, 1.5f);
             this.GetComponent<AudioSource>().Play();

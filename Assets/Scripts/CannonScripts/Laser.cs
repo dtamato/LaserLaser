@@ -57,6 +57,7 @@ public class Laser : MonoBehaviour
             cannon.transform.rotation = other.transform.rotation;
             this.transform.position = cannon.transform.position + 1.5f * cannon.transform.up;
             this.transform.GetComponent<SpriteRenderer>().enabled = false;
+			this.transform.GetComponent<TrailRenderer> ().enabled = false;
             cannon.GetComponentInChildren<Cannon>().SetNewBaseAngle();
             cannon.GetComponentInChildren<Cannon>().SetStoredLaser(this);
 
