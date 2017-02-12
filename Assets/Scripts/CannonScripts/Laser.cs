@@ -61,6 +61,9 @@ public class Laser : MonoBehaviour
             cannon.GetComponentInChildren<Cannon>().SetNewBaseAngle();
             cannon.GetComponentInChildren<Cannon>().SetStoredLaser(this);
 
+            Debug.Log("SetStoredLaser.");
+            cannon.GetComponent<Cannon>().inFlight = false;
+
             //Only implement combos in FFA.
             if (gameMode == "FFA")
             {

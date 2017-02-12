@@ -8,6 +8,7 @@ using UnityEngine.SceneManagement;
 public class Cannon : MonoBehaviour
 {
     BaseGM gameManager;
+    public bool inFlight;
 
     public int playerId;
     [SerializeField] float baseRotationSpeed = 2;
@@ -27,13 +28,14 @@ public class Cannon : MonoBehaviour
     float minAngle;
     float maxAngle;
     public Player rewiredPlayer;
-    Laser pairedLaser; // Permanent reference to ball
-    Laser storedLaser; // Reference used to check if can fire
+    [SerializeField] Laser pairedLaser; // Permanent reference to ball
+    [SerializeField] Laser storedLaser; // Reference used to check if can fire
     
 
     void Awake()
     {
         gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<BaseGM>();
+        inFlight = false;
 
         if (SceneManager.GetActiveScene().buildIndex == gameManager.LobbySceneIndex)
         {
@@ -52,13 +54,15 @@ public class Cannon : MonoBehaviour
     void Update()
     {
         //If in the lobby, process inputs. If in the game, check the countdown is finished as well.
-        if (storedLaser)
+        if (!inFlight)
         {
             if (SceneManager.GetActiveScene().buildIndex == gameManager.LobbySceneIndex)
                 ProcessInputs();
             else if (SceneManager.GetActiveScene().buildIndex == gameManager.mainGameSceneIndex && gameManager.startGame == true)
                 ProcessInputs();
         }
+        else
+            Debug.Log("INPUT LOCK");
     }
     void OnTriggerEnter2D(Collider2D other)
     {
@@ -126,7 +130,8 @@ public class Cannon : MonoBehaviour
         }
         if (rewiredPlayer.GetButtonDown("Fire"))
         {
-            StartCoroutine(TempDisableCollider());
+            Debug.Log("fire.");
+            //StartCoroutine(TempDisableCollider());
             Rigidbody2D playerRigidbody = storedLaser.GetComponentInChildren<Rigidbody2D>();
             //playerRigidbody.isKinematic = false;
             playerRigidbody.bodyType = RigidbodyType2D.Dynamic; 
@@ -134,6 +139,8 @@ public class Cannon : MonoBehaviour
             storedLaser.transform.GetComponent<SpriteRenderer>().enabled = true;
 			storedLaser.transform.GetComponent<TrailRenderer> ().enabled = true;
             storedLaser = null;
+            inFlight = true;
+            Debug.Log(storedLaser);
             this.GetComponent<AudioSource>().pitch = Random.Range(0.5f, 1.5f);
             this.GetComponent<AudioSource>().Play();
         }
