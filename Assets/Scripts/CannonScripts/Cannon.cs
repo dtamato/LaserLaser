@@ -28,7 +28,6 @@ public class Cannon : MonoBehaviour
     
     // Angles
     float currentAngle;
-    float angleOffset;
     float baseAngle;
     float minAngle;
     float maxAngle;
@@ -77,13 +76,16 @@ public class Cannon : MonoBehaviour
 
     void ProcessInputs()
     {
-        //Once game is over, don't allow movement.
+        //In lobby, don't allow movement until player has joined.
+        //In main game scene, once game is over don't allow movement.
 		if ((SceneManager.GetActiveScene().buildIndex == gameManager.LobbySceneIndex && this.GetComponent<CannonCustomization>().hasJoined) ||
 			(SceneManager.GetActiveScene().buildIndex == gameManager.mainGameSceneIndex && gameManager.gameOver == false))
         {
             GetRotationInput();
             RestrictAngle();
         }
+
+        //Always check for firing, also checks return to menu prompt on game over.
         GetFireInput();
     }
 
@@ -127,8 +129,8 @@ public class Cannon : MonoBehaviour
             gameManager.returnToMenu();
         }
 
-        //When player fires, activate the laser and launch it with force.
-        if (rewiredPlayer.GetButtonDown("Fire"))
+        //When player fires, activate the laser and launch it with force. Disabled when game is over.
+        if (rewiredPlayer.GetButtonDown("Fire") && !gameManager.gameOver)
         {
             //StartCoroutine(TempDisableCollider());
             laserRB.bodyType = RigidbodyType2D.Dynamic; 
@@ -173,32 +175,12 @@ public class Cannon : MonoBehaviour
         baseRotationSpeed += increment;
         baseRotationSpeed = Mathf.Clamp(baseRotationSpeed, minRotationSpeed, maxRotationSpeed);
     }
-
-    //Is this called from anywhere?
-    public void ChangeColor()
-    {
-        // New color (Random for now, pull from an array later)
-        Color newColor = new Color(Random.Range(0, 1f), Random.Range(0, 1f), Random.Range(0, 1f));
-        // Change colors
-        SpriteRenderer[] spriteRenderers = this.GetComponentsInChildren<SpriteRenderer>();
-        foreach (SpriteRenderer sprite in spriteRenderers) { sprite.color = newColor; }
-        pairedLaser.ChangeColor(newColor);
-    }
-
-    //Is THIS called from anywhere!?
+    
+    //Called from Slow.cs.
     public void ModifyRotationSpeed(float newSpeed)
     {
         baseRotationSpeed = newSpeed;
     }
-
-    /*
-    //Called from Laser.cs.
-    public void SetStoredLaser(Laser laser)
-    { 
-
-        storedLaser = laser;
-    }
-    */
 
     #endregion
 
