@@ -61,8 +61,6 @@ public class Cannon : MonoBehaviour
             else if (SceneManager.GetActiveScene().buildIndex == gameManager.mainGameSceneIndex && gameManager.startGame == true)
                 ProcessInputs();
         }
-        else
-            Debug.Log("INPUT LOCK");
     }
     void OnTriggerEnter2D(Collider2D other)
     {
@@ -130,7 +128,6 @@ public class Cannon : MonoBehaviour
         }
         if (rewiredPlayer.GetButtonDown("Fire"))
         {
-            Debug.Log("fire.");
             //StartCoroutine(TempDisableCollider());
             Rigidbody2D playerRigidbody = storedLaser.GetComponentInChildren<Rigidbody2D>();
             //playerRigidbody.isKinematic = false;
@@ -140,7 +137,6 @@ public class Cannon : MonoBehaviour
 			storedLaser.transform.GetComponent<TrailRenderer> ().enabled = true;
             storedLaser = null;
             inFlight = true;
-            Debug.Log(storedLaser);
             this.GetComponent<AudioSource>().pitch = Random.Range(0.5f, 1.5f);
             this.GetComponent<AudioSource>().Play();
         }
