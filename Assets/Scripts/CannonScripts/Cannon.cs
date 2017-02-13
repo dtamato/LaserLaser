@@ -51,28 +51,10 @@ public class Cannon : MonoBehaviour
 
     void Update()
     {
-        //If in the lobby, process inputs. If in the game, check the countdown is finished as well.
+        //Player can't input while in flight.
         if (!inFlight)
-        {
-            if (SceneManager.GetActiveScene().buildIndex == gameManager.LobbySceneIndex)
-                ProcessInputs();
-            else if (SceneManager.GetActiveScene().buildIndex == gameManager.mainGameSceneIndex && gameManager.startGame == true)
-                ProcessInputs();
-        }
+            ProcessInputs();
     }
-
-    /*
-    void OnTriggerEnter2D(Collider2D other)
-    {
-        if (other.CompareTag("Player"))
-        {
-            if (!pairedLaser)
-            {
-                pairedLaser = other.GetComponentInChildren<Laser>();
-            }
-        }
-    }
-    */
 
     #region Inputs
 
@@ -131,8 +113,11 @@ public class Cannon : MonoBehaviour
             gameManager.returnToMenu();
         }
 
-        //When player fires, activate the laser and launch it with force. Disabled when game is over.
-        if (rewiredPlayer.GetButtonDown("Fire") && !gameManager.gameOver)
+        //When player fires, activate the laser and launch it with force.
+        //Always enabled in the lobby. Only enabled in game after the start game countdown, but before game over.
+        if (rewiredPlayer.GetButtonDown("Fire") && 
+            (   SceneManager.GetActiveScene().buildIndex == gameManager.LobbySceneIndex ||
+                !gameManager.gameOver && gameManager.startGame))
         {
             //StartCoroutine(TempDisableCollider());
             laserRB.bodyType = RigidbodyType2D.Dynamic; 
