@@ -455,7 +455,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cannon: {fileID: 1000012362012830}
   scoreText: {fileID: 0}
-  comboText: {fileID: 0}
   score: 0
   comboCount: 0
   myPlayerID: 0
@@ -471,10 +470,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa3ff3de47eb3c04f92525c9f91d3466, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  inFlight: 0
   playerId: 0
   baseRotationSpeed: 4
   maxBlastForce: 2200
   maxAngleOffset: 70
+  pairedLaser: {fileID: 114000012008568226}
+  laserRB: {fileID: 0}
 --- !u!212 &212000010486402690
 SpriteRenderer:
   m_ObjectHideFlags: 1

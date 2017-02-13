@@ -37,7 +37,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.37311926, g: 0.38074008, b: 0.35872707, a: 1}
+  m_IndirectSpecularColor: {r: 0.37311992, g: 0.38074034, b: 0.35872713, a: 1}
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
@@ -890,9 +890,25 @@ Prefab:
       propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 114000012624769266, guid: 76f68068a86b4d14598968aa340a5996,
+        type: 2}
+      propertyPath: pairedLaser
+      value: 
+      objectReference: {fileID: 349838448}
+    - target: {fileID: 114000012624769266, guid: 76f68068a86b4d14598968aa340a5996,
+        type: 2}
+      propertyPath: inFlight
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 76f68068a86b4d14598968aa340a5996, type: 2}
   m_IsPrefabParent: 0
+--- !u!114 &349838448 stripped
+MonoBehaviour:
+  m_PrefabParentObject: {fileID: 114000012008568226, guid: 76f68068a86b4d14598968aa340a5996,
+    type: 2}
+  m_PrefabInternal: {fileID: 349838447}
+  m_Script: {fileID: 11500000, guid: 37ecd38c199140843b4c50f01d25506e, type: 3}
 --- !u!1 &351058166
 GameObject:
   m_ObjectHideFlags: 0
@@ -1693,9 +1709,25 @@ Prefab:
       propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 114000012624769266, guid: 76f68068a86b4d14598968aa340a5996,
+        type: 2}
+      propertyPath: pairedLaser
+      value: 
+      objectReference: {fileID: 1032073762}
+    - target: {fileID: 114000012624769266, guid: 76f68068a86b4d14598968aa340a5996,
+        type: 2}
+      propertyPath: inFlight
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 76f68068a86b4d14598968aa340a5996, type: 2}
   m_IsPrefabParent: 0
+--- !u!114 &1032073762 stripped
+MonoBehaviour:
+  m_PrefabParentObject: {fileID: 114000012008568226, guid: 76f68068a86b4d14598968aa340a5996,
+    type: 2}
+  m_PrefabInternal: {fileID: 1032073761}
+  m_Script: {fileID: 11500000, guid: 37ecd38c199140843b4c50f01d25506e, type: 3}
 --- !u!1 &1036545739
 GameObject:
   m_ObjectHideFlags: 0
@@ -2668,9 +2700,25 @@ Prefab:
       propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 114000012624769266, guid: 76f68068a86b4d14598968aa340a5996,
+        type: 2}
+      propertyPath: pairedLaser
+      value: 
+      objectReference: {fileID: 1554823857}
+    - target: {fileID: 114000012624769266, guid: 76f68068a86b4d14598968aa340a5996,
+        type: 2}
+      propertyPath: inFlight
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 76f68068a86b4d14598968aa340a5996, type: 2}
   m_IsPrefabParent: 0
+--- !u!114 &1554823857 stripped
+MonoBehaviour:
+  m_PrefabParentObject: {fileID: 114000012008568226, guid: 76f68068a86b4d14598968aa340a5996,
+    type: 2}
+  m_PrefabInternal: {fileID: 1554823856}
+  m_Script: {fileID: 11500000, guid: 37ecd38c199140843b4c50f01d25506e, type: 3}
 --- !u!1 &1688563555
 GameObject:
   m_ObjectHideFlags: 0
@@ -3533,9 +3581,25 @@ Prefab:
       propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 114000012624769266, guid: 76f68068a86b4d14598968aa340a5996,
+        type: 2}
+      propertyPath: pairedLaser
+      value: 
+      objectReference: {fileID: 1778321947}
+    - target: {fileID: 114000012624769266, guid: 76f68068a86b4d14598968aa340a5996,
+        type: 2}
+      propertyPath: inFlight
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 76f68068a86b4d14598968aa340a5996, type: 2}
   m_IsPrefabParent: 0
+--- !u!114 &1778321947 stripped
+MonoBehaviour:
+  m_PrefabParentObject: {fileID: 114000012008568226, guid: 76f68068a86b4d14598968aa340a5996,
+    type: 2}
+  m_PrefabInternal: {fileID: 1778321946}
+  m_Script: {fileID: 11500000, guid: 37ecd38c199140843b4c50f01d25506e, type: 3}
 --- !u!1 &1785324698
 GameObject:
   m_ObjectHideFlags: 0

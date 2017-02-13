@@ -59,7 +59,7 @@ public class Laser : MonoBehaviour
             this.transform.GetComponent<SpriteRenderer>().enabled = false;
 			this.transform.GetComponent<TrailRenderer> ().enabled = false;
             cannon.GetComponentInChildren<Cannon>().SetNewBaseAngle();
-            cannon.GetComponentInChildren<Cannon>().SetStoredLaser(this);
+            //cannon.GetComponentInChildren<Cannon>().SetStoredLaser(this);
             cannon.GetComponent<Cannon>().inFlight = false;
 
             //Only implement combos in FFA.

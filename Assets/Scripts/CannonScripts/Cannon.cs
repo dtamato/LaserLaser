@@ -7,18 +7,23 @@ using UnityEngine.SceneManagement;
 [DisallowMultipleComponent]
 public class Cannon : MonoBehaviour
 {
+    //References.
     BaseGM gameManager;
-    public bool inFlight;
-
+    public Player rewiredPlayer;
+    [SerializeField] Laser pairedLaser;     // Permanent reference to ball, manually assigned in Lobby scene and in player prefab.
+    [SerializeField] Rigidbody2D laserRB;   // Reference to the ball's RB.
+    public bool inFlight;                   // True if laser/ball is in flight, false if stored in cannon.
     public int playerId;
-    [SerializeField] float baseRotationSpeed = 2;
-    [SerializeField] float maxBlastForce = 2200;
-    [SerializeField] float maxAngleOffset = 70;
+
+    //Control values.
+    [SerializeField] float baseRotationSpeed;
+    [SerializeField] float maxBlastForce;
+    [SerializeField] float maxAngleOffset;
     
     // Rotation
     float currentRotationSpeed;
     int rotationModifier = 1;
-    float minRotationSpeed = 2f;
+    float minRotationSpeed = 2.0f;
     float maxRotationSpeed = 10.0f;
     
     // Angles
@@ -27,27 +32,21 @@ public class Cannon : MonoBehaviour
     float baseAngle;
     float minAngle;
     float maxAngle;
-    public Player rewiredPlayer;
-    [SerializeField] Laser pairedLaser; // Permanent reference to ball
-    [SerializeField] Laser storedLaser; // Reference used to check if can fire
-    
 
     void Awake()
     {
         gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<BaseGM>();
         inFlight = false;
+        laserRB = pairedLaser.GetComponent<Rigidbody2D>();
 
+        //In the lobby this must be assigned. In the game scene the GM assigns it.
         if (SceneManager.GetActiveScene().buildIndex == gameManager.LobbySceneIndex)
-        {
             rewiredPlayer = ReInput.players.GetPlayer(playerId);
-            
-            Debug.Log("Rewired ID join: " + rewiredPlayer.id);
-        }
-        currentRotationSpeed = baseRotationSpeed;
+
         if (maxAngleOffset < 0)
-        {
             maxAngleOffset *= -1;
-        }
+
+        currentRotationSpeed = baseRotationSpeed;
         SetNewBaseAngle();
     }
 
@@ -62,6 +61,7 @@ public class Cannon : MonoBehaviour
                 ProcessInputs();
         }
     }
+
     void OnTriggerEnter2D(Collider2D other)
     {
         if (other.CompareTag("Player"))
@@ -70,13 +70,11 @@ public class Cannon : MonoBehaviour
             {
                 pairedLaser = other.GetComponentInChildren<Laser>();
             }
-            if (!storedLaser)
-            {
-                storedLaser = other.GetComponentInChildren<Laser>();
-            }
         }
     }
+
     #region Inputs
+
     void ProcessInputs()
     {
         //Once game is over, don't allow movement.
@@ -107,6 +105,7 @@ public class Cannon : MonoBehaviour
             currentRotationSpeed = baseRotationSpeed;
         }
     }
+
     void RestrictAngle()
     {
         currentAngle = this.transform.rotation.eulerAngles.z;
@@ -120,35 +119,41 @@ public class Cannon : MonoBehaviour
             this.transform.rotation = Quaternion.Euler(0, 0, minAngle);
         }
     }
+
     void GetFireInput()
     {
         if (gameManager.gameOver == true && rewiredPlayer.GetButtonDown("StartGame")) {
             Debug.Log("changing to menu");
             gameManager.returnToMenu();
         }
+
+        //When player fires, activate the laser and launch it with force.
         if (rewiredPlayer.GetButtonDown("Fire"))
         {
             //StartCoroutine(TempDisableCollider());
-            Rigidbody2D playerRigidbody = storedLaser.GetComponentInChildren<Rigidbody2D>();
-            //playerRigidbody.isKinematic = false;
-            playerRigidbody.bodyType = RigidbodyType2D.Dynamic; 
-            playerRigidbody.AddForce(maxBlastForce * this.transform.up);
-            storedLaser.transform.GetComponent<SpriteRenderer>().enabled = true;
-			storedLaser.transform.GetComponent<TrailRenderer> ().enabled = true;
-            storedLaser = null;
+            laserRB.bodyType = RigidbodyType2D.Dynamic; 
+            laserRB.AddForce(maxBlastForce * this.transform.up);
+            pairedLaser.transform.GetComponent<SpriteRenderer>().enabled = true;
+			pairedLaser.transform.GetComponent<TrailRenderer> ().enabled = true;
             inFlight = true;
             this.GetComponent<AudioSource>().pitch = Random.Range(0.5f, 1.5f);
             this.GetComponent<AudioSource>().Play();
         }
     }
+
+    /*
     IEnumerator TempDisableCollider()
     {
         this.GetComponent<Collider2D>().enabled = false;
         yield return new WaitForSeconds(0.15f);
         this.GetComponent<Collider2D>().enabled = true;
     }
+    */
+
     #endregion
+
     #region Setters
+
     // Called from Laser.cs
     public void SetNewBaseAngle()
     {
@@ -161,11 +166,15 @@ public class Cannon : MonoBehaviour
         // Change rotation modifier if upside down
         rotationModifier = (this.transform.up == Vector3.down) ? -1 : 1;
     }
+
+    //Called from CannonCustomization.cs.
     public void ChangeRotationSpeed(float increment)
     {
         baseRotationSpeed += increment;
         baseRotationSpeed = Mathf.Clamp(baseRotationSpeed, minRotationSpeed, maxRotationSpeed);
     }
+
+    //Is this called from anywhere?
     public void ChangeColor()
     {
         // New color (Random for now, pull from an array later)
@@ -173,26 +182,36 @@ public class Cannon : MonoBehaviour
         // Change colors
         SpriteRenderer[] spriteRenderers = this.GetComponentsInChildren<SpriteRenderer>();
         foreach (SpriteRenderer sprite in spriteRenderers) { sprite.color = newColor; }
-        storedLaser.ChangeColor(newColor);
+        pairedLaser.ChangeColor(newColor);
     }
+
+    //Is THIS called from anywhere!?
     public void ModifyRotationSpeed(float newSpeed)
     {
         baseRotationSpeed = newSpeed;
     }
+
+    /*
+    //Called from Laser.cs.
     public void SetStoredLaser(Laser laser)
     { 
 
         storedLaser = laser;
     }
+    */
+
     #endregion
+
     #region Getters
     public int GetPlayerID()
     {
         return playerId;
     }
+
     public float GetBaseSpeed()
     {
         return baseRotationSpeed;
     }
+
     #endregion
 }
