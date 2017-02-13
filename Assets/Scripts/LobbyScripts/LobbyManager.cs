@@ -95,11 +95,16 @@ public class LobbyManager : MonoBehaviour {
 
     public void UnjoinColour(int cIdx,int pId) //if the player leaves then return them to their position, disable their cannon (checked within PlayerActivationCheck()), and change their colour to grey
     {
-        playerCannons[pId].GetComponentInChildren<SpriteRenderer>().color = Color.gray;
-        playerCannons[pId].transform.Find("Laser").GetComponent<SpriteRenderer>().color = Color.grey;
-        playerCannons[pId].transform.Find("Laser").GetComponent<TrailRenderer>().material.color = Color.grey;
-        playerCannons[pId].GetComponentInChildren<Rigidbody2D>().isKinematic = false; // adding gravity so the player can fall into place 
-        playerCannons[pId].GetComponentInChildren<Rigidbody2D>().transform.position = GameObject.Find("Player" + (pId + 1) + " Overlay").GetComponent<OverlayController>().resetPos; //resetting the player's cannon to its original position
+        playerCannons[pId].transform.Find("Cannon Sprite").GetComponent<SpriteRenderer>().color = Color.gray;
+        Transform playerLaser = playerCannons[pId].transform.Find("Laser");
+        playerLaser.GetComponent<SpriteRenderer>().color = Color.grey;
+        playerLaser.GetComponent<TrailRenderer>().material.color = Color.grey;
+
+        //Toggling kinematic on and off kills all velocity of the laser.
+        //This prevents the laser from maintaining it's velocity after being moved, so it can fall into the desired reset location.
+        playerLaser.GetComponent<Rigidbody2D>().isKinematic = true;
+        playerLaser.GetComponent<Rigidbody2D>().isKinematic = false;
+        playerLaser.position = GameObject.Find("Player" + (pId + 1) + " Overlay").GetComponent<OverlayController>().resetPos; //resetting the player's cannon to its original position
         playerCannons[pId].transform.Find("ColourBand").GetComponent<SpriteRenderer>().color = new Color(0.8f,0.8f,0.8f,0f);
         GameObject.Find("JoinText" + pId).GetComponent<Text>().enabled = true; //the player's 'Press 'A' to join text'
     }

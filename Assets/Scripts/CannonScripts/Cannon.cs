@@ -20,13 +20,13 @@ public class Cannon : MonoBehaviour
     [SerializeField] float maxBlastForce;
     [SerializeField] float maxAngleOffset;
     
-    // Rotation
+    //Rotation
     float currentRotationSpeed;
     int rotationModifier = 1;
     float minRotationSpeed = 2.0f;
     float maxRotationSpeed = 10.0f;
     
-    // Angles
+    //Angles
     float currentAngle;
     float baseAngle;
     float minAngle;
@@ -61,6 +61,7 @@ public class Cannon : MonoBehaviour
         }
     }
 
+    /*
     void OnTriggerEnter2D(Collider2D other)
     {
         if (other.CompareTag("Player"))
@@ -71,6 +72,7 @@ public class Cannon : MonoBehaviour
             }
         }
     }
+    */
 
     #region Inputs
 
