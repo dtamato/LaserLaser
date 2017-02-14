@@ -19,7 +19,6 @@ public class TimedGM : BaseGM
         base.Awake();
     }
 
-
     // Update is called once per frame
     void Update()
     {
@@ -31,6 +30,7 @@ public class TimedGM : BaseGM
             lobbyManager.SwitchTeamMode();
             enteredLobby = true;
         }
+
         #region MainGame Scene
         //When the GM enters the game scene, initialize the game.
         else if (!initialized && SceneManager.GetActiveScene().buildIndex == mainGameSceneIndex)
@@ -56,6 +56,7 @@ public class TimedGM : BaseGM
             //Ensures this process runs once.
             initialized = true;
         }
+
         //Core game loop once in the game scene. inGame is set in BaseGM.initializeGame().
         else if (inGame && startGame && !gameOver)
         {

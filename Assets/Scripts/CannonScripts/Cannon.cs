@@ -21,10 +21,10 @@ public class Cannon : MonoBehaviour
     [SerializeField] float maxAngleOffset;
     
     //Rotation
-    float currentRotationSpeed;
+    [SerializeField] float currentRotationSpeed;
     int rotationModifier = 1;
-    float minRotationSpeed = 2.0f;
-    float maxRotationSpeed = 10.0f;
+    float minRotationSpeed = 1.5f;
+    float maxRotationSpeed = 5.0f;
     
     //Angles
     float currentAngle;
@@ -156,11 +156,18 @@ public class Cannon : MonoBehaviour
         rotationModifier = (this.transform.up == Vector3.down) ? -1 : 1;
     }
 
-    //Called from CannonCustomization.cs.
+    //Called from CannonCustomization.cs in lobby when sensitivity is changed.
     public void ChangeRotationSpeed(float increment)
     {
         baseRotationSpeed += increment;
         baseRotationSpeed = Mathf.Clamp(baseRotationSpeed, minRotationSpeed, maxRotationSpeed);
+    }
+
+    //Called from BaseGM.cs in main game when player is instantiated.
+    public void ApplyRotationSpeed(int sensitivity)
+    {
+        baseRotationSpeed = 1.0f + (sensitivity * 0.5f);
+        currentRotationSpeed = baseRotationSpeed;
     }
     
     //Called from Slow.cs.
