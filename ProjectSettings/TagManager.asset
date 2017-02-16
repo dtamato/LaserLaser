@@ -13,6 +13,8 @@ TagManager:
   - GameManager
   - Slow
   - BigBall
+  - Scattershot
+  - PowerupBoundary
   layers:
   - Default
   - TransparentFX
