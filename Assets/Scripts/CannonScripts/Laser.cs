@@ -83,23 +83,30 @@ public class Laser : MonoBehaviour
     {
         if (other.CompareTag("Diamond"))
         {
-            diamondCount++;     //For combo tracking.
-
-            //FFA scoring.
-            if (gameMode == "FFA")
-            {
-                score++;
-                gameManager.addScore(myPlayerID, score);//this is where score text is set
-            }
-            //Team scoring.
-            else
-            {
-				gameManager.addToTeamScore (myTeam == 1);
-            }
+			scoreCounter ();
         }
 
         Camera.main.GetComponent<CameraEffects>().ShakeCamera();
     }
+
+	public void scoreCounter()
+	{
+		diamondCount++;     //For combo tracking.
+
+		//FFA scoring.
+		if (gameMode == "FFA")
+		{
+			score++;
+			gameManager.addScore(myPlayerID, score);//this is where score text is set
+			Debug.Log("works on regular");
+		}
+		//Team scoring.
+		else
+		{
+			gameManager.addToTeamScore (myTeam == 1);
+			Debug.Log("works on regular2");
+		}
+	}
 
     IEnumerator PulsateLight()
     {
@@ -132,4 +139,9 @@ public class Laser : MonoBehaviour
     {
         this.GetComponent<SpriteRenderer>().color = newColor;
     }
+
+	public Color getColor()
+	{
+		return this.GetComponent<SpriteRenderer> ().color;
+	}
 }
