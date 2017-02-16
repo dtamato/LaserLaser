@@ -436,7 +436,7 @@ MonoBehaviour:
   canChange: 0
   team: 0
   inverted: 0
-  sensitivity: 1
+  sensitivity: 5
   colorIdx: 0
   myColor: {r: 0, g: 0, b: 0, a: 0}
   myTeamColor: {r: 0, g: 0, b: 0, a: 0}
@@ -455,7 +455,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cannon: {fileID: 1000012362012830}
   scoreText: {fileID: 0}
-  comboText: {fileID: 0}
   score: 0
   comboCount: 0
   myPlayerID: 0
@@ -471,10 +470,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa3ff3de47eb3c04f92525c9f91d3466, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  pairedLaser: {fileID: 114000012008568226}
+  laserRB: {fileID: 0}
+  inFlight: 0
   playerId: 0
-  baseRotationSpeed: 4
+  baseRotationSpeed: 3.5
   maxBlastForce: 2200
   maxAngleOffset: 70
+  currentRotationSpeed: 0
 --- !u!212 &212000010486402690
 SpriteRenderer:
   m_ObjectHideFlags: 1

@@ -67,7 +67,7 @@ public class BaseGM : MonoBehaviour
         {
             ID = -1;
             isActive = false;
-            sensitivity = 1;
+            sensitivity = 5;
             inverted = false;
             team = -1;
             color = Color.grey;
@@ -206,6 +206,7 @@ public class BaseGM : MonoBehaviour
     public void setColor(int pID, Color color)
     {
         playerList[pID].setColor(color);
+
     }
 
     //Called from Cannon.cs when a player changes their sensitivity.
@@ -281,6 +282,7 @@ public class BaseGM : MonoBehaviour
             //Set the player's ID, and pair their controls.
             playerList[i].obj.GetComponent<Cannon>().playerId = prefs.myID;
             playerList[i].obj.GetComponent<Cannon>().rewiredPlayer = ReInput.players.GetPlayer(prefs.myID);
+            playerList[i].obj.GetComponent<Cannon>().ApplyRotationSpeed(prefs.sensitivity);
 
             //Apply all the colour changes to the player's laser and cannon.
             Laser laserScript = playerList[i].obj.transform.Find("Laser").GetComponent<Laser>();
@@ -421,7 +423,7 @@ public class BaseGM : MonoBehaviour
     {
         playerList[pID].setScore(score);
 		UpdateWhiteBorderFFA ();
-        HUDText[pID].text = "P1- " + score.ToString("00");
+        HUDText[pID].text = "P" + (pID + 1) + "- " + score.ToString("00");
     }
 
 	void UpdateWhiteBorderFFA () {
