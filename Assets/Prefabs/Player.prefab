@@ -16,15 +16,15 @@ GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 4000013760089718}
-  - 212: {fileID: 212000010486402690}
-  - 58: {fileID: 58000012651964238}
-  - 50: {fileID: 50000010853870488}
-  - 114: {fileID: 114000012008568226}
-  - 96: {fileID: 96000011343005382}
-  - 108: {fileID: 108000012254442046}
+  - component: {fileID: 4000013760089718}
+  - component: {fileID: 212000010486402690}
+  - component: {fileID: 58000012651964238}
+  - component: {fileID: 50000010853870488}
+  - component: {fileID: 114000012008568226}
+  - component: {fileID: 96000011343005382}
+  - component: {fileID: 108000012254442046}
   m_Layer: 8
   m_Name: Laser
   m_TagString: Player
@@ -37,10 +37,10 @@ GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 4000013204523014}
-  - 212: {fileID: 212000013183806612}
+  - component: {fileID: 4000013204523014}
+  - component: {fileID: 212000013183806612}
   m_Layer: 8
   m_Name: Cannon Sprite
   m_TagString: Untagged
@@ -53,10 +53,10 @@ GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 4000014258467520}
-  - 212: {fileID: 212000012226947500}
+  - component: {fileID: 4000014258467520}
+  - component: {fileID: 212000012226947500}
   m_Layer: 8
   m_Name: ColourBand
   m_TagString: Untagged
@@ -69,13 +69,14 @@ GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 4000014272126910}
-  - 61: {fileID: 61000010327839500}
-  - 114: {fileID: 114000012624769266}
-  - 114: {fileID: 114000011582327276}
-  - 82: {fileID: 82000011810177810}
+  - component: {fileID: 4000014272126910}
+  - component: {fileID: 61000010327839500}
+  - component: {fileID: 114000012624769266}
+  - component: {fileID: 114000011582327276}
+  - component: {fileID: 82000011810177810}
+  - component: {fileID: 61992600950052354}
   m_Layer: 8
   m_Name: Player
   m_TagString: Cannon
@@ -90,12 +91,12 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1000010938332898}
   m_LocalRotation: {x: 0, y: 0, z: 0.0032778524, w: 0.99999464}
-  m_LocalPosition: {x: -0, y: 0.71, z: 0}
-  m_LocalScale: {x: 1, y: 2, z: 1}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0.37559998}
+  m_LocalPosition: {x: -0, y: 0.82, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4000014272126910}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0.37559998}
 --- !u!4 &4000013760089718
 Transform:
   m_ObjectHideFlags: 1
@@ -105,10 +106,10 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 3.1999998, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 4000014272126910}
   m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4000014258467520
 Transform:
   m_ObjectHideFlags: 1
@@ -118,10 +119,10 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 1.1, z: 0}
   m_LocalScale: {x: 0.25, y: 0.3320913, z: 1}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 4000014272126910}
   m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4000014272126910
 Transform:
   m_ObjectHideFlags: 1
@@ -131,26 +132,29 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children:
   - {fileID: 4000013204523014}
   - {fileID: 4000013760089718}
   - {fileID: 4000014258467520}
   m_Father: {fileID: 0}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!50 &50000010853870488
 Rigidbody2D:
-  serializedVersion: 2
+  serializedVersion: 4
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1000010721765722}
+  m_BodyType: 0
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
   m_Mass: 1
   m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: 1
-  m_IsKinematic: 0
+  m_Material: {fileID: 0}
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 1
@@ -183,6 +187,20 @@ BoxCollider2D:
   m_Offset: {x: 0, y: 0.9}
   serializedVersion: 2
   m_Size: {x: 0.9, y: 1.5}
+--- !u!61 &61992600950052354
+BoxCollider2D:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000012362012830}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_Offset: {x: 0, y: 1}
+  serializedVersion: 2
+  m_Size: {x: 1.2, y: 1.8}
 --- !u!82 &82000011810177810
 AudioSource:
   m_ObjectHideFlags: 1
@@ -199,6 +217,7 @@ AudioSource:
   Loop: 0
   Mute: 0
   Spatialize: 0
+  SpatializePostEffects: 0
   Priority: 128
   DopplerLevel: 1
   MinDistance: 1
@@ -211,12 +230,14 @@ AudioSource:
   rolloffCustomCurve:
     serializedVersion: 2
     m_Curve:
-    - time: 0
+    - serializedVersion: 2
+      time: 0
       value: 1
       inSlope: 0
       outSlope: 0
       tangentMode: 0
-    - time: 1
+    - serializedVersion: 2
+      time: 1
       value: 0
       inSlope: 0
       outSlope: 0
@@ -227,7 +248,8 @@ AudioSource:
   panLevelCustomCurve:
     serializedVersion: 2
     m_Curve:
-    - time: 0
+    - serializedVersion: 2
+      time: 0
       value: 0
       inSlope: 0
       outSlope: 0
@@ -238,7 +260,8 @@ AudioSource:
   spreadCustomCurve:
     serializedVersion: 2
     m_Curve:
-    - time: 0
+    - serializedVersion: 2
+      time: 0
       value: 0
       inSlope: 0
       outSlope: 0
@@ -249,7 +272,8 @@ AudioSource:
   reverbZoneMixCustomCurve:
     serializedVersion: 2
     m_Curve:
-    - time: 0
+    - serializedVersion: 2
+      time: 0
       value: 1
       inSlope: 0
       outSlope: 0
@@ -259,6 +283,7 @@ AudioSource:
     m_RotationOrder: 0
 --- !u!96 &96000011343005382
 TrailRenderer:
+  serializedVersion: 2
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
@@ -271,7 +296,9 @@ TrailRenderer:
   m_ReflectionProbeUsage: 0
   m_Materials:
   - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
-  m_SubsetIndices: 
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
   m_StaticBatchRoot: {fileID: 0}
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
@@ -279,7 +306,7 @@ TrailRenderer:
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_SelectedWireframeHidden: 0
+  m_SelectedEditorRenderState: 3
   m_MinimumChartSize: 4
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
@@ -287,24 +314,75 @@ TrailRenderer:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_Time: 0.25
-  m_StartWidth: 1
-  m_EndWidth: 0.1
-  m_Colors:
-    m_Color[0]:
+  m_Parameters:
+    serializedVersion: 2
+    widthMultiplier: 1
+    widthCurve:
       serializedVersion: 2
-      rgba: 4278190335
-    m_Color[1]:
-      serializedVersion: 2
-      rgba: 4283387903
-    m_Color[2]:
-      serializedVersion: 2
-      rgba: 4290625023
-    m_Color[3]:
-      serializedVersion: 2
-      rgba: 4293980415
-    m_Color[4]:
-      serializedVersion: 2
-      rgba: 16777215
+      m_Curve:
+      - serializedVersion: 2
+        time: 0
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+      - serializedVersion: 2
+        time: 1
+        value: 0.1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    colorGradient:
+      key0:
+        serializedVersion: 2
+        rgba: 4278190335
+      key1:
+        serializedVersion: 2
+        rgba: 4283387903
+      key2:
+        serializedVersion: 2
+        rgba: 4290625023
+      key3:
+        serializedVersion: 2
+        rgba: 4293980415
+      key4:
+        serializedVersion: 2
+        rgba: 16777215
+      key5:
+        serializedVersion: 2
+        rgba: 0
+      key6:
+        serializedVersion: 2
+        rgba: 0
+      key7:
+        serializedVersion: 2
+        rgba: 0
+      ctime0: 0
+      ctime1: 16384
+      ctime2: 32768
+      ctime3: 49151
+      ctime4: 65535
+      ctime5: 0
+      ctime6: 0
+      ctime7: 0
+      atime0: 0
+      atime1: 16384
+      atime2: 32768
+      atime3: 49151
+      atime4: 65535
+      atime5: 0
+      atime6: 0
+      atime7: 0
+      m_Mode: 0
+      m_NumColorKeys: 5
+      m_NumAlphaKeys: 5
+    numCornerVertices: 0
+    numCapVertices: 0
+    alignment: 0
+    textureMode: 0
   m_MinVertexDistance: 0.1
   m_Autodestruct: 0
 --- !u!108 &108000012254442046
@@ -313,7 +391,7 @@ Light:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1000010721765722}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 7
   m_Type: 2
   m_Color: {r: 0.30147058, g: 0.30147058, b: 0.30147058, a: 1}
@@ -353,11 +431,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rotationSpeedIncrement: 0.5
-  myColour: {r: 0, g: 0, b: 0, a: 0}
+  isInLobby: 1
   hasJoined: 0
   canChange: 0
   team: 0
+  inverted: 0
+  sensitivity: 5
   colorIdx: 0
+  myColor: {r: 0, g: 0, b: 0, a: 0}
+  myTeamColor: {r: 0, g: 0, b: 0, a: 0}
+  myID: 0
+  inputText: {fileID: 0}
 --- !u!114 &114000012008568226
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -371,10 +455,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cannon: {fileID: 1000012362012830}
   scoreText: {fileID: 0}
-  comboText: {fileID: 0}
   score: 0
   comboCount: 0
   myPlayerID: 0
+  myTeam: 0
 --- !u!114 &114000012624769266
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -386,10 +470,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa3ff3de47eb3c04f92525c9f91d3466, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  pairedLaser: {fileID: 114000012008568226}
+  laserRB: {fileID: 0}
+  inFlight: 0
   playerId: 0
-  baseRotationSpeed: 2
+  baseRotationSpeed: 3.5
   maxBlastForce: 2200
   maxAngleOffset: 70
+  currentRotationSpeed: 0
 --- !u!212 &212000010486402690
 SpriteRenderer:
   m_ObjectHideFlags: 1
@@ -404,7 +492,9 @@ SpriteRenderer:
   m_ReflectionProbeUsage: 0
   m_Materials:
   - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
-  m_SubsetIndices: 
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
   m_StaticBatchRoot: {fileID: 0}
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
@@ -412,7 +502,7 @@ SpriteRenderer:
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_SelectedWireframeHidden: 1
+  m_SelectedEditorRenderState: 0
   m_MinimumChartSize: 4
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
@@ -437,7 +527,9 @@ SpriteRenderer:
   m_ReflectionProbeUsage: 0
   m_Materials:
   - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
-  m_SubsetIndices: 
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
   m_StaticBatchRoot: {fileID: 0}
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
@@ -445,7 +537,7 @@ SpriteRenderer:
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_SelectedWireframeHidden: 1
+  m_SelectedEditorRenderState: 0
   m_MinimumChartSize: 4
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
@@ -470,7 +562,9 @@ SpriteRenderer:
   m_ReflectionProbeUsage: 0
   m_Materials:
   - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
-  m_SubsetIndices: 
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
   m_StaticBatchRoot: {fileID: 0}
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
@@ -478,14 +572,14 @@ SpriteRenderer:
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_SelectedWireframeHidden: 1
+  m_SelectedEditorRenderState: 0
   m_MinimumChartSize: 4
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -505003231
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: ec17d2846849fbe4aa34d18ceaf96eeb, type: 3}
+  m_Sprite: {fileID: 21300004, guid: a68aad0369286b24294bb0a71e768a71, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0

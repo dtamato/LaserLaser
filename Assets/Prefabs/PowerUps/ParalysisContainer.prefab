@@ -21,7 +21,6 @@ GameObject:
   - 4: {fileID: 4000011957730422}
   - 212: {fileID: 212000011093110514}
   - 58: {fileID: 58000013952621050}
-  - 114: {fileID: 114000012710931222}
   - 114: {fileID: 114000011680542418}
   m_Layer: 13
   m_Name: ParalysisContainer
@@ -37,8 +36,8 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1000010131840992}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.37, z: 0}
-  m_LocalScale: {x: 5, y: 5, z: 1}
+  m_LocalPosition: {x: -4.72, y: 2.21, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 0}
@@ -54,9 +53,9 @@ CircleCollider2D:
   m_Material: {fileID: 0}
   m_IsTrigger: 1
   m_UsedByEffector: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: 0, y: 0.16}
   serializedVersion: 2
-  m_Radius: 0.1
+  m_Radius: 0.4
 --- !u!114 &114000011680542418
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -69,17 +68,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   paralysisTimer: 2
---- !u!114 &114000012710931222
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1000010131840992}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3e9bbf2f93928d644bec3efbcc1af7a6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!212 &212000011093110514
 SpriteRenderer:
   m_ObjectHideFlags: 1
@@ -109,7 +97,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -505003231
   m_SortingOrder: 1
-  m_Sprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Sprite: {fileID: 21300000, guid: 53c0ac0857d5ff249a6fc6d8bee065d6, type: 3}
+  m_Color: {r: 1, g: 1, b: 0, a: 1}
   m_FlipX: 0
   m_FlipY: 0

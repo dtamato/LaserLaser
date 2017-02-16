@@ -21,22 +21,19 @@ public class ItemSpawner : MonoBehaviour
 
     IEnumerator RecursiveSpawner()
     {
-        StartCoroutine("SpawnItem");
+		if (gameManager.startGame == true)
+		{
+			Bounds spawnerBounds = this.GetComponentInChildren<BoxCollider2D>().bounds;
+			float newX = Random.Range(spawnerBounds.min.x, spawnerBounds.max.x);
+			float newY = Random.Range(spawnerBounds.min.y, spawnerBounds.max.y);
+			Vector3 itemLocation = new Vector3(newX, newY, 0);
+			GameObject newItem = Instantiate(itemPrefab, itemLocation, Quaternion.identity) as GameObject;
+			newItem.transform.SetParent(this.transform);
+		}
+
         yield return new WaitForSeconds(Random.Range(spawnCooldown * 0.5f, spawnCooldown * 1.5f));
-        StartCoroutine("RecursiveSpawner");
-    }
-    IEnumerator SpawnItem()
-    {
-        if (gameManager.startGame == true)
-        {
-            Bounds spawnerBounds = this.GetComponentInChildren<BoxCollider2D>().bounds;
-            float newX = Random.Range(spawnerBounds.min.x, spawnerBounds.max.x);
-            float newY = Random.Range(spawnerBounds.min.y, spawnerBounds.max.y);
-            Vector3 itemLocation = new Vector3(newX, newY, 0);
-            GameObject newItem = Instantiate(itemPrefab, itemLocation, Quaternion.identity) as GameObject;
-            newItem.transform.SetParent(this.transform);
-            yield return new WaitForSeconds(spawnCooldown);
-        }
+        
+		StartCoroutine("RecursiveSpawner");
     }
 }
 

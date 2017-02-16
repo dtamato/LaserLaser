@@ -16,22 +16,21 @@ public class ColorList
     }
 }
 
-
 public class LobbyManager : MonoBehaviour {
 
 
     void FFAColourList() //The available colours for the FFA lobby
     {
-        _colorlist[0] = new ColorList(false, Color.red);
-        _colorlist[1] = new ColorList(false, Color.blue);
-        _colorlist[2] = new ColorList(false, Color.green);
-        _colorlist[3] = new ColorList(false, Color.magenta);
-        _colorlist[4] = new ColorList(true, Color.yellow); //need to change due to it being too close to the crystal's colour
+		_colorlist[0] = new ColorList(false, new Color(1, 0, 0.4f)); // Thi's Magenta
+		_colorlist[1] = new ColorList(false, new Color(0.21f, 1, 0.13f)); // Thi's Green
+		_colorlist[2] = new ColorList(false, new Color(1, 0.89f, 0)); // Thi's Yellow
+		_colorlist[3] = new ColorList(false, new Color(0.31f, 1, 0.87f)); // Thi's Blue
+        _colorlist[4] = new ColorList(true, Color.magenta);
         _colorlist[5] = new ColorList(true, Color.cyan);
-        _colorlist[6] = new ColorList(true, new Color(0.29f, 0.35f, 0.67f, 1f));
-        _colorlist[7] = new ColorList(true, new Color(0.95f, 0.62f, 0f, 1f));
-        _colorlist[8] = new ColorList(true, new Color(0f, 0.95f, 0.7f, 1f));
-        _colorlist[9] = new ColorList(true, new Color(0.65f, 0f, 0.73f, 1f));
+        _colorlist[6] = new ColorList(true, new Color(0.29f, 0.35f, 0.67f, 1f)); // Deep violet
+        _colorlist[7] = new ColorList(true, new Color(0.95f, 0.62f, 0f, 1f)); // Orange
+        _colorlist[8] = new ColorList(true, new Color(0f, 0.95f, 0.7f, 1f)); // Teal
+        _colorlist[9] = new ColorList(true, new Color(0.65f, 0f, 0.73f, 1f)); // Purple
     }
 
     private BaseGM gameManager;
@@ -96,12 +95,17 @@ public class LobbyManager : MonoBehaviour {
 
     public void UnjoinColour(int cIdx,int pId) //if the player leaves then return them to their position, disable their cannon (checked within PlayerActivationCheck()), and change their colour to grey
     {
-        playerCannons[pId].GetComponentInChildren<SpriteRenderer>().color = Color.gray;
-        playerCannons[pId].transform.Find("Laser").GetComponent<SpriteRenderer>().color = Color.grey;
-        playerCannons[pId].transform.Find("Laser").GetComponent<TrailRenderer>().material.color = Color.grey;
-        playerCannons[pId].GetComponentInChildren<Rigidbody2D>().isKinematic = false; // adding gravity so the player can fall into place 
-        playerCannons[pId].GetComponentInChildren<Rigidbody2D>().transform.position = GameObject.Find("Player" + (pId + 1) + " Overlay").GetComponent<OverlayController>().resetPos; //resetting the player's cannon to its original position
-        playerCannons[pId].transform.Find("ColourBand").GetComponent<SpriteRenderer>().color = new Color(0.8f,0.8f,0.8f,1f);
+        playerCannons[pId].transform.Find("Cannon Sprite").GetComponent<SpriteRenderer>().color = Color.gray;
+        Transform playerLaser = playerCannons[pId].transform.Find("Laser");
+        playerLaser.GetComponent<SpriteRenderer>().color = Color.grey;
+        playerLaser.GetComponent<TrailRenderer>().material.color = Color.grey;
+
+        //Toggling kinematic on and off kills all velocity of the laser.
+        //This prevents the laser from maintaining it's velocity after being moved, so it can fall into the desired reset location.
+        playerLaser.GetComponent<Rigidbody2D>().isKinematic = true;
+        playerLaser.GetComponent<Rigidbody2D>().isKinematic = false;
+        playerLaser.position = GameObject.Find("Player" + (pId + 1) + " Overlay").GetComponent<OverlayController>().resetPos; //resetting the player's cannon to its original position
+        playerCannons[pId].transform.Find("ColourBand").GetComponent<SpriteRenderer>().color = new Color(0.8f,0.8f,0.8f,0f);
         GameObject.Find("JoinText" + pId).GetComponent<Text>().enabled = true; //the player's 'Press 'A' to join text'
     }
 
@@ -113,7 +117,7 @@ public class LobbyManager : MonoBehaviour {
         playerCannons[pId].GetComponentInChildren<SpriteRenderer>().color = _colorlist[cIdx]._color; //Cannon colour
         _colorlist[cIdx].isAvailable = false; //making sure other players cannot use the same colour
         playerCannons[pId].GetComponent<CannonCustomization>().myColor = _colorlist[cIdx]._color;   //Update Color variable, to be passed to the GM.
-        playerCannons[pId].GetComponent<CannonCustomization>().inputText.GetComponent<Text>().color = _colorlist[cIdx]._color;
+        //playerCannons[pId].GetComponent<CannonCustomization>().inputText.GetComponent<Text>().color = _colorlist[cIdx]._color;
     }
 
     public void SwitchTeamMode()
@@ -182,14 +186,17 @@ public class LobbyManager : MonoBehaviour {
         if (gameType == "FFA") {
             if (joinedPlayers >= 2)
             {
-                Debug.Log("changing to game");
+                Debug.Log("changing to FFA game");
                 gameManager.changeScene(gameManager.mainGameSceneIndex);
             }
         }
         //Requires at least 1 player on each team.
         else if (gameType == "TB") {
-            if (team1Players > 0 && team2Players > 0 && (team1Players+team2Players) == joinedPlayers)
+            if (team1Players > 0 && team2Players > 0 && (team1Players + team2Players) == joinedPlayers)
+            {
+                Debug.Log("changing to TB game");
                 gameManager.changeScene(gameManager.mainGameSceneIndex);
+            }
         }
     }
 }

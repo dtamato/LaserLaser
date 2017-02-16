@@ -28,7 +28,7 @@ public class Item : MonoBehaviour {
 			AudioClip clip = this.GetComponent<AudioSource> ().clip;
 
 			GameObject diamondCollected = Instantiate (diamondCollectedPrefab, this.transform.position, Quaternion.identity) as GameObject;
-			diamondCollected.GetComponent<DiamondCollected> ().ChangeColor (other.GetComponentInChildren<SpriteRenderer> ().color);
+			diamondCollected.GetComponent<CircleParticle> ().ChangeColor (other.GetComponentInChildren<SpriteRenderer> ().color);
 
 			Destroy(this.gameObject, clip.length);
 		}

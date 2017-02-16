@@ -7,82 +7,69 @@ using UnityEngine.SceneManagement;
 [DisallowMultipleComponent]
 public class Cannon : MonoBehaviour
 {
+    //References.
     BaseGM gameManager;
-
+    public Player rewiredPlayer;
+    [SerializeField] Laser pairedLaser;     // Permanent reference to ball, manually assigned in Lobby scene and in player prefab.
+    [SerializeField] Rigidbody2D laserRB;   // Reference to the ball's RB.
+    public bool inFlight;                   // True if laser/ball is in flight, false if stored in cannon.
     public int playerId;
-    [SerializeField] float baseRotationSpeed = 2;
-    [SerializeField] float maxBlastForce = 2200;
-    [SerializeField] float maxAngleOffset = 70;
+
+    //Control values.
+    [SerializeField] float baseRotationSpeed;
+    [SerializeField] float maxBlastForce;
+    [SerializeField] float maxAngleOffset;
     
-    // Rotation
-    float currentRotationSpeed;
+    //Rotation
+    [SerializeField] float currentRotationSpeed;
     int rotationModifier = 1;
-    float minRotationSpeed = 2f;
-    float maxRotationSpeed = 10.0f;
+    float minRotationSpeed = 1.5f;
+    float maxRotationSpeed = 5.0f;
     
-    // Angles
+    //Angles
     float currentAngle;
-    float angleOffset;
     float baseAngle;
     float minAngle;
     float maxAngle;
-    public Player rewiredPlayer;
-    Laser pairedLaser; // Permanent reference to ball
-    Laser storedLaser; // Reference used to check if can fire
-    
 
     void Awake()
     {
         gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<BaseGM>();
+        inFlight = false;
+        laserRB = pairedLaser.GetComponent<Rigidbody2D>();
 
+        //In the lobby this must be assigned. In the game scene the GM assigns it.
         if (SceneManager.GetActiveScene().buildIndex == gameManager.LobbySceneIndex)
-        {
             rewiredPlayer = ReInput.players.GetPlayer(playerId);
-            
-            Debug.Log("Rewired ID join: " + rewiredPlayer.id);
-        }
-        currentRotationSpeed = baseRotationSpeed;
+
         if (maxAngleOffset < 0)
-        {
             maxAngleOffset *= -1;
-        }
+
+        currentRotationSpeed = baseRotationSpeed;
         SetNewBaseAngle();
     }
 
     void Update()
     {
-        //If in the lobby, process inputs. If in the game, check the countdown is finished as well.
-        if (storedLaser)
-        {
-            if (SceneManager.GetActiveScene().buildIndex == gameManager.LobbySceneIndex)
-                ProcessInputs();
-            else if (SceneManager.GetActiveScene().buildIndex == gameManager.mainGameSceneIndex && gameManager.startGame == true)
-                ProcessInputs();
-        }
+        //Player can't input while in flight.
+        if (!inFlight)
+            ProcessInputs();
     }
-    void OnTriggerEnter2D(Collider2D other)
-    {
-        if (other.CompareTag("Player"))
-        {
-            if (!pairedLaser)
-            {
-                pairedLaser = other.GetComponentInChildren<Laser>();
-            }
-            if (!storedLaser)
-            {
-                storedLaser = other.GetComponentInChildren<Laser>();
-            }
-        }
-    }
+
     #region Inputs
+
     void ProcessInputs()
     {
-        //Once game is over, don't allow movement.
-        if (gameManager.gameOver == false)
+        //In lobby, don't allow movement until player has joined.
+        //In main game scene, once game is over don't allow movement.
+		if ((SceneManager.GetActiveScene().buildIndex == gameManager.LobbySceneIndex && this.GetComponent<CannonCustomization>().hasJoined) ||
+			(SceneManager.GetActiveScene().buildIndex == gameManager.mainGameSceneIndex && gameManager.gameOver == false))
         {
             GetRotationInput();
             RestrictAngle();
         }
+
+        //Always check for firing, also checks return to menu prompt on game over.
         GetFireInput();
     }
 
@@ -104,6 +91,7 @@ public class Cannon : MonoBehaviour
             currentRotationSpeed = baseRotationSpeed;
         }
     }
+
     void RestrictAngle()
     {
         currentAngle = this.transform.rotation.eulerAngles.z;
@@ -117,32 +105,44 @@ public class Cannon : MonoBehaviour
             this.transform.rotation = Quaternion.Euler(0, 0, minAngle);
         }
     }
+
     void GetFireInput()
     {
         if (gameManager.gameOver == true && rewiredPlayer.GetButtonDown("StartGame")) {
             Debug.Log("changing to menu");
             gameManager.returnToMenu();
         }
-        if (rewiredPlayer.GetButtonDown("Fire"))
+
+        //When player fires, activate the laser and launch it with force.
+        //Always enabled in the lobby. Only enabled in game after the start game countdown, but before game over.
+        if (rewiredPlayer.GetButtonDown("Fire") && 
+            (   SceneManager.GetActiveScene().buildIndex == gameManager.LobbySceneIndex ||
+                !gameManager.gameOver && gameManager.startGame))
         {
-            StartCoroutine(TempDisableCollider());
-            Rigidbody2D playerRigidbody = storedLaser.GetComponentInChildren<Rigidbody2D>();
-            playerRigidbody.isKinematic = false;
-            playerRigidbody.AddForce(maxBlastForce * this.transform.up);
-            storedLaser.transform.GetComponent<SpriteRenderer>().enabled = true;
-            storedLaser = null;
+            //StartCoroutine(TempDisableCollider());
+            laserRB.bodyType = RigidbodyType2D.Dynamic; 
+            laserRB.AddForce(maxBlastForce * this.transform.up);
+            pairedLaser.transform.GetComponent<SpriteRenderer>().enabled = true;
+			pairedLaser.transform.GetComponent<TrailRenderer> ().enabled = true;
+            inFlight = true;
             this.GetComponent<AudioSource>().pitch = Random.Range(0.5f, 1.5f);
             this.GetComponent<AudioSource>().Play();
         }
     }
+
+    /*
     IEnumerator TempDisableCollider()
     {
         this.GetComponent<Collider2D>().enabled = false;
         yield return new WaitForSeconds(0.15f);
         this.GetComponent<Collider2D>().enabled = true;
     }
+    */
+
     #endregion
+
     #region Setters
+
     // Called from Laser.cs
     public void SetNewBaseAngle()
     {
@@ -155,33 +155,39 @@ public class Cannon : MonoBehaviour
         // Change rotation modifier if upside down
         rotationModifier = (this.transform.up == Vector3.down) ? -1 : 1;
     }
+
+    //Called from CannonCustomization.cs in lobby when sensitivity is changed.
     public void ChangeRotationSpeed(float increment)
     {
         baseRotationSpeed += increment;
         baseRotationSpeed = Mathf.Clamp(baseRotationSpeed, minRotationSpeed, maxRotationSpeed);
     }
-    public void ChangeColor()
+
+    //Called from BaseGM.cs in main game when player is instantiated.
+    public void ApplyRotationSpeed(int sensitivity)
     {
-        // New color (Random for now, pull from an array later)
-        Color newColor = new Color(Random.Range(0, 1f), Random.Range(0, 1f), Random.Range(0, 1f));
-        // Change colors
-        SpriteRenderer[] spriteRenderers = this.GetComponentsInChildren<SpriteRenderer>();
-        foreach (SpriteRenderer sprite in spriteRenderers) { sprite.color = newColor; }
-        storedLaser.ChangeColor(newColor);
+        baseRotationSpeed = 1.0f + (sensitivity * 0.5f);
+        currentRotationSpeed = baseRotationSpeed;
     }
+    
+    //Called from Slow.cs.
     public void ModifyRotationSpeed(float newSpeed)
     {
         baseRotationSpeed = newSpeed;
     }
+
     #endregion
+
     #region Getters
     public int GetPlayerID()
     {
         return playerId;
     }
+
     public float GetBaseSpeed()
     {
         return baseRotationSpeed;
     }
+
     #endregion
 }

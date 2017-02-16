@@ -12,6 +12,11 @@ public class CameraEffects : MonoBehaviour {
 	float shakeTimer = 0;
 	Vector3 startPosition;
 
+	void Awake () {
+
+		startPosition = this.transform.position;
+	}
+
 	void Update () {
 
 		if (shakeTimer > 0) {
@@ -29,7 +34,6 @@ public class CameraEffects : MonoBehaviour {
 
 	public void ShakeCamera () {
 
-		startPosition = this.transform.position;
 		shakeTimer = shakeDuration;
 	}
 }
