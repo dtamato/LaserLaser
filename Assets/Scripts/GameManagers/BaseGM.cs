@@ -19,7 +19,7 @@ public class BaseGM : MonoBehaviour
     public static BaseGM instance = null;
     protected LobbyManager lobbyManager;
     protected List<Text> HUDText;
-    [SerializeField] protected List<PlayerDef> playerList;
+    [SerializeField] public List<PlayerDef> playerList;
 	protected GameObject[] activePlayersArray;
     protected GameObject gameOverPanel;
     protected GameObject introText;
@@ -45,22 +45,14 @@ public class BaseGM : MonoBehaviour
     public class PlayerDef
     {
         public GameObject obj;
-        [SerializeField]
-        private int ID;
-        [SerializeField]
-        private bool isActive;
-        [SerializeField]
-        private int sensitivity;
-        [SerializeField]
-        private bool inverted;
-        [SerializeField]
-        private int team;
-        [SerializeField]
-        private Color color;
-        [SerializeField]
-        private int score;
-        [SerializeField]
-        private Color teamColor;
+        [SerializeField] private int ID;
+        [SerializeField] private bool isActive;
+        [SerializeField] private int sensitivity;
+        [SerializeField] private bool inverted;
+        [SerializeField] private int team;
+        [SerializeField] private Color color;
+        [SerializeField] private int score;
+        [SerializeField] private Color teamColor;
 
         //Constructor sets defaults for player settings.
         public PlayerDef()
@@ -104,7 +96,6 @@ public class BaseGM : MonoBehaviour
         {
             score = value;
         }
-
         public void setTeamColor(Color value)
         {
             teamColor = value;
@@ -180,6 +171,7 @@ public class BaseGM : MonoBehaviour
             HUDText.Add(null);
             spawns.Add(null);
         }
+
         ///
         /// Set gameMode based on main menu preferences. Must be set to opposite of intended mode. Running the switch function in LobbyManager sets it properly.
         ///
@@ -206,9 +198,7 @@ public class BaseGM : MonoBehaviour
     public void setColor(int pID, Color color)
     {
         playerList[pID].setColor(color);
-
     }
-
     //Called from Cannon.cs when a player changes their sensitivity.
     public void setSensitivity(int pID, int sens)
     {
@@ -224,17 +214,21 @@ public class BaseGM : MonoBehaviour
     {
         playerList[pID].setTeam(team);
     }
+    //Not currently called, can change player ID.
     public void setID(int pID)
     {
         playerList[pID].setID(pID);
     }
-
+    //Called from Cannon.cs when a player changes their team color.
     public void setTeamColour(int pId, Color color)
     {
         playerList[pId].setTeamColor(color);
     }
+
     #endregion
+
     #region MainGame Scene
+
     //Called when entering game scene, initializes players, HUD and timer.
     protected void initializeGame()
     {
@@ -315,9 +309,9 @@ public class BaseGM : MonoBehaviour
             GameObject.Find("PlayerScore" + 3).SetActive(false);
 
             GameObject.Find("PlayerScore" + 0).GetComponent<Text>().text = "Team 1: " + team1Score;
-            GameObject.Find("PlayerScore" + 0).GetComponent<Text>().color = Color.blue;
+            GameObject.Find("PlayerScore" + 0).GetComponent<Text>().color = Color.red;
             GameObject.Find("PlayerScore" + 1).GetComponent<Text>().text = "Team 2: " + team2Score;
-            GameObject.Find("PlayerScore" + 1).GetComponent<Text>().color = Color.red;
+            GameObject.Find("PlayerScore" + 1).GetComponent<Text>().color = Color.blue;
         }
 
         FillActivePlayersArray ();
@@ -326,6 +320,7 @@ public class BaseGM : MonoBehaviour
         StartCoroutine("CountDown");
     }
 
+    //Called initially to make player objects available to powerups.
 	void FillActivePlayersArray () {
 
 		List<GameObject> activePlayersList = new List<GameObject> ();
@@ -398,11 +393,11 @@ public class BaseGM : MonoBehaviour
             GameObject.Find("GameOverPanel").GetComponent<Image>().color = winColor;
         }
 
-        
-
         Debug.Log("Game Over, Results Displayed.");
     }
+
     #endregion
+
     //Called from Cannon.cs.
     public void changeScene(int index)
     {
@@ -426,58 +421,63 @@ public class BaseGM : MonoBehaviour
         HUDText[pID].text = "P" + (pID + 1) + "- " + score.ToString("00");
     }
 
-	void UpdateWhiteBorderFFA () {
-
+    //Called to update the border of the arena with the color of the leading player.
+	void UpdateWhiteBorderFFA ()
+    {
 		int winningScore = -1;
 		int winningPlayerIndex = -1;
 
-		for (int i = 0; i < playerList.Count; i++) {
-
-			if (playerList [i].getScore () > winningScore) {
-
+		for (int i = 0; i < playerList.Count; i++)
+        {
+			if (playerList [i].getScore () > winningScore)
+            {
 				winningScore = playerList [i].getScore ();
 				winningPlayerIndex = i;
 				whiteBorder.GetComponent<SpriteRenderer> ().color = playerList [i].getColor ();
 			}
-			else if (playerList [i].getScore () == winningScore) {
-
+			else if (playerList [i].getScore () == winningScore)
+            {
 				whiteBorder.GetComponent<SpriteRenderer> ().color = Color.white;
 			}
 		}
 	}
 
-	public void addToTeamScore(bool isTeam1) {
+    //Called to udpate the border in team mode.
+    void UpdateWhiteBorderTB()
+    {
+        if (team1Score > team2Score)
+        {
+            whiteBorder.GetComponent<SpriteRenderer>().color = Color.blue;
+        }
+        else if (team2Score > team1Score)
+        {
+            whiteBorder.GetComponent<SpriteRenderer>().color = Color.red;
+        }
+        else
+        {
+            whiteBorder.GetComponent<SpriteRenderer>().color = Color.white;
+        }
+    }
 
-		if (isTeam1) {
-
+    //Called to update team scores.
+    public void addToTeamScore(bool isTeam1)
+    {
+		if (isTeam1)
+        {
 			team1Score++;
 		}
-		else {
-
+		else
+        {
 			team2Score++;
 		}
 
 		UpdateWhiteBorderTB ();
 	}
 
-	void UpdateWhiteBorderTB () {
-
-		if (team1Score > team2Score) {
-
-			whiteBorder.GetComponent<SpriteRenderer> ().color = Color.blue;
-		}
-		else if (team2Score > team1Score) {
-
-			whiteBorder.GetComponent<SpriteRenderer> ().color = Color.red;
-		}
-		else {
-
-			whiteBorder.GetComponent<SpriteRenderer> ().color = Color.white;
-		}
-	}
-
+    //Called from Slow.cs and Paralysis.cs, as well as possible future powerups.
 	public GameObject[] GetActivePlayers () {
 
 		return activePlayersArray;
 	}
+    
 }

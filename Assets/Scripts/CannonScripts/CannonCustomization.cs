@@ -51,6 +51,7 @@ public class CannonCustomization : MonoBehaviour
             LobbyInputs();
         }
     }
+
     void LobbyInputs()
     {
         if (rewiredPlayer.GetButtonDown("Fire") && !hasJoined){    //If player presses 'A', and they are NOT currently in game.

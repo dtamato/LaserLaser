@@ -7,12 +7,10 @@ public class BigBall : MonoBehaviour
 	[SerializeField] float bigTimer = 4;
 	[SerializeField] float size = 1;
 	private GameObject temp;
-	private GameObject[] players = new GameObject[4];
 
 	// Use this for initialization
 	void Start () 
 	{
-		players = GameObject.FindGameObjectWithTag ("GameManager").GetComponent<BaseGM> ().GetActivePlayers ();
 		
 	}
 	

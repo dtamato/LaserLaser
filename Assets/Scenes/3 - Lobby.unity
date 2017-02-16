@@ -37,7 +37,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.37311953, g: 0.38074014, b: 0.3587274, a: 1}
+  m_IndirectSpecularColor: {r: 0.37311992, g: 0.38074034, b: 0.35872713, a: 1}
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
@@ -1387,9 +1387,9 @@ GameObject:
   m_Component:
   - component: {fileID: 1017889157}
   - component: {fileID: 1017889159}
+  - component: {fileID: 1017889161}
   - component: {fileID: 1017889158}
   - component: {fileID: 1017889160}
-  - component: {fileID: 1017889161}
   m_Layer: 14
   m_Name: Team1
   m_TagString: Untagged
@@ -1456,7 +1456,7 @@ SpriteRenderer:
   m_SortingLayerID: -505003231
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 09ab3a0821a02134e8a8b17d342cad97, type: 3}
-  m_Color: {r: 0, g: 0, b: 1, a: 1}
+  m_Color: {r: 1, g: 0, b: 0.06206894, a: 1}
   m_FlipX: 0
   m_FlipY: 0
 --- !u!114 &1017889160
@@ -1471,11 +1471,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   team: 1
-  teamValue: 3
-  player1: {fileID: 1758283406}
-  player2: {fileID: 615492931}
-  player3: {fileID: 1235386049}
-  player4: {fileID: 6844803}
+  teamColour: {r: 0, g: 0, b: 0, a: 0}
 --- !u!50 &1017889161
 Rigidbody2D:
   serializedVersion: 4
@@ -1928,9 +1924,9 @@ GameObject:
   m_Component:
   - component: {fileID: 1117824482}
   - component: {fileID: 1117824484}
+  - component: {fileID: 1117824486}
   - component: {fileID: 1117824483}
   - component: {fileID: 1117824485}
-  - component: {fileID: 1117824486}
   m_Layer: 14
   m_Name: Team2
   m_TagString: Untagged
@@ -1997,7 +1993,7 @@ SpriteRenderer:
   m_SortingLayerID: -505003231
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 09ab3a0821a02134e8a8b17d342cad97, type: 3}
-  m_Color: {r: 1, g: 0, b: 0, a: 1}
+  m_Color: {r: 0.11724138, g: 0, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
 --- !u!114 &1117824485
@@ -2012,11 +2008,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   team: 2
-  teamValue: 2
-  player1: {fileID: 1758283406}
-  player2: {fileID: 615492931}
-  player3: {fileID: 1235386049}
-  player4: {fileID: 6844803}
+  teamColour: {r: 0, g: 0, b: 0, a: 0}
 --- !u!50 &1117824486
 Rigidbody2D:
   serializedVersion: 4
