@@ -131,4 +131,9 @@ public class Laser : MonoBehaviour
     {
         this.GetComponent<SpriteRenderer>().color = newColor;
     }
+
+	public Color getColor()
+	{
+		return this.GetComponent<SpriteRenderer> ().color;
+	}
 }
