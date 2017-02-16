@@ -3,23 +3,26 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-public class TimedGM : BaseGM
+
+public class ScoredGM : BaseGM
 {
     #region Variables
+
     //References for initialization process.
     private bool initialized = false;
     private bool enteredLobby = false;
     private Text timeText;
-    //How long the game will run for.
-    public float gameTimer;
+
+    //Score to win the game.
+    public int objectiveScore;
+
     #endregion
 
-    new void Awake()
+    new void Awake ()
     {
         base.Awake();
     }
 
-    // Update is called once per frame
     void Update()
     {
         #region Lobby Scene
@@ -35,17 +38,17 @@ public class TimedGM : BaseGM
 
         #endregion
 
-        #region MainGame Scene
-        
+        #region Main Game Scene
+
         //When the GM enters the game scene, initialize the game.
         else if (!initialized && SceneManager.GetActiveScene().buildIndex == mainGameSceneIndex)
         {
             //Run the base game intialization, all GMs run this.
             base.initializeGame();
-            
-            //Put the time on the clock.
+
+            //Remove the timer.
             timeText = GameObject.Find("TimeText").GetComponent<Text>();
-            timeText.text = gameTimer.ToString("F1");
+            timeText.text = "Target: " + objectiveScore;
 
             //Deactivate inactive player's scores. FFA Only.
             if (gameMode == "FFA")
@@ -72,13 +75,24 @@ public class TimedGM : BaseGM
                 HUDText[1].text = "Team 2: " + team2Score;
             }
 
-            gameTimer -= Time.deltaTime;
-            timeText.text = gameTimer.ToString("F1");
-
-            if (gameTimer <= 0)
-                GameOver();
+            //Check for a winner in FFA mode.
+            if (gameMode == "FFA")
+            {
+                for (int i = 0; i < 4; i++)
+                {
+                    int score = playerList[i].getScore();
+                    if (score >= objectiveScore)
+                        GameOver();
+                }
+            }
+            //Check for a winner in TB mode.
+            else
+            {
+                if (team1Score >= objectiveScore || team2Score >= objectiveScore)
+                    GameOver();
+            }
         }
-
+         
         #endregion
     }
 }
