@@ -11,9 +11,9 @@ public class BaseGM : MonoBehaviour
     #region Variables
 
     //Scene build index integers.
-    public int menuSceneIndex = 0;
-    public int LobbySceneIndex = 1;
-    public int mainGameSceneIndex = 2;
+    public int menuSceneIndex;
+    public int LobbySceneIndex;
+    public int mainGameSceneIndex;
    
     //External References.
     public static BaseGM instance = null;
@@ -442,7 +442,7 @@ public class BaseGM : MonoBehaviour
 		}
 	}
 
-    //Called to udpate the border in team mode.
+    //Called to update the border in team mode.
     void UpdateWhiteBorderTB()
     {
         if (team1Score > team2Score)
