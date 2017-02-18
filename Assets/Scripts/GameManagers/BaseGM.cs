@@ -284,6 +284,7 @@ public class BaseGM : MonoBehaviour
             laserScript.myTeam = prefs.team;
             playerList[i].obj.transform.Find("Laser").GetComponentInChildren<SpriteRenderer>().color = prefs.myColor; //Laser color
             playerList[i].obj.transform.Find("Laser").GetComponent<TrailRenderer>().material.color = prefs.myColor; //Trail renderer color
+			playerList[i].obj.transform.Find("Light").GetComponent<Light>().color = prefs.myColor; // Light color
             playerList[i].obj.GetComponentInChildren<SpriteRenderer>().color = prefs.myColor; //Cannon color
             
             //If the mode is Team, set the player's colourband, otherwise disable it.

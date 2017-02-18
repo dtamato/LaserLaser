@@ -37,7 +37,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.37311992, g: 0.38074034, b: 0.35872713, a: 1}
+  m_IndirectSpecularColor: {r: 0.12731716, g: 0.13414739, b: 0.12107863, a: 1}
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
@@ -642,7 +642,7 @@ SpriteRenderer:
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 0
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 060898b9975fed4449aabd8073d7cb22, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -661,7 +661,7 @@ SpriteRenderer:
   m_SortingLayerID: -514089595
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 78d29387fd4f17c4592de4f461c3309c, type: 3}
-  m_Color: {r: 0.13333334, g: 0.13333334, b: 0.13333334, a: 1}
+  m_Color: {r: 0.31617647, g: 0.31617647, b: 0.31617647, a: 1}
   m_FlipX: 0
   m_FlipY: 0
 --- !u!4 &321462846
@@ -788,7 +788,7 @@ Prefab:
     - target: {fileID: 114000012624769266, guid: 76f68068a86b4d14598968aa340a5996,
         type: 2}
       propertyPath: baseRotationSpeed
-      value: 3.5
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 61000010327839500, guid: 76f68068a86b4d14598968aa340a5996,
         type: 2}
@@ -869,6 +869,10 @@ Prefab:
         type: 2}
       propertyPath: inFlight
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1056640239623692, guid: 76f68068a86b4d14598968aa340a5996, type: 2}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 76f68068a86b4d14598968aa340a5996, type: 2}
@@ -1471,7 +1475,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   team: 1
-  teamColour: {r: 0, g: 0, b: 0, a: 0}
 --- !u!50 &1017889161
 Rigidbody2D:
   serializedVersion: 4
@@ -1603,7 +1606,7 @@ Prefab:
     - target: {fileID: 114000012624769266, guid: 76f68068a86b4d14598968aa340a5996,
         type: 2}
       propertyPath: baseRotationSpeed
-      value: 3.5
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 61000010327839500, guid: 76f68068a86b4d14598968aa340a5996,
         type: 2}
@@ -1684,6 +1687,10 @@ Prefab:
         type: 2}
       propertyPath: inFlight
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1056640239623692, guid: 76f68068a86b4d14598968aa340a5996, type: 2}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 76f68068a86b4d14598968aa340a5996, type: 2}
@@ -2008,7 +2015,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   team: 2
-  teamColour: {r: 0, g: 0, b: 0, a: 0}
 --- !u!50 &1117824486
 Rigidbody2D:
   serializedVersion: 4
@@ -2590,7 +2596,7 @@ Prefab:
     - target: {fileID: 114000012624769266, guid: 76f68068a86b4d14598968aa340a5996,
         type: 2}
       propertyPath: baseRotationSpeed
-      value: 3.5
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 61000010327839500, guid: 76f68068a86b4d14598968aa340a5996,
         type: 2}
@@ -2671,6 +2677,10 @@ Prefab:
         type: 2}
       propertyPath: inFlight
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1056640239623692, guid: 76f68068a86b4d14598968aa340a5996, type: 2}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 76f68068a86b4d14598968aa340a5996, type: 2}
@@ -3471,7 +3481,7 @@ Prefab:
     - target: {fileID: 114000012624769266, guid: 76f68068a86b4d14598968aa340a5996,
         type: 2}
       propertyPath: baseRotationSpeed
-      value: 3.5
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 61000010327839500, guid: 76f68068a86b4d14598968aa340a5996,
         type: 2}
@@ -3552,6 +3562,10 @@ Prefab:
         type: 2}
       propertyPath: inFlight
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1056640239623692, guid: 76f68068a86b4d14598968aa340a5996, type: 2}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 76f68068a86b4d14598968aa340a5996, type: 2}

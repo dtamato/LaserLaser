@@ -24,6 +24,7 @@ public class OverlayController : MonoBehaviour
         else
         {
             other.GetComponent<Rigidbody2D>().AddForce(2200 * -this.transform.up);
+			Camera.main.GetComponent<CameraEffects> ().ShakeCamera ();
             //bounce the player off the other's field
             // Debug.Log("Error, ID's do not match! [ " + "My ID: " + playerId + ", Laser ID: " + other.GetComponent<Laser>().myPlayerID + "]");
         }

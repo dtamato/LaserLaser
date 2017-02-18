@@ -86,7 +86,7 @@ public class Laser : MonoBehaviour
 			scoreCounter ();
         }
 
-        Camera.main.GetComponent<CameraEffects>().ShakeCamera();
+        //Camera.main.GetComponent<CameraEffects>().ShakeCamera();
     }
 
 	public void scoreCounter()
@@ -98,13 +98,13 @@ public class Laser : MonoBehaviour
 		{
 			score++;
 			gameManager.addScore(myPlayerID, score);//this is where score text is set
-			Debug.Log("works on regular");
+			//Debug.Log("works on regular");
 		}
 		//Team scoring.
 		else
 		{
 			gameManager.addToTeamScore (myTeam == 1);
-			Debug.Log("works on regular2");
+			//Debug.Log("works on regular2");
 		}
 	}
 

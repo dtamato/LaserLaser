@@ -4,14 +4,15 @@ using System.Collections;
 [DisallowMultipleComponent]
 public class Bouncer : MonoBehaviour {
 
+	[SerializeField] float killTime = 5;
+
 	Animator animator;
 
 
 	void Start () {
 
 		animator = this.GetComponentInChildren<Animator> ();
-		this.transform.localScale = Vector3.one;
-		Destroy (this.gameObject, 5);
+		StartCoroutine (StartShrinkAnimation ());
 	}
 
 	void OnCollisionEnter2D(Collision2D other) {
@@ -21,6 +22,7 @@ public class Bouncer : MonoBehaviour {
 			animator.SetTrigger ("Bounce");
 			this.GetComponent<SpriteRenderer> ().color = other.transform.GetComponent<SpriteRenderer> ().color;
 			StartCoroutine (RestoreColor ());
+			Camera.main.GetComponent<CameraEffects> ().ShakeCamera ();
 		}
 	}
 
@@ -28,5 +30,17 @@ public class Bouncer : MonoBehaviour {
 
 		yield return new WaitForSeconds (0.15f);
 		this.GetComponent<SpriteRenderer> ().color = Color.white;
+	}
+
+	IEnumerator StartShrinkAnimation () {
+
+		yield return new WaitForSeconds (0.9f * killTime);
+		animator.SetTrigger ("Shrink");
+	}
+
+	// Called from animator controller
+	public void DestroyObject () {
+
+		Destroy (this.gameObject);
 	}
 }

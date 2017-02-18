@@ -5,14 +5,8 @@ using UnityEngine;
 public class BigBall : MonoBehaviour 
 {
 	[SerializeField] float bigTimer = 4;
-	[SerializeField] float size = 1;
+	[SerializeField] float newSize = 1.75f;
 	private GameObject temp;
-
-	// Use this for initialization
-	void Start () 
-	{
-		
-	}
 	
 	void OnTriggerEnter2D(Collider2D other)
 	{
@@ -22,7 +16,7 @@ public class BigBall : MonoBehaviour
 
 		// Make the player that collided to the BigBall, have a bigger ball.
 		temp = other.gameObject;
-		other.transform.localScale += new Vector3 (size, size, size);
+		other.transform.localScale = new Vector3 (newSize, newSize, newSize);
 		StartCoroutine (DisablePowerUp ());
 	}
 

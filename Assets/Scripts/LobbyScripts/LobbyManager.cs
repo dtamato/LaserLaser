@@ -96,6 +96,7 @@ public class LobbyManager : MonoBehaviour {
     public void UnjoinColour(int cIdx,int pId) //if the player leaves then return them to their position, disable their cannon (checked within PlayerActivationCheck()), and change their colour to grey
     {
         playerCannons[pId].transform.Find("Cannon Sprite").GetComponent<SpriteRenderer>().color = Color.gray;
+		playerCannons [pId].transform.Find ("Light").GetComponent<Light> ().enabled = false;
         Transform playerLaser = playerCannons[pId].transform.Find("Laser");
         playerLaser.GetComponent<SpriteRenderer>().color = Color.grey;
         playerLaser.GetComponent<TrailRenderer>().material.color = Color.grey;
@@ -184,7 +185,7 @@ public class LobbyManager : MonoBehaviour {
     {
         //Requires 2 players to have joined the game.
         if (gameType == "FFA") {
-            if (joinedPlayers >= 2)
+            if (joinedPlayers >= 1)
             {
                 Debug.Log("changing to FFA game");
                 gameManager.changeScene(gameManager.mainGameSceneIndex);

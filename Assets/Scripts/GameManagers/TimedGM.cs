@@ -9,7 +9,8 @@ public class TimedGM : BaseGM
     //References for initialization process.
     private bool initialized = false;
     private bool enteredLobby = false;
-    private Text timeText;
+    private Image timeBar;
+	private float initialTime;
     //How long the game will run for.
     public float gameTimer;
     #endregion
@@ -17,6 +18,7 @@ public class TimedGM : BaseGM
     new void Awake()
     {
         base.Awake();
+		initialTime = gameTimer;
     }
 
     // Update is called once per frame
@@ -44,8 +46,8 @@ public class TimedGM : BaseGM
             base.initializeGame();
             
             //Put the time on the clock.
-            timeText = GameObject.Find("TimeText").GetComponent<Text>();
-            timeText.text = gameTimer.ToString("F1");
+			timeBar = GameObject.Find("Time Bar").GetComponent<Image>();
+			timeBar.fillAmount = gameTimer / initialTime;
 
             //Deactivate inactive player's scores. FFA Only.
             if (gameMode == "FFA")
@@ -73,7 +75,13 @@ public class TimedGM : BaseGM
             }
 
             gameTimer -= Time.deltaTime;
-            timeText.text = gameTimer.ToString("F1");
+			timeBar.fillAmount = gameTimer / initialTime;
+
+			if(gameTimer < (0.25f * initialTime) && gameTimer > (0.22f * initialTime)) {
+
+				GameObject.FindGameObjectWithTag("AudioManager").GetComponent<AudioSource>().pitch = 1.1f;
+				timeBar.color = Color.red;
+			}
 
             if (gameTimer <= 0)
                 GameOver();
