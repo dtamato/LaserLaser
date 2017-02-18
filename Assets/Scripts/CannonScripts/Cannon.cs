@@ -31,16 +31,28 @@ public class Cannon : MonoBehaviour
     float baseAngle;
     float minAngle;
     float maxAngle;
+    public string testMode = "look in inspector";
 
     void Awake()
     {
-        gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<BaseGM>();
         inFlight = false;
         laserRB = pairedLaser.GetComponent<Rigidbody2D>();
 
+        if (testMode != "debug") //to be removed when game is published. for test lobby purposes
+        {
+            gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<BaseGM>(); //to be used for test scenes. When game is published, this is to be removed
         //In the lobby this must be assigned. In the game scene the GM assigns it.
         if (SceneManager.GetActiveScene().buildIndex == gameManager.LobbySceneIndex)
+                rewiredPlayer = ReInput.players.GetPlayer(playerId);
+        }
+
+        if (testMode == "debug")
             rewiredPlayer = ReInput.players.GetPlayer(playerId);
+
+
+
+
+
 
         if (maxAngleOffset < 0)
             maxAngleOffset *= -1;
@@ -62,8 +74,17 @@ public class Cannon : MonoBehaviour
     {
         //In lobby, don't allow movement until player has joined.
         //In main game scene, once game is over don't allow movement.
-		if ((SceneManager.GetActiveScene().buildIndex == gameManager.LobbySceneIndex && this.GetComponent<CannonCustomization>().hasJoined) ||
-			(SceneManager.GetActiveScene().buildIndex == gameManager.mainGameSceneIndex && gameManager.gameOver == false))
+        if (testMode != "debug") //to be removed when game is published. for test lobby purposes
+        {
+            if ((SceneManager.GetActiveScene().buildIndex == gameManager.LobbySceneIndex && this.GetComponent<CannonCustomization>().hasJoined) ||
+                (SceneManager.GetActiveScene().buildIndex == gameManager.mainGameSceneIndex && gameManager.gameOver == false))
+            {
+                GetRotationInput();
+                RestrictAngle();
+            }
+
+        }
+        else
         {
             GetRotationInput();
             RestrictAngle();
@@ -108,26 +129,47 @@ public class Cannon : MonoBehaviour
 
     void GetFireInput()
     {
+        if (testMode != "debug") //to be removed when game is published. for test lobby purposes
+        {
         if (gameManager.gameOver == true && rewiredPlayer.GetButtonDown("StartGame")) {
             Debug.Log("changing to menu");
             gameManager.returnToMenu();
         }
+            
+        }
 
         //When player fires, activate the laser and launch it with force.
         //Always enabled in the lobby. Only enabled in game after the start game countdown, but before game over.
-        if (rewiredPlayer.GetButtonDown("Fire") && 
-            (   SceneManager.GetActiveScene().buildIndex == gameManager.LobbySceneIndex ||
-                !gameManager.gameOver && gameManager.startGame))
+        if (testMode != "debug")
         {
-            //StartCoroutine(TempDisableCollider());
-            laserRB.bodyType = RigidbodyType2D.Dynamic; 
-            laserRB.AddForce(maxBlastForce * this.transform.up);
-            pairedLaser.transform.GetComponent<SpriteRenderer>().enabled = true;
-			pairedLaser.transform.GetComponent<TrailRenderer> ().enabled = true;
-            inFlight = true;
-            this.GetComponent<AudioSource>().pitch = Random.Range(0.5f, 1.5f);
-            this.GetComponent<AudioSource>().Play();
+            if (rewiredPlayer.GetButtonDown("Fire") &&
+                (SceneManager.GetActiveScene().buildIndex == gameManager.LobbySceneIndex ||
+                 !gameManager.gameOver && gameManager.startGame))
+            {
+                //StartCoroutine(TempDisableCollider());
+                laserRB.bodyType = RigidbodyType2D.Dynamic;
+                laserRB.AddForce(maxBlastForce * this.transform.up);
+                pairedLaser.transform.GetComponent<SpriteRenderer>().enabled = true;
+                pairedLaser.transform.GetComponent<TrailRenderer>().enabled = true;
+                inFlight = true;
+                this.GetComponent<AudioSource>().pitch = Random.Range(0.5f, 1.5f);
+                this.GetComponent<AudioSource>().Play();
+            }
         }
+        else
+        {
+            if (rewiredPlayer.GetButtonDown("Fire"))
+            {
+                laserRB.bodyType = RigidbodyType2D.Dynamic;
+                laserRB.AddForce(maxBlastForce * this.transform.up);
+                pairedLaser.transform.GetComponent<SpriteRenderer>().enabled = true;
+                pairedLaser.transform.GetComponent<TrailRenderer>().enabled = true;
+                inFlight = true;
+                this.GetComponent<AudioSource>().pitch = Random.Range(0.5f, 1.5f);
+                this.GetComponent<AudioSource>().Play();
+            }
+        }
+
     }
 
     /*

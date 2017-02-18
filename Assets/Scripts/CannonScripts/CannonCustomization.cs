@@ -9,18 +9,19 @@ public class CannonCustomization : MonoBehaviour
 {
     [SerializeField]
     float rotationSpeedIncrement;
-    public bool isInLobby = true; //to check whether or not the player can change their colour/rotation speed
+    public bool isInLobby = true; //to check whether or not the player can change their color/rotation speed
     public bool hasJoined = false; //whether or not the player can control their cannon
-    public bool canChange = false; //whether or not the player can change their colour
+    public bool canChange = false; //whether or not the player can change their color
     public int team;
     public bool inverted = false;
     public int sensitivity;
-    public int colorIdx; //the player's position within the colour array
+    public int colorIdx; //the player's position within the color array
     public Color myColor;
     public Color myTeamColor;
     public int myID;
     private Cannon cannon;
     public GameObject inputText;
+    public string testMode = "look in inspector";
 
     // External references
     private BaseGM gameManager;
@@ -30,18 +31,25 @@ public class CannonCustomization : MonoBehaviour
     {
         cannon = this.GetComponentInChildren<Cannon>();
         rewiredPlayer = ReInput.players.GetPlayer(cannon.GetPlayerID());
-        gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<BaseGM>();
+        if (testMode != "debug") //to be removed when game is published. for test lobby purposes
+        {
+            gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<BaseGM>(); //to be used for test scenes. When game is published, this is to be removed
         if (SceneManager.GetActiveScene().buildIndex == gameManager.LobbySceneIndex)
             lobbyManager = GameObject.Find("LobbyManager").GetComponent<LobbyManager>();
         //inputText = GameObject.Find("InputText" + myID);
         if (SceneManager.GetActiveScene().buildIndex == gameManager.mainGameSceneIndex)
             isInLobby = false;
+        }
     }
     void Start()
     {
+        if (testMode != "debug") //to be removed when game is published. for test lobby purposes
+        {
+            
         if (SceneManager.GetActiveScene().buildIndex == gameManager.LobbySceneIndex) {
             myID = cannon.GetPlayerID();
             colorIdx = myID;
+        }
         }
     }
     void Update()
@@ -111,7 +119,7 @@ public class CannonCustomization : MonoBehaviour
             else
                 inputText.GetComponent<Text>().text = "Not Inverted";
             inputText.GetComponent<InputTextScript>().checkText();
-            //Switch the player's invertedness. Needs to be implemented in Cannon.cs. Currently only passed as an empty setting.
+            //Switch the player's inverted-ness. Needs to be implemented in Cannon.cs. Currently only passed as an empty setting.
         }
 
         if (rewiredPlayer.GetButtonDown("Setting"))
