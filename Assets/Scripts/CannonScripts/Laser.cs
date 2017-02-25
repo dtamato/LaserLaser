@@ -17,8 +17,6 @@ public class Laser : MonoBehaviour
 
     //Score and other metrics.
     public int score = 0;
-    public int comboCount = 0;
-    private int diamondCount = 0;
     public int myPlayerID;
     public int myTeam;
     private bool sendResults;
@@ -56,34 +54,22 @@ public class Laser : MonoBehaviour
 
     void OnCollisionEnter2D(Collision2D other)
     {
-        if (other.transform.CompareTag("Boundary"))
-        {
-            //rb2d.isKinematic = true;
-            rb2d.bodyType = RigidbodyType2D.Static; // HERE
-            cannon.transform.position = other.contacts[0].point;
-            cannon.transform.rotation = other.transform.rotation;
-            this.transform.position = cannon.transform.position + 1.5f * cannon.transform.up;
-            this.transform.GetComponent<SpriteRenderer>().enabled = false;
+		if (other.transform.CompareTag ("Boundary")) {
+			//rb2d.isKinematic = true;
+			rb2d.bodyType = RigidbodyType2D.Static; // HERE
+			cannon.transform.position = other.contacts [0].point;
+			cannon.transform.rotation = other.transform.rotation;
+			this.transform.position = cannon.transform.position + 1.5f * cannon.transform.up;
+			this.transform.GetComponent<SpriteRenderer> ().enabled = false;
 			this.transform.GetComponent<TrailRenderer> ().enabled = false;
-            cannon.GetComponentInChildren<Cannon>().SetNewBaseAngle();
-            //cannon.GetComponentInChildren<Cannon>().SetStoredLaser(this);
-            cannon.GetComponent<Cannon>().inFlight = false;
+			cannon.GetComponentInChildren<Cannon> ().SetNewBaseAngle ();
+			//cannon.GetComponentInChildren<Cannon>().SetStoredLaser(this);
+			cannon.GetComponent<Cannon> ().inFlight = false;
+		}
+		else if (other.transform.CompareTag ("Player")) {
 
-            //Only implement combos in FFA.
-            if (gameMode == "FFA")
-            {
-                if (diamondCount == 0)
-                {
-                    score += comboCount;
-                    comboCount = 0;
-                }
-                else
-                {
-                    comboCount++;
-                    diamondCount = 0;
-                }
-            }
-        }
+			Camera.main.GetComponent<CameraEffects> ().ShakeCamera ();
+		}
     }
 
     void OnTriggerEnter2D(Collider2D other)
@@ -98,8 +84,6 @@ public class Laser : MonoBehaviour
 
 	public void scoreCounter()
 	{
-		diamondCount++;     //For combo tracking.
-
 		//FFA scoring.
 		if (gameMode == "FFA")
 		{

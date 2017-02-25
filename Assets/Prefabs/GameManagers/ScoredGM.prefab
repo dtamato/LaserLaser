@@ -64,4 +64,4 @@ MonoBehaviour:
   team1Score: 0
   team2Score: 0
   startGameDelay: 3
-  objectiveScore: 15
+  objectiveScore: 25

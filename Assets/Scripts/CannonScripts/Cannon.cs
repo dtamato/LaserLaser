@@ -49,11 +49,6 @@ public class Cannon : MonoBehaviour
         if (testMode == "debug")
             rewiredPlayer = ReInput.players.GetPlayer(playerId);
 
-
-
-
-
-
         if (maxAngleOffset < 0)
             maxAngleOffset *= -1;
 

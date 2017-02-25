@@ -21,16 +21,14 @@ public class LobbyManager : MonoBehaviour {
 
     void FFAColourList() //The available colours for the FFA lobby
     {
-		_colorlist[0] = new ColorList(false, new Color(1, 0, 0.4f)); // Thi's Magenta
-		_colorlist[1] = new ColorList(false, new Color(0.21f, 1, 0.13f)); // Thi's Green
-		_colorlist[2] = new ColorList(false, new Color(1, 0.89f, 0)); // Thi's Yellow
-		_colorlist[3] = new ColorList(false, new Color(0.31f, 1, 0.87f)); // Thi's Blue
-        _colorlist[4] = new ColorList(true, Color.magenta);
-        _colorlist[5] = new ColorList(true, Color.cyan);
-        _colorlist[6] = new ColorList(true, new Color(0.29f, 0.35f, 0.67f, 1f)); // Deep violet
-        _colorlist[7] = new ColorList(true, new Color(0.95f, 0.62f, 0f, 1f)); // Orange
-        _colorlist[8] = new ColorList(true, new Color(0f, 0.95f, 0.7f, 1f)); // Teal
-        _colorlist[9] = new ColorList(true, new Color(0.65f, 0f, 0.73f, 1f)); // Purple
+		_colorlist[0] = new ColorList(false, new Color(252/255f, 0, 1));
+		_colorlist[1] = new ColorList(false, new Color(156/255f, 0, 1));
+		_colorlist[2] = new ColorList(false, new Color(12/255f, 0, 1));
+		_colorlist[3] = new ColorList(false, new Color(79/255f, 1, 223/255f));
+		_colorlist[4] = new ColorList(true, new Color(89/255f, 254/255f, 50/255f));
+		//_colorlist[5] = new ColorList(true, new Color(240/255f, 1, 0)); // Yellow
+		_colorlist[5] = new ColorList(true, new Color(1, 168/255f, 0));
+		_colorlist[6] = new ColorList(true, new Color(1, 0, 0));
     }
 
     private BaseGM gameManager;
@@ -41,7 +39,7 @@ public class LobbyManager : MonoBehaviour {
     public GameObject player3;
     public GameObject player4;
 
-    public ColorList[] _colorlist = new ColorList[10];
+    public ColorList[] _colorlist = new ColorList[7];
 
     public int joinedPlayers;
     public int team1Players;
@@ -67,7 +65,7 @@ public class LobbyManager : MonoBehaviour {
             playerCannons[i].transform.Find("Laser").GetComponent<TrailRenderer>().material.color = Color.grey;
             playerCannons[i].transform.Find("ColourBand").GetComponent<SpriteRenderer>().color = new Color(0f,0f,0f,0f);
         }
-        gameType = "FFA";
+        
         SwitchTeamMode();
     }
 
@@ -77,7 +75,7 @@ public class LobbyManager : MonoBehaviour {
         do
         {
             idx++;
-            idx %= 10;
+            idx %= 7;
         } while (!_colorlist[idx].isAvailable);
         return idx;
     }
@@ -87,8 +85,8 @@ public class LobbyManager : MonoBehaviour {
         _colorlist[idx].isAvailable = true;
         do
         {
-            idx = (idx - 1) % 10;
-            idx = idx < 0 ? idx + 10 : idx; //is check 1 true? if yes, use check 2 (wraps around back to the end of the array when you're decrementing past the first element)
+            idx = (idx - 1) % 7;
+            idx = idx < 0 ? idx + 7 : idx; //is check 1 true? if yes, use check 2 (wraps around back to the end of the array when you're decrementing past the first element)
         } while (!_colorlist[idx].isAvailable);
         return idx;
     }

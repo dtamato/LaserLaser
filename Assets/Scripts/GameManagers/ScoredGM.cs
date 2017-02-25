@@ -47,8 +47,9 @@ public class ScoredGM : BaseGM
             base.initializeGame();
 
             //Remove the timer.
-            timeText = GameObject.Find("TimeText").GetComponent<Text>();
-            timeText.text = "Target: " + objectiveScore;
+			GameObject.Find("Time Bar").SetActive(false);
+			//timeText = GameObject.Find("TimeBar").GetComponent<Text>();
+            //timeText.text = "Target: " + objectiveScore;
 
             //Deactivate inactive player's scores. FFA Only.
             if (gameMode == "FFA")

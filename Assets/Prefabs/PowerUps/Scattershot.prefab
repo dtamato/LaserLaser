@@ -51,7 +51,7 @@ CircleCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
@@ -102,6 +102,6 @@ SpriteRenderer:
   m_SortingLayerID: -505003231
   m_SortingOrder: 1
   m_Sprite: {fileID: 21300004, guid: 3defa453eac1a8e4683b5f741abec820, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0, g: 1, b: 0.6275863, a: 1}
   m_FlipX: 0
   m_FlipY: 0

@@ -194,7 +194,7 @@ Light:
   m_Enabled: 1
   serializedVersion: 7
   m_Type: 2
-  m_Color: {r: 1, g: 0, b: 0.8470589, a: 1}
+  m_Color: {r: 0.94117653, g: 1, b: 0, a: 1}
   m_Intensity: 2.11
   m_Range: 3
   m_SpotAngle: 30
@@ -264,6 +264,6 @@ SpriteRenderer:
   m_SortingLayerID: -514089595
   m_SortingOrder: 1
   m_Sprite: {fileID: 21300000, guid: d6de1dfed631fbb47b21e57fb9f0252f, type: 3}
-  m_Color: {r: 1, g: 0, b: 0.84827566, a: 1}
+  m_Color: {r: 0.94117653, g: 1, b: 0, a: 1}
   m_FlipX: 0
   m_FlipY: 0

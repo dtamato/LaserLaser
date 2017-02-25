@@ -20,6 +20,7 @@ public class Bouncer : MonoBehaviour {
 		if (other.transform.CompareTag ("Player")) {
 
 			animator.SetTrigger ("Bounce");
+			this.GetComponent<AudioSource> ().Play ();
 			this.GetComponent<SpriteRenderer> ().color = other.transform.GetComponent<SpriteRenderer> ().color;
 			StartCoroutine (RestoreColor ());
 			Camera.main.GetComponent<CameraEffects> ().ShakeCamera ();
