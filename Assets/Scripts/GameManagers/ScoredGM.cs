@@ -82,8 +82,11 @@ public class ScoredGM : BaseGM
                 for (int i = 0; i < 4; i++)
                 {
                     int score = playerList[i].getScore();
-                    if (score >= objectiveScore)
+					if (score >= objectiveScore) {
+						Transform ballTransform = playerList[i].obj.GetComponent<Cannon>().GetLaser().transform;
+						Camera.main.GetComponent<CameraEffects>().SetZoomTarget(ballTransform);
                         GameOver();
+					}
                 }
             }
             //Check for a winner in TB mode.

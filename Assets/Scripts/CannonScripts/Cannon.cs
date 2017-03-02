@@ -225,6 +225,9 @@ public class Cannon : MonoBehaviour
     {
         return baseRotationSpeed;
     }
+	public GameObject GetLaser () {
 
+		return pairedLaser.gameObject;
+	}
     #endregion
 }
