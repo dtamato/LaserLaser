@@ -8,7 +8,6 @@ public class LogoSceneController : MonoBehaviour {
 	[Header("Parameters")]
 	[SerializeField] float changeColorDelay = 0.1f;
 	[SerializeField] Color[] colorOptions;
-	[SerializeField] float sceneLoadDelay = 3;
 	[SerializeField] float fadeSpeed = 0.1f;
 
 	[Header("References")]
