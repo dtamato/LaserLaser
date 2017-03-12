@@ -8,12 +8,10 @@ public class SinglePlayerLaser : MonoBehaviour {
 
 	[SerializeField] GameObject cannon;
 	Rigidbody2D rb2d;
-	Light light;
 
 	void Awake()
 	{
 		rb2d = this.GetComponentInChildren<Rigidbody2D>();
-		light = this.GetComponentInChildren<Light>();
 		this.GetComponentInChildren<TrailRenderer>().sortingLayerName = this.GetComponent<SpriteRenderer>().sortingLayerName;
 		this.GetComponentInChildren<TrailRenderer>().sortingOrder = this.GetComponent<SpriteRenderer>().sortingOrder - 1;
 	}
@@ -31,5 +29,10 @@ public class SinglePlayerLaser : MonoBehaviour {
 			cannon.GetComponentInChildren<SinglePlayerCannon>().SetNewBaseAngle();
 			cannon.GetComponentInChildren<SinglePlayerCannon> ().SetStoredLaser (this);
 		}
+	}
+
+	public GameObject GetCannon () {
+
+		return cannon;
 	}
 }

@@ -26,6 +26,8 @@ public class SinglePlayerCannon : MonoBehaviour {
 	SinglePlayerLaser pairedLaser; // Permanent reference to ball
 	SinglePlayerLaser storedLaser; // Reference used to check if can fire
 
+	Vector3 startPosition;
+
 	void Awake()
 	{
 		rewiredPlayer = ReInput.players.GetPlayer(playerId);
@@ -36,6 +38,7 @@ public class SinglePlayerCannon : MonoBehaviour {
 			maxAngleOffset *= -1;
 		}
 
+		startPosition = this.transform.position;
 		SetNewBaseAngle();
 	}
 
@@ -156,6 +159,12 @@ public class SinglePlayerCannon : MonoBehaviour {
 	public void SetStoredLaser(SinglePlayerLaser laser) {
 
 		storedLaser = laser;
+	}
+
+	public void ResetPosition () {
+
+		this.transform.position = startPosition;
+		this.transform.rotation = Quaternion.identity;
 	}
 	#endregion
 
