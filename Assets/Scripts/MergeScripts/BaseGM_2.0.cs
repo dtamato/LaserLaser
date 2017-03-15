@@ -5,10 +5,43 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using Rewired;
 
-/*
+public class ColorList
+{
+    public bool isAvailable = true;
+    public Color _color;
+
+    public ColorList(bool avail, Color col)
+    {
+        isAvailable = avail; //controls whether or not the player can actually access the colour (making sure no two players can have the same colour)
+        _color = col; //The colour the player can choose
+    }
+}
+
 public class BaseGM : MonoBehaviour
 {
+    public enum GAMESTATE { PREGAME, INGAME, POSTGAME }; //implementation is GAMESTATE state = state.PREGAME;
+
+
+
     #region Variables
+
+    //Ported from Lobby Manager.
+    void FFAColourList() //The available colours for the FFA lobby
+    {
+        _colorlist[0] = new ColorList(false, new Color(252 / 255f, 0, 1));
+        _colorlist[1] = new ColorList(false, new Color(156 / 255f, 0, 1));
+        _colorlist[2] = new ColorList(false, new Color(12 / 255f, 0, 1));
+        _colorlist[3] = new ColorList(false, new Color(79 / 255f, 1, 223 / 255f));
+        _colorlist[4] = new ColorList(true, new Color(89 / 255f, 254 / 255f, 50 / 255f));
+        //_colorlist[5] = new ColorList(true, new Color(240/255f, 1, 0)); // Yellow
+        _colorlist[5] = new ColorList(true, new Color(1, 168 / 255f, 0));
+        _colorlist[6] = new ColorList(true, new Color(1, 0, 0));
+    }
+    public ColorList[] _colorlist = new ColorList[7];
+
+
+
+
 
     //Scene build index integers.
     public int menuSceneIndex;
@@ -28,9 +61,7 @@ public class BaseGM : MonoBehaviour
     public GameObject playerObj;
 
     //Boolean flags and other metrics.
-    public bool inGame = false;        //True when in Main Game.
-    public bool startGame = false;     //True once the startGameDelay / grace period has elapsed.
-    public bool gameOver = false;
+    protected GAMESTATE state;  //Set first to pregame in initializeGame().
     public int playerCount = 0;
     public string gameMode;
     public int team1Score, team2Score;  //Only used in TB mode.
@@ -173,6 +204,7 @@ public class BaseGM : MonoBehaviour
             spawns.Add(null);
         }
 
+        FFAColourList();
         ///
         /// Set gameMode based on main menu preferences. Must be set to opposite of intended mode. Running the switch function in LobbyManager sets it properly.
         ///
@@ -234,7 +266,7 @@ public class BaseGM : MonoBehaviour
     protected void initializeGame()
     {
         //Set game state to In Game.
-        inGame = true;
+        state = GAMESTATE.PREGAME;
 
         //Reference members of HUD and Spawns.
         for (int i = 0; i <= 3; i++)
@@ -322,34 +354,18 @@ public class BaseGM : MonoBehaviour
         StartCoroutine("CountDown");
     }
 
-    //Called initially to make player objects available to powerups.
-	void FillActivePlayersArray () {
-
-		List<GameObject> activePlayersList = new List<GameObject> ();
-
-		for (int i = 0; i < playerList.Count; i++) {
-
-			if (playerList [i].obj != null) {
-
-				activePlayersList.Add (playerList [i].obj);
-			}
-		}
-
-		activePlayersArray = activePlayersList.ToArray ();
-	}
-
     //Brief grace period before diamonds start spawning.
     IEnumerator CountDown()
     {
         yield return new WaitForSeconds(startGameDelay);
         introText.SetActive(false);
-        startGame = true;       //Once this is toggled, players have input.
+        state = GAMESTATE.INGAME;
     }
 
     //Called from each subclass GM.
     public void GameOver()
     {
-        gameOver = true;
+        state = GAMESTATE.POSTGAME;
         
         //Determine who was the winner.
         int highScore = 0;
@@ -476,18 +492,70 @@ public class BaseGM : MonoBehaviour
 		UpdateWhiteBorderTB ();
 	}
 
+    //Called initially to make player objects available to powerups.
+    void FillActivePlayersArray()
+    {
+
+        List<GameObject> activePlayersList = new List<GameObject>();
+
+        for (int i = 0; i < playerList.Count; i++)
+        {
+
+            if (playerList[i].obj != null)
+            {
+
+                activePlayersList.Add(playerList[i].obj);
+            }
+        }
+
+        activePlayersArray = activePlayersList.ToArray();
+    }
+
     //Called from Slow.cs and Paralysis.cs, as well as possible future powerups.
-	public GameObject[] GetActivePlayers () {
+    public GameObject[] GetActivePlayers () {
 
 		return activePlayersArray;
 	}
-
-    //
-    public void spawnPlayer()
-    {
-
-    }
     
-}
+    //From LobbyManager
+    public int IncrementIndex(int idx) //if the player wants to change their colour forward ->
+    {
+        _colorlist[idx].isAvailable = true; //accessing the array of available colours contained within ColorManager
+        do
+        {
+            idx++;
+            idx %= 7;
+        } while (!_colorlist[idx].isAvailable);
+        return idx;
+    }
 
-    */
+    public int DecrementIndex(int idx) //if the player wants to change their colour backward <-
+    {
+        _colorlist[idx].isAvailable = true;
+        do
+        {
+            idx = (idx - 1) % 7;
+            idx = idx < 0 ? idx + 7 : idx; //is check 1 true? if yes, use check 2 (wraps around back to the end of the array when you're decrementing past the first element)
+        } while (!_colorlist[idx].isAvailable);
+        return idx;
+    }
+
+    //We'll have to fix this.
+    public void UpdateColour(int cIdx, int pId) //if the player tries to change their colour, it will be updated here. Also, if the player joins too. 
+    {
+        playerList[pId].obj.transform.Find("Laser").GetComponentInChildren<SpriteRenderer>().color = _colorlist[cIdx]._color; //Laser colour
+        playerList[pId].obj.transform.Find("Laser").GetComponent<TrailRenderer>().material.color = _colorlist[cIdx]._color; //Trail renderer 
+        playerList[pId].obj.GetComponentInChildren<SpriteRenderer>().color = _colorlist[cIdx]._color; //Cannon colour
+        _colorlist[cIdx].isAvailable = false; //making sure other players cannot use the same colour
+        playerList[pId].setColor(_colorlist[cIdx]._color);   //Update Color variable, to be passed to the GM.
+        playerList[pId].obj.GetComponent<Cannon>().inputText.GetComponent<Text>().color = _colorlist[cIdx]._color;
+        playerList[pId].obj.GetComponent<Cannon>().myColor = _colorlist[cIdx]._color; ;
+    }
+
+    //Called from cannon.cs.
+    public GAMESTATE getState()
+    {
+        return state;
+    }
+
+}
