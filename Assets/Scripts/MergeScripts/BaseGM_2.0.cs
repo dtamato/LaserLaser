@@ -5,6 +5,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using Rewired;
 
+//Used to assign color's to players when they press RB or LB.
 public class ColorList
 {
     public bool isAvailable = true;
@@ -12,37 +13,15 @@ public class ColorList
 
     public ColorList(bool avail, Color col)
     {
-        isAvailable = avail; //controls whether or not the player can actually access the colour (making sure no two players can have the same colour)
-        _color = col; //The colour the player can choose
+        isAvailable = avail;
+        _color = col;
     }
 }
 
 public class BaseGM : MonoBehaviour
 {
-    public enum GAMESTATE { PREGAME, INGAME, POSTGAME }; //implementation is GAMESTATE state = state.PREGAME;
-
-
-
     #region Variables
-
-    //Ported from Lobby Manager.
-    void FFAColourList() //The available colours for the FFA lobby
-    {
-        _colorlist[0] = new ColorList(false, new Color(252 / 255f, 0, 1));
-        _colorlist[1] = new ColorList(false, new Color(156 / 255f, 0, 1));
-        _colorlist[2] = new ColorList(false, new Color(12 / 255f, 0, 1));
-        _colorlist[3] = new ColorList(false, new Color(79 / 255f, 1, 223 / 255f));
-        _colorlist[4] = new ColorList(true, new Color(89 / 255f, 254 / 255f, 50 / 255f));
-        //_colorlist[5] = new ColorList(true, new Color(240/255f, 1, 0)); // Yellow
-        _colorlist[5] = new ColorList(true, new Color(1, 168 / 255f, 0));
-        _colorlist[6] = new ColorList(true, new Color(1, 0, 0));
-    }
-    public ColorList[] _colorlist = new ColorList[7];
-
-
-
-
-
+    
     //Scene build index integers.
     public int menuSceneIndex;
     public int LobbySceneIndex;
@@ -50,27 +29,43 @@ public class BaseGM : MonoBehaviour
    
     //External References.
     public static BaseGM instance = null;
-    protected LobbyManager lobbyManager;
-    protected List<Text> HUDText;
-    [SerializeField] public List<PlayerDef> playerList;
-	protected GameObject[] activePlayersArray;
-    protected GameObject gameOverPanel;
-    protected GameObject introText;
-	protected GameObject whiteBorder;
-    protected List<GameObject> spawns;
     public GameObject playerObj;
+    protected List<GameObject> spawns;
+    protected GameObject[] activePlayersArray;
 
-    //Boolean flags and other metrics.
+    //HUD Elements.
+    protected List<Text> HUDText;
+    protected GameObject introText;
+    protected GameObject gameOverPanel;
+    protected GameObject whiteBorder;
+
+    //State management.
+    public enum GAMESTATE { PREGAME, INGAME, POSTGAME };
     protected GAMESTATE state;  //Set first to pregame in initializeGame().
-    public int playerCount = 0;
     public string gameMode;
-    public int team1Score, team2Score;  //Only used in TB mode.
 
-    //Timer variables.
+    //Color management.
+    public ColorList[] _colorlist = new ColorList[7];
+    void FFAColourList() //The available colours for the FFA lobby
+    {
+        _colorlist[0] = new ColorList(false, new Color(252 / 255f, 0, 1));
+        _colorlist[1] = new ColorList(false, new Color(156 / 255f, 0, 1));
+        _colorlist[2] = new ColorList(false, new Color(12 / 255f, 0, 1));
+        _colorlist[3] = new ColorList(false, new Color(79 / 255f, 1, 223 / 255f));
+        _colorlist[4] = new ColorList(true, new Color(89 / 255f, 254 / 255f, 50 / 255f));
+        _colorlist[5] = new ColorList(true, new Color(1, 168 / 255f, 0));
+        _colorlist[6] = new ColorList(true, new Color(1, 0, 0));
+    }
+    
+    //Timer and score metrics.
     public float joinGameDelay;
     public float startGameDelay;
-    
+    public int playerCount = 0;
+    public int team1Score, team2Score;  //Only used in TB mode.
+
     #endregion
+
+    #region Player Prefs (Currently Unused)
 
     //Class defining a player's attributes. Used to carry player preferences into the game scene from lobby.
     [System.Serializable]
@@ -98,77 +93,58 @@ public class BaseGM : MonoBehaviour
             teamColor = new Color(0.8f, 0.8f, 0.8f, 0f);
             score = 0;
         }
+
         //List of setters for private members.
-#region Setters
-        public void setID(int value)
-        {
+        public void setID(int value) {
             ID = value;
         }
-        public void setActive(bool state)
-        {
+        public void setActive(bool state) {
             isActive = state;
         }
-        public void setSensitivity(int value)
-        {
+        public void setSensitivity(int value) {
             sensitivity = value;
         }
-        public void setInverted(bool state)
-        {
+        public void setInverted(bool state) {
             inverted = state;
         }
-        public void setTeam(int value)
-        {
+        public void setTeam(int value) {
             team = value;
         }
-        public void setColor(Color value)
-        {
+        public void setColor(Color value) {
             color = value;
         }
-        public void setScore(int value)
-        {
+        public void setScore(int value) {
             score = value;
         }
-        public void setTeamColor(Color value)
-        {
+        public void setTeamColor(Color value) {
             teamColor = value;
         }
-        #endregion
-
-#region Getters
+        
         //List of getters for private variables.
-        public int getID()
-        {
+        public int getID(){
             return ID;
         }
-        public bool active()
-        {
+        public bool active() {
             return isActive;
         }
-        public int getScore()
-        {
+        public int getScore() {
             return score;
         }
-        public int getSensitivity()
-        {
+        public int getSensitivity() {
             return sensitivity;
         }
-        public bool getInverted()
-        {
+        public bool getInverted() {
             return inverted;
         }
-        public int getTeam()
-        {
+        public int getTeam() {
             return team;
         }
-        public Color getColor()
-        {
+        public Color getColor() {
             return color;
         }
-        public Color getTeamColor()
-        {
+        public Color getTeamColor() {
             return teamColor;
         }
-        #endregion
 
         //Reset function reverts preferences to default if player leaves lobby.
         public void reset()
@@ -183,36 +159,11 @@ public class BaseGM : MonoBehaviour
         }
     }
 
-    //Called immediately when game manager is instantiated in Menu.
-    protected void Awake()
-    {
-        //Ensures there is only one instance of the gameManager, and it isn't destroyed when changing scenes.
-        if (instance == null)
-            instance = this;
-        else if (instance != this)
-            Destroy(gameObject);
-        DontDestroyOnLoad(gameObject);
-        //Initialize HUD Text List and Spawn Points, will be referenced upon entering game scene.
-        HUDText = new List<Text>(4);
-        spawns = new List<GameObject>(4);
-        //Initialize Player List, holds preferences to instantiate each player in game scene.
-        playerList = new List<PlayerDef>(4);
-        for (int i = 0; i <= 3; i++)
-        {
-            playerList.Add(new PlayerDef());
-            HUDText.Add(null);
-            spawns.Add(null);
-        }
+    #endregion
 
-        FFAColourList();
-        ///
-        /// Set gameMode based on main menu preferences. Must be set to opposite of intended mode. Running the switch function in LobbyManager sets it properly.
-        ///
-    }
+    #region Player Preferences (Public Accessors)
 
-    //These functions are called to adjust player preferences before the game starts.
-    #region Player Preferences
-
+    /*
     //Called from Cannon.cs when a player enters the lobby.
     public void playerJoin(int pID, int teamNo, Color color, Color teamColor)
     {
@@ -222,43 +173,71 @@ public class BaseGM : MonoBehaviour
         playerList[pID].setTeamColor(teamColor);
         playerList[pID].setActive(true);
     }
-    //Called from Cannon.cs when a player leaves the lobby.
-    public void playerLeave(int pID)
-    {
+    
+    //The following getters are called from Cannon.cs to access the protected PlayerDefs class.
+    public void playerLeave(int pID) {
         playerList[pID].reset();
     }
-    //Called from Cannon.cs when a player changes their color.
-    public void setColor(int pID, Color color)
-    {
+    public void setColor(int pID, Color color) {
         playerList[pID].setColor(color);
     }
-    //Called from Cannon.cs when a player changes their sensitivity.
-    public void setSensitivity(int pID, int sens)
-    {
+    public void setSensitivity(int pID, int sens) {
         playerList[pID].setSensitivity(sens);
     }
-    //Called from Cannon.cs when a player changes their invertedness.
-    public void setInvert(int pID, bool state)
-    {
+    public void setInvert(int pID, bool state) {
         playerList[pID].setInverted(state);
     }
-    //Called from Cannon.cs when a player changes their team in Team Play.
-    public void setTeam(int pID, int team)
-    {
+    public void setTeam(int pID, int team) {
         playerList[pID].setTeam(team);
     }
-    //Not currently called, can change player ID.
-    public void setID(int pID)
-    {
+    public void setID(int pID) {
         playerList[pID].setID(pID);
     }
-    //Called from Cannon.cs when a player changes their team color.
-    public void setTeamColour(int pId, Color color)
-    {
+    public void setTeamColour(int pId, Color color) {
         playerList[pId].setTeamColor(color);
     }
+    */
 
     #endregion
+
+    //Called immediately when game manager is instantiated in Menu.
+    protected void Awake()
+    {
+        //Ensures there is only one instance of the gameManager, and it isn't destroyed when changing scenes.
+        if (instance == null)
+            instance = this;
+        else if (instance != this)
+            Destroy(gameObject);
+        DontDestroyOnLoad(gameObject);
+
+        //Initialize HUD Text List and Spawn Points, will be referenced upon entering game scene.
+        HUDText = new List<Text>(4);
+        spawns = new List<GameObject>(4);
+
+        /*
+        //Initialize Player List, holds preferences to instantiate each player in game scene.
+        playerList = new List<PlayerDef>(4);
+        for (int i = 0; i <= 3; i++)
+        {
+            playerList.Add(new PlayerDef());
+            HUDText.Add(null);
+            spawns.Add(null);
+        }
+        */
+
+        //Initialize HUD, Spawns, Colourlist.
+        for (int i = 0; i <= 3; i++)
+        {
+            HUDText.Add(null);
+            spawns.Add(null);
+        }
+
+        FFAColourList();
+        
+        ///
+        /// Set gameMode based on main menu preferences. Must be set to opposite of intended mode. Running the switch function in LobbyManager sets it properly.
+        ///
+    }
 
     #region MainGame Scene
 

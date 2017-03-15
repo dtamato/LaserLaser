@@ -73,7 +73,6 @@ GameObject:
   - component: {fileID: 4000014272126910}
   - component: {fileID: 61000010327839500}
   - component: {fileID: 114000012624769266}
-  - component: {fileID: 114000011582327276}
   - component: {fileID: 82000011810177810}
   - component: {fileID: 61992600950052354}
   m_Layer: 8
@@ -448,29 +447,6 @@ Light:
   m_BounceIntensity: 0
   m_ShadowRadius: 0
   m_ShadowAngle: 0
---- !u!114 &114000011582327276
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1000012362012830}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0069293a36aad0f42bd73a0be9c69a23, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  rotationSpeedIncrement: 0.5
-  isInLobby: 1
-  hasJoined: 0
-  canChange: 0
-  team: 0
-  inverted: 0
-  sensitivity: 5
-  colorIdx: 0
-  myColor: {r: 0, g: 0, b: 0, a: 0}
-  myTeamColor: {r: 0, g: 0, b: 0, a: 0}
-  myID: 0
-  inputText: {fileID: 0}
 --- !u!114 &114000012008568226
 MonoBehaviour:
   m_ObjectHideFlags: 1
