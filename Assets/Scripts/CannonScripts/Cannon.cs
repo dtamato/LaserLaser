@@ -41,16 +41,16 @@ public class Cannon : MonoBehaviour
     float baseAngle;
     float minAngle;
     float maxAngle;
-    public string testMode = "look in inspector";
 
     void Awake()
     {
         gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<BaseGM>();
+        gameManager.players[playerId] = this;
+
         joinText = GameObject.Find("JoinText" + playerId);
-
-
         laserRB = pairedLaser.GetComponent<Rigidbody2D>();
         rewiredPlayer = ReInput.players.GetPlayer(playerId);
+
         inFlight = false;
         sensitivity = 5;
 
@@ -64,7 +64,7 @@ public class Cannon : MonoBehaviour
         else
             team = 0;
 
-        gameManager.playerJoin(playerId, team, myColor, myTeamColor);    //Pass to GM.
+        
 
         //Setup for rotation.
         if (maxAngleOffset < 0)
@@ -175,7 +175,6 @@ public class Cannon : MonoBehaviour
             gameManager._colorlist[colorIdx].isAvailable = true;
             joinText.SetActive(true);
             gameManager.playerCount--;
-            gameManager.playerLeave(playerId);
             Destroy(this.gameObject);
         }
 
@@ -202,7 +201,6 @@ public class Cannon : MonoBehaviour
             //Sensitivity is on a scale of 1-8. Corresponds to minRotSpeed of 2.0f, and maxRotSpeed of 10.0f.
             if (sensitivity < 8)
                 sensitivity++;
-            gameManager.setSensitivity(playerId, sensitivity);  //Pass to GM.
 
             if (sensitivity == 8)
                 inputText.GetComponent<Text>().text = "Sensitivity: MAX";
@@ -217,7 +215,6 @@ public class Cannon : MonoBehaviour
             ChangeRotationSpeed(-rotationSpeedIncrement);
             if (sensitivity > 1)
                 sensitivity--;
-            gameManager.setSensitivity(playerId, sensitivity);  //Pass to GM.
 
             if (sensitivity == 1)
                 inputText.GetComponent<Text>().text = "Sensitivity: MIN";
@@ -283,6 +280,11 @@ public class Cannon : MonoBehaviour
     {
 		return pairedLaser.gameObject;
 	}
+
+    public Color GetColor()
+    {
+        return myColor;
+    }
 
     #endregion
 }

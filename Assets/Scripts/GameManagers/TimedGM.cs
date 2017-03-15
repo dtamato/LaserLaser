@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class TimedGM : BaseGM
 {
@@ -18,25 +19,14 @@ public class TimedGM : BaseGM
     {
         switch (state)
         {
+            //Pregame runs from the time the game is initialized, until the end of the "Get Ready" countdown.
             case (GAMESTATE.PREGAME):
 
-                //Put the time on the clock.
-                timeBar = GameObject.Find("Time Bar").GetComponent<Image>();
-                timeBar.fillAmount = gameTimer / initialTime;
+                //No functionality yet.
 
-                //Deactivate inactive player's scores. FFA Only.
-                if (gameMode == "FFA")
-                {
-                    for (int i = 0; i <= 3; i++)
-                    {
-                        GameObject scorebar = GameObject.Find("PlayerScore" + i);
-                        if (!playerList[i].active())
-                            scorebar.SetActive(false);
-                    }
-                }
                 break;
 
-            //
+            //Ingame runs from the time the "Get Ready" countdown ends, and the win condition is met.
             case (GAMESTATE.INGAME):
 
                 gameTimer -= Time.deltaTime;
@@ -51,19 +41,23 @@ public class TimedGM : BaseGM
 
                 if (gameTimer <= 0)
                     GameOver();
-            
+
                 break;
 
-             //
+            //Postgame runs from the time the win condition is met, and the required players press return to menu.
             case (GAMESTATE.POSTGAME):
 
                 //No functionality yet.
 
                 break;
-            
-            //
+
+            //Initial setup of scene, before pregame.
             default:
-                base.initializeGame();
+                if (SceneManager.GetActiveScene().buildIndex == mainGameSceneIndex) {
+                    base.initializeGame();
+                    timeBar = GameObject.Find("Time Bar").GetComponent<Image>();
+                    timeBar.fillAmount = gameTimer / initialTime;
+                }
                 break;
         }
     }
