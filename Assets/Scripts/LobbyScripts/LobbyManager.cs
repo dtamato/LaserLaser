@@ -4,18 +4,6 @@ using System.Collections;
 using UnityEngine.UI;
 using Rewired;
 
-public class ColorList
-{
-    public bool isAvailable = true;
-    public Color _color;
-
-    public ColorList(bool avail, Color col)
-    {
-        isAvailable = avail; //controls whether or not the player can actually access the colour (making sure no two players can have the same colour)
-        _color = col; //The colour the player can choose
-    }
-}
-
 public class LobbyManager : MonoBehaviour {
 
 

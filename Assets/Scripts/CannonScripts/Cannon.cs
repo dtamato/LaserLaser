@@ -7,6 +7,16 @@ using UnityEngine.SceneManagement;
 [DisallowMultipleComponent]
 public class Cannon : MonoBehaviour
 {
+    //from customization script
+    private int colorIdx; //the player's position within the color array
+    float rotationSpeedIncrement;
+    public GameObject inputText;
+    public GameObject joinText;
+    public Color myColor;
+    public Color myTeamColor;
+    public int team;
+    public int sensitivity;
+
     //References.
     BaseGM gameManager;
     public Player rewiredPlayer;
@@ -31,64 +41,83 @@ public class Cannon : MonoBehaviour
     float baseAngle;
     float minAngle;
     float maxAngle;
-    public string testMode = "look in inspector";
 
     void Awake()
     {
-        inFlight = false;
+        gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<BaseGM>();
+        gameManager.players[playerId] = this;
+
+        joinText = GameObject.Find("JoinText" + playerId);
         laserRB = pairedLaser.GetComponent<Rigidbody2D>();
+        rewiredPlayer = ReInput.players.GetPlayer(playerId);
 
-        if (testMode != "debug") //to be removed when game is published. for test lobby purposes
-        {
-            gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<BaseGM>(); //to be used for test scenes. When game is published, this is to be removed
-        //In the lobby this must be assigned. In the game scene the GM assigns it.
-        if (SceneManager.GetActiveScene().buildIndex == gameManager.LobbySceneIndex)
-                rewiredPlayer = ReInput.players.GetPlayer(playerId);
-        }
+        inFlight = false;
+        sensitivity = 5;
 
-        if (testMode == "debug")
-            rewiredPlayer = ReInput.players.GetPlayer(playerId);
+        colorIdx = playerId;
+        gameManager.UpdateColour(colorIdx, playerId);
+        inputText.GetComponent<Text>().color = myColor;
+        joinText.SetActive(false);
 
+        if (gameManager.gameMode == "FFA")
+            team = playerId + 1;
+        else
+            team = 0;
+
+        
+
+        //Setup for rotation.
         if (maxAngleOffset < 0)
             maxAngleOffset *= -1;
-
         currentRotationSpeed = baseRotationSpeed;
         SetNewBaseAngle();
     }
 
     void Update()
     {
-        //Player can't input while in flight.
-        if (!inFlight)
-            ProcessInputs();
+        switch (gameManager.getState())
+        {
+            case (BaseGM.GAMESTATE.PREGAME):
+                PregameInputs();
+                StandardInputs();
+                break;
+
+            case (BaseGM.GAMESTATE.INGAME):
+
+                StandardInputs();
+                break;
+
+            case (BaseGM.GAMESTATE.POSTGAME):
+
+
+                if (gameManager.getState() == BaseGM.GAMESTATE.POSTGAME && rewiredPlayer.GetButtonDown("StartGame"))
+                {
+                    Debug.Log("changing to menu");
+                    gameManager.returnToMenu();
+                }
+
+
+                break;
+        }
+        
+        
+        
+        
     }
 
-    #region Inputs
-
-    void ProcessInputs()
+    void StandardInputs()
     {
-        //In lobby, don't allow movement until player has joined.
-        //In main game scene, once game is over don't allow movement.
-        if (testMode != "debug") //to be removed when game is published. for test lobby purposes
-        {
-            if ((SceneManager.GetActiveScene().buildIndex == gameManager.LobbySceneIndex && this.GetComponent<CannonCustomization>().hasJoined) ||
-                (SceneManager.GetActiveScene().buildIndex == gameManager.mainGameSceneIndex && gameManager.gameOver == false))
-            {
-                GetRotationInput();
-                RestrictAngle();
-            }
-
-        }
-        else
+        if (!inFlight)
         {
             GetRotationInput();
             RestrictAngle();
+            GetFireInput();
         }
-
-        //Always check for firing, also checks return to menu prompt on game over.
-        GetFireInput();
     }
 
+    #region Inputs
+    
+    //
     void GetRotationInput()
     {
         // Get controller joystick input
@@ -108,6 +137,7 @@ public class Cannon : MonoBehaviour
         }
     }
 
+    //
     void RestrictAngle()
     {
         currentAngle = this.transform.rotation.eulerAngles.z;
@@ -122,59 +152,78 @@ public class Cannon : MonoBehaviour
         }
     }
 
+    //
     void GetFireInput()
     {
-        if (testMode != "debug") //to be removed when game is published. for test lobby purposes
-        {
-        if (gameManager.gameOver == true && rewiredPlayer.GetButtonDown("StartGame")) {
-            Debug.Log("changing to menu");
-            gameManager.returnToMenu();
-        }
-            
-        }
-
-        //When player fires, activate the laser and launch it with force.
-        //Always enabled in the lobby. Only enabled in game after the start game countdown, but before game over.
-        if (testMode != "debug")
-        {
-            if (rewiredPlayer.GetButtonDown("Fire") &&
-                (SceneManager.GetActiveScene().buildIndex == gameManager.LobbySceneIndex ||
-                 !gameManager.gameOver && gameManager.startGame))
-            {
-                //StartCoroutine(TempDisableCollider());
-                laserRB.bodyType = RigidbodyType2D.Dynamic;
-                laserRB.AddForce(maxBlastForce * this.transform.up);
-                pairedLaser.transform.GetComponent<SpriteRenderer>().enabled = true;
-                pairedLaser.transform.GetComponent<TrailRenderer>().enabled = true;
-                inFlight = true;
-                this.GetComponent<AudioSource>().pitch = Random.Range(0.5f, 1.5f);
-                this.GetComponent<AudioSource>().Play();
-            }
-        }
-        else
-        {
-            if (rewiredPlayer.GetButtonDown("Fire"))
-            {
-                laserRB.bodyType = RigidbodyType2D.Dynamic;
-                laserRB.AddForce(maxBlastForce * this.transform.up);
-                pairedLaser.transform.GetComponent<SpriteRenderer>().enabled = true;
-                pairedLaser.transform.GetComponent<TrailRenderer>().enabled = true;
-                inFlight = true;
-                this.GetComponent<AudioSource>().pitch = Random.Range(0.5f, 1.5f);
-                this.GetComponent<AudioSource>().Play();
-            }
-        }
-
+         if (rewiredPlayer.GetButtonDown("Fire"))
+         {
+             laserRB.bodyType = RigidbodyType2D.Dynamic;
+             laserRB.AddForce(maxBlastForce * this.transform.up);
+             pairedLaser.transform.GetComponent<SpriteRenderer>().enabled = true;
+             pairedLaser.transform.GetComponent<TrailRenderer>().enabled = true;
+             inFlight = true;
+             this.GetComponent<AudioSource>().pitch = Random.Range(0.5f, 1.5f);
+             this.GetComponent<AudioSource>().Play();
+         }
     }
 
-    /*
-    IEnumerator TempDisableCollider()
+    //customization inputs
+    void PregameInputs()
     {
-        this.GetComponent<Collider2D>().enabled = false;
-        yield return new WaitForSeconds(0.15f);
-        this.GetComponent<Collider2D>().enabled = true;
+        if (rewiredPlayer.GetButtonDown("Back"))        //Player presses B.
+        {
+            gameManager._colorlist[colorIdx].isAvailable = true;
+            joinText.SetActive(true);
+            gameManager.playerCount--;
+            Destroy(this.gameObject);
+        }
+
+        if (rewiredPlayer.GetButtonDown("RButt"))       //Player presses RB.
+        { 
+            colorIdx = gameManager.IncrementIndex(colorIdx);
+            gameManager.UpdateColour(colorIdx, playerId);
+        }
+
+        if (rewiredPlayer.GetButtonDown("LButt"))       //Player presses LB.
+        {
+            colorIdx = gameManager.DecrementIndex(colorIdx);
+            gameManager.UpdateColour(colorIdx, playerId);
+        }
+
+        if (rewiredPlayer.GetButtonDown("StartGame"))   //Player presses Start.
+        {   
+            //Once all players press START, skip the countdown.
+        }
+
+        if (rewiredPlayer.GetButtonDown("IncreaseRotationSpeed"))      //Player presses UpD.
+        {
+            ChangeRotationSpeed(rotationSpeedIncrement);
+            //Sensitivity is on a scale of 1-8. Corresponds to minRotSpeed of 2.0f, and maxRotSpeed of 10.0f.
+            if (sensitivity < 8)
+                sensitivity++;
+
+            if (sensitivity == 8)
+                inputText.GetComponent<Text>().text = "Sensitivity: MAX";
+            else
+                inputText.GetComponent<Text>().text = "Sensitivity: " + sensitivity;
+
+            inputText.GetComponent<InputTextScript>().checkText();
+        }
+
+        if (rewiredPlayer.GetButtonDown("DecreaseRotationSpeed"))         //Player presses DownD.
+        {
+            ChangeRotationSpeed(-rotationSpeedIncrement);
+            if (sensitivity > 1)
+                sensitivity--;
+
+            if (sensitivity == 1)
+                inputText.GetComponent<Text>().text = "Sensitivity: MIN";
+            else
+                inputText.GetComponent<Text>().text = "Sensitivity: " + sensitivity;
+
+            inputText.GetComponent<InputTextScript>().checkText();
+        }
     }
-    */
 
     #endregion
 
@@ -216,6 +265,7 @@ public class Cannon : MonoBehaviour
     #endregion
 
     #region Getters
+
     public int GetPlayerID()
     {
         return playerId;
@@ -225,9 +275,16 @@ public class Cannon : MonoBehaviour
     {
         return baseRotationSpeed;
     }
-	public GameObject GetLaser () {
 
+	public GameObject GetLaser ()
+    {
 		return pairedLaser.gameObject;
 	}
+
+    public Color GetColor()
+    {
+        return myColor;
+    }
+
     #endregion
 }
