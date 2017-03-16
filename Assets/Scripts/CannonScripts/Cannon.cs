@@ -44,7 +44,7 @@ public class Cannon : MonoBehaviour
     float minAngle;
     float maxAngle;
 
-    void Awake()
+    void Start()
     {
         gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<BaseGM>();
         gameManager.players[playerId] = this;
@@ -78,7 +78,6 @@ public class Cannon : MonoBehaviour
 
     void Update()
     {
-        Debug.Log(gameManager.getState());
         switch (gameManager.getState())
         {
             case (BaseGM.GAMESTATE.PREGAME):
@@ -179,6 +178,12 @@ public class Cannon : MonoBehaviour
     //customization inputs
     void PregameInputs()
     {
+
+
+
+        //*********************************HERE******************************
+
+
         if (rewiredPlayer.GetButtonDown("Back"))        //Player presses B.
         {
             if (playerReady)
@@ -195,6 +200,9 @@ public class Cannon : MonoBehaviour
                 Destroy(this.gameObject);
             }
         }
+
+
+        //*********************************HERE******************************
 
         if (rewiredPlayer.GetButtonDown("RButt"))       //Player presses RB.
         { 

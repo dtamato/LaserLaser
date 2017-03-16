@@ -36,7 +36,7 @@ public class TimedGM : BaseGM
             case (GAMESTATE.PREGAME):
 
                 joinGameDelay -= Time.deltaTime;
-                joinCountdownText.text = joinGameDelay.ToString();
+                joinCountdownText.text = joinGameDelay.ToString("F1");
 
                 if ((joinGameDelay <= 0 || readyPlayers == playerCount) && playerCount > 0)
                 {

@@ -51,6 +51,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 22041f15d6cb36a489fe087d3ed59d61, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  titleSceneIndex: 1
   menuSceneIndex: 2
   mainGameSceneIndex: 3
   gameOverSceneIndex: 4
@@ -60,7 +61,8 @@ MonoBehaviour:
   joinGameDelay: 30
   startGameDelay: 3
   playerCount: 0
+  readyPlayers: 0
   playerScores: 
   team1Score: 0
   team2Score: 0
-  gameTimer: 60
+  gameTimer: 15

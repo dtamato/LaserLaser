@@ -23,6 +23,7 @@ public class BaseGM : MonoBehaviour
     #region Variables
     
     //Scene build index integers.
+    public int titleSceneIndex;
     public int menuSceneIndex;
     //public int LobbySceneIndex;
     public int mainGameSceneIndex;
@@ -351,7 +352,7 @@ public class BaseGM : MonoBehaviour
     //Returns to menu and destroys GM and rewired manager.
     public void returnToMenu()
     {
-        SceneManager.LoadScene(menuSceneIndex);
+        SceneManager.LoadScene(titleSceneIndex);
         Destroy(GameObject.Find("Rewired Input Manager"));
         Debug.Log("Goodbye cruel world.");
         Destroy(gameObject);
