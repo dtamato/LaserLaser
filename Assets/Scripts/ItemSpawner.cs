@@ -22,7 +22,7 @@ public class ItemSpawner : MonoBehaviour
 
     IEnumerator RecursiveSpawner()
     {
-		if (gameManager.startGame == true) {
+		if (gameManager.getState() == BaseGM.GAMESTATE.INGAME) {
 			Bounds spawnerBounds = this.GetComponentInChildren<BoxCollider2D> ().bounds;
 			float newX = Random.Range (spawnerBounds.min.x, spawnerBounds.max.x);
 			float newY = Random.Range (spawnerBounds.min.y, spawnerBounds.max.y);

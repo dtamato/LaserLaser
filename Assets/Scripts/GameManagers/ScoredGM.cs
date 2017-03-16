@@ -27,21 +27,31 @@ public class ScoredGM : BaseGM
     {
         #region Lobby Scene
 
+        switch (state)
+        {
+            case (GAMESTATE.PREGAME):
+                break;
+            case (GAMESTATE.INGAME):
+                break;
+            case (GAMESTATE.POSTGAME):
+                break;
+        }
+
         //When first entering the lobby from the menu scene.
-        if (enteredLobby == false && SceneManager.GetActiveScene().buildIndex == LobbySceneIndex)
+        /*if (enteredLobby == false && SceneManager.GetActiveScene().buildIndex == LobbySceneIndex)
         {
             lobbyManager = GameObject.Find("LobbyManager").GetComponent<LobbyManager>();
             lobbyManager.gameType = gameMode;
             lobbyManager.SwitchTeamMode();
             enteredLobby = true;
-        }
+        }*/
 
         #endregion
 
         #region Main Game Scene
 
         //When the GM enters the game scene, initialize the game.
-        else if (!initialized && SceneManager.GetActiveScene().buildIndex == mainGameSceneIndex)
+        if (!initialized && SceneManager.GetActiveScene().buildIndex == mainGameSceneIndex)
         {
             //Run the base game intialization, all GMs run this.
             base.initializeGame();

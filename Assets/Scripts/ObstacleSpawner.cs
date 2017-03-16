@@ -18,7 +18,7 @@ public class ObstacleSpawner : MonoBehaviour {
 
 	IEnumerator RecursiveSpawner () {
 
-		if (gameManager.startGame) {
+		if (gameManager.getState() == BaseGM.GAMESTATE.INGAME) {
 
 			Bounds spawnerBounds = this.GetComponentInChildren<BoxCollider2D> ().bounds;
 			float newX = Random.Range (spawnerBounds.min.x, spawnerBounds.max.x);
