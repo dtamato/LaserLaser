@@ -19,8 +19,8 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4334656006853424}
+  - component: {fileID: 114459469653705798}
   - component: {fileID: 212152804438625604}
-  - component: {fileID: 114984653294867558}
   - component: {fileID: 58291113671529388}
   m_Layer: 13
   m_Name: Scattershot
@@ -56,7 +56,7 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 0.4
---- !u!114 &114984653294867558
+--- !u!114 &114459469653705798
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -67,8 +67,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 70067dd23a3813a438a431f4510b5046, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  scatterTimer: 10
-  scatterObject: {fileID: 1136051408292078, guid: c0540188600f43d44a9586ef4bc3c03b,
+  scatterTimer: 100
+  scatterRB: {fileID: 0}
+  blastValue: 8000
+  scatterObject: {fileID: 1031913294232212, guid: ff2836ecfa490a84492e36653a1a2d3b,
     type: 2}
 --- !u!212 &212152804438625604
 SpriteRenderer:
