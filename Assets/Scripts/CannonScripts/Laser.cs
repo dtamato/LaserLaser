@@ -25,20 +25,15 @@ public class Laser : MonoBehaviour
 
     void Awake()
     {
-        if (testMode != "debug")//to be removed when game is published. for test lobby purposes
-        {
-        gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<BaseGM>(); //to be used for test scenes. When game is published, this is to be removed
-        }
+        
+        gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<BaseGM>();
         rb2d = this.GetComponentInChildren<Rigidbody2D>();
         light = this.GetComponentInChildren<Light>();
         this.GetComponentInChildren<TrailRenderer>().sortingLayerName = this.GetComponent<SpriteRenderer>().sortingLayerName;
         this.GetComponentInChildren<TrailRenderer>().sortingOrder = this.GetComponent<SpriteRenderer>().sortingOrder - 1;
 
         //Record the game mode, for scoring purposes.
-        if (testMode != "debug")//to be removed when game is published. for test lobby purposes
-        {
             gameMode = gameManager.gameMode;
-        }
     }
 
     void Update()

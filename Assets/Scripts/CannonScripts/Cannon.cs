@@ -16,6 +16,7 @@ public class Cannon : MonoBehaviour
     public Color myTeamColor;
     public int team;
     public int sensitivity;
+    private bool playerReady = false;
 
     //References.
     BaseGM gameManager;
@@ -56,8 +57,8 @@ public class Cannon : MonoBehaviour
 
         colorIdx = playerId;
         gameManager.UpdateColour(colorIdx, playerId);
-        inputText.GetComponent<Text>().color = myColor;
-        joinText.SetActive(false);
+        //inputText.GetComponent<Text>().color = myColor;
+        //joinText.SetActive(false);
 
         if (gameManager.gameMode == "FFA")
             team = playerId + 1;
@@ -75,6 +76,7 @@ public class Cannon : MonoBehaviour
 
     void Update()
     {
+        Debug.Log(gameManager.getState());
         switch (gameManager.getState())
         {
             case (BaseGM.GAMESTATE.PREGAME):
@@ -191,8 +193,11 @@ public class Cannon : MonoBehaviour
         }
 
         if (rewiredPlayer.GetButtonDown("StartGame"))   //Player presses Start.
-        {   
-            //Once all players press START, skip the countdown.
+        {
+            if (!playerReady)
+            {
+                gameManager.IncrementReadyPlayers();
+            }
         }
 
         if (rewiredPlayer.GetButtonDown("IncreaseRotationSpeed"))      //Player presses UpD.
@@ -260,6 +265,11 @@ public class Cannon : MonoBehaviour
     public void ModifyRotationSpeed(float newSpeed)
     {
         baseRotationSpeed = newSpeed;
+    }
+
+    public void SetID(int newId)
+    {
+        playerId = newId;
     }
 
     #endregion

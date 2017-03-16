@@ -43,7 +43,7 @@ public class BaseGM : MonoBehaviour
     protected GameObject whiteBorder;
 
     //State management.
-    public enum GAMESTATE { PREGAME, INGAME, POSTGAME };
+    public enum GAMESTATE { PREGAME, INGAME, POSTGAME, SETUP };
     protected GAMESTATE state;  //Set first to pregame in initializeGame().
     public string gameMode;
 
@@ -64,6 +64,7 @@ public class BaseGM : MonoBehaviour
     public float joinGameDelay;
     public float startGameDelay;
     public int playerCount = 0;
+    private int readyPlayers = -1; //to count how many players are ready to skip the pregame countdown
     public List<int> playerScores;
     public int team1Score, team2Score;  //Only used in TB mode.
 
@@ -120,10 +121,12 @@ public class BaseGM : MonoBehaviour
         public void setScore(int value) {
             score = value;
         }
-        public void setTeamColor(Color value) {
+
+        public void setTeamColor(Color value)
+        {
             teamColor = value;
         }
-        
+
         //List of getters for private variables.
         public int getID(){
             return ID;
@@ -204,6 +207,21 @@ public class BaseGM : MonoBehaviour
 
     #endregion
 
+    public int GetReadyPlayers()
+    {
+        return readyPlayers;
+    }
+
+    public void IncrementReadyPlayers()
+    {
+        readyPlayers++;
+    }
+
+    public void DecrementReadyPlayers()
+    {
+        readyPlayers--;
+    }
+
     //Called immediately when game manager is instantiated in Menu.
     protected void Awake()
     {
@@ -213,7 +231,6 @@ public class BaseGM : MonoBehaviour
         else if (instance != this)
             Destroy(gameObject);
         DontDestroyOnLoad(gameObject);
-
         //Initialize HUD Text List and Spawn Points, will be referenced upon entering game scene.
         HUDText = new List<Text>(4);
         spawns = new List<GameObject>(4);
@@ -229,6 +246,7 @@ public class BaseGM : MonoBehaviour
         }
 
         FFAColourList();
+        SetState(GAMESTATE.SETUP);
     }
 
     #region MainGame Scene
@@ -250,15 +268,13 @@ public class BaseGM : MonoBehaviour
         whiteBorder = GameObject.Find ("White Border");
         gameOverPanel = GameObject.Find("GameOverPanel");
         gameOverPanel.SetActive(false);
-        players[0] = GameObject.Find("Player").GetComponent<Cannon>();
+        //players[0] = GameObject.Find("Player").GetComponent<Cannon>();
 
         //FillActivePlayersArray ();
 
         //Start the countdown to choose preferences.
-        StartCoroutine("PreGameCountDown");
-
-        //Set game state to In Game.
-        state = GAMESTATE.PREGAME;
+        //StartCoroutine("PreGameCountDown");
+        
     }
 
     //Period for players to join game and select preferences.
@@ -273,8 +289,8 @@ public class BaseGM : MonoBehaviour
     IEnumerator CountDown()
     {
         yield return new WaitForSeconds(startGameDelay);
+        SetState(GAMESTATE.INGAME);
         readyText.SetActive(false);
-        state = GAMESTATE.INGAME;
     }
 
     //Called from each subclass GM.
@@ -465,7 +481,7 @@ public class BaseGM : MonoBehaviour
         players[pId].GetComponentInChildren<SpriteRenderer>().color = _colorlist[cIdx]._color; //Cannon colour
         _colorlist[cIdx].isAvailable = false; //making sure other players cannot use the same colour
         players[pId].myColor = _colorlist[cIdx]._color;   //Update Color variable, to be passed to the GM.
-        players[pId].GetComponent<Cannon>().inputText.GetComponent<Text>().color = _colorlist[cIdx]._color;
+        //players[pId].GetComponent<Cannon>().inputText.GetComponent<Text>().color = _colorlist[cIdx]._color;
         players[pId].GetComponent<Cannon>().myColor = _colorlist[cIdx]._color; ;
     }
 
@@ -473,6 +489,11 @@ public class BaseGM : MonoBehaviour
     public GAMESTATE getState()
     {
         return state;
+    }
+
+    public void SetState(GAMESTATE test)
+    {
+        state = test;
     }
 
 }

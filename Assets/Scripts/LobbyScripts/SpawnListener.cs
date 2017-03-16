@@ -27,11 +27,12 @@ public class SpawnListener : MonoBehaviour
     {
         if (rewiredPlayer.GetButtonDown("Fire"))
         {
-            Instantiate(playerRef, transform.position, transform.rotation);
+            GameObject obj = Instantiate(playerRef, transform.position, transform.rotation) as GameObject;
+            obj.GetComponent<Cannon>().SetID(playerID);
             gameManager.playerCount++;
         }
         
-        if (gameManager.joinGameDelay <= 0.0f)
+        if (gameManager.getState() == BaseGM.GAMESTATE.INGAME)
         {
             Destroy(this.gameObject);
         }
