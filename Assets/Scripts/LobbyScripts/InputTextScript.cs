@@ -16,7 +16,7 @@ public class InputTextScript : MonoBehaviour
 
     void Update()
     {
-        gameObject.GetComponent<Text>().color = GameObject.Find("Player" + (ID + 1) + " Overlay").GetComponent<SpriteRenderer>().color;
+        //gameObject.GetComponent<Text>().color = GameObject.Find("Player" + (ID + 1) + " Overlay").GetComponent<SpriteRenderer>().color;
     }
    
     //Adds time to the coroutine if the player is adjusting their settings many times in quick succession.

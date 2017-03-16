@@ -6,13 +6,14 @@ using Rewired;
 /// <summary>
 /// Attached to spawnpoint in MergedMain scene, listens for attached controllers to press A.
 /// When they press A, a cannon is spawned and the player has control of it.
-/// Once the join time has expired, the spawn point is destroyed.
+/// Once the join time has expired, the spawn point is deactivated.
 /// </summary>
 
 public class SpawnListener : MonoBehaviour
 {
     public GameObject playerRef;
     public int playerID;
+    public bool taken;
 
     private BaseGM gameManager;
     private Player rewiredPlayer;
@@ -27,14 +28,19 @@ public class SpawnListener : MonoBehaviour
     {
         if (rewiredPlayer.GetButtonDown("Fire"))
         {
-            GameObject obj = Instantiate(playerRef, transform.position, transform.rotation);
-            obj.GetComponent<Cannon>().SetID(playerID);
-            gameManager.playerCount++;
+            if (!taken)
+            {
+                GameObject obj = Instantiate(playerRef, transform.position, transform.rotation);
+                obj.GetComponent<Cannon>().SetID(playerID);
+                obj.GetComponent<Cannon>().spawnPoint = this.gameObject;
+                gameManager.playerCount++;
+                taken = true;
+            }
         }
         
         if (gameManager.getState() == BaseGM.GAMESTATE.INGAME)
         {
-            Destroy(this.gameObject);
+            this.gameObject.SetActive(false);
         }
     }
 }

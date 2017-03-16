@@ -51,17 +51,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 22041f15d6cb36a489fe087d3ed59d61, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  menuSceneIndex: 1
-  LobbySceneIndex: 3
-  mainGameSceneIndex: 4
-  playerList: []
+  menuSceneIndex: 2
+  mainGameSceneIndex: 3
+  gameOverSceneIndex: 4
   playerObj: {fileID: 1000012362012830, guid: 76f68068a86b4d14598968aa340a5996, type: 2}
-  inGame: 0
-  startGame: 0
-  gameOver: 0
-  playerCount: 0
+  players: []
   gameMode: 
+  joinGameDelay: 30
+  startGameDelay: 3
+  playerCount: 0
+  playerScores: 
   team1Score: 0
   team2Score: 0
-  startGameDelay: 3
   gameTimer: 60

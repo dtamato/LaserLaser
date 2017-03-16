@@ -17,6 +17,7 @@ public class Cannon : MonoBehaviour
     public int team;
     public int sensitivity;
     private bool playerReady = false;
+    public GameObject spawnPoint;   //set from spawnpoint script.
 
     //References.
     BaseGM gameManager;
@@ -49,6 +50,7 @@ public class Cannon : MonoBehaviour
         gameManager.players[playerId] = this;
 
         joinText = GameObject.Find("JoinText" + playerId);
+        inputText = GameObject.Find("InputText" + playerId);
         laserRB = pairedLaser.GetComponent<Rigidbody2D>();
         rewiredPlayer = ReInput.players.GetPlayer(playerId);
 
@@ -84,8 +86,13 @@ public class Cannon : MonoBehaviour
                 StandardInputs();
                 break;
 
-            case (BaseGM.GAMESTATE.INGAME):
+            //In countdown player can only rotate, no firing.
+            case (BaseGM.GAMESTATE.COUNTDOWN):
+                GetRotationInput();
+                RestrictAngle();
+                break;
 
+            case (BaseGM.GAMESTATE.INGAME):
                 StandardInputs();
                 break;
 
@@ -174,12 +181,19 @@ public class Cannon : MonoBehaviour
     {
         if (rewiredPlayer.GetButtonDown("Back"))        //Player presses B.
         {
-            Destroy(this.gameObject);
-            Debug.Log("Test");
-            gameManager.DecrementReadyPlayers();
-            gameManager._colorlist[colorIdx].isAvailable = true;
-            joinText.SetActive(true);
-            gameManager.playerCount--;
+            if (playerReady)
+            {
+                playerReady = false;
+                gameManager.readyPlayers--;
+            }
+            else
+            {
+                spawnPoint.GetComponent<SpawnListener>().taken = false;
+                gameManager._colorlist[colorIdx].isAvailable = true;
+                joinText.SetActive(true);
+                gameManager.playerCount--;
+                Destroy(this.gameObject);
+            }
         }
 
         if (rewiredPlayer.GetButtonDown("RButt"))       //Player presses RB.
@@ -198,7 +212,8 @@ public class Cannon : MonoBehaviour
         {
             if (!playerReady)
             {
-                gameManager.IncrementReadyPlayers();
+                playerReady = true;
+                gameManager.readyPlayers++;
             }
         }
 

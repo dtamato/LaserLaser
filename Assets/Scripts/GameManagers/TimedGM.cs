@@ -7,7 +7,6 @@ public class TimedGM : BaseGM
     private Image timeBar;
 	private float initialTime;
     public float gameTimer;
-    float timeCount = 0;
 
     new void Awake()
     {
@@ -20,19 +19,38 @@ public class TimedGM : BaseGM
     {
         switch (state)
         {
+            //
+            case (GAMESTATE.SETUP):
+                if (SceneManager.GetActiveScene().buildIndex == mainGameSceneIndex)
+                {
+                    initializeGame();
+                    timeBar = GameObject.Find("Time Bar").GetComponent<Image>();
+                    timeBar.fillAmount = gameTimer / initialTime;
+
+                    SetState(GAMESTATE.PREGAME);
+                }
+
+                break;
+
             //Pregame runs from the time the game is initialized, until the end of the "Get Ready" countdown.
             case (GAMESTATE.PREGAME):
 
-                //No functionality yet.
-                
-                Debug.Log(timeCount);
-                if (timeCount >= joinGameDelay || GetReadyPlayers() == playerCount) //I did see the enum, but it didn't work so I had to use this.
+                joinGameDelay -= Time.deltaTime;
+                joinCountdownText.text = joinGameDelay.ToString();
+
+                if ((joinGameDelay <= 0 || readyPlayers == playerCount) && playerCount > 0)
                 {
-                    state = GAMESTATE.INGAME;
-                }
-                else
-                {
-                    timeCount += Time.deltaTime;
+                    for (int i = 0; i < 3; i++)
+                    {
+                        joinText[i].gameObject.SetActive(false);
+                        inputText[i].gameObject.SetActive(false);
+                    }
+                    joinCountdownText.gameObject.SetActive(false);
+                    readyText.SetActive(true);
+
+                    SetState(GAMESTATE.COUNTDOWN);
+                    //Debug.Log(state);
+                    StartCoroutine(CountDown());
                 }
 
                 break;
@@ -60,24 +78,6 @@ public class TimedGM : BaseGM
 
                 //No functionality yet.
 
-                break;
-            case (GAMESTATE.SETUP): //default case wasn't working?
-                if (SceneManager.GetActiveScene().buildIndex == mainGameSceneIndex)
-                {
-                    SetState(GAMESTATE.PREGAME);
-                    Debug.Log(state);
-                    initializeGame();
-                    timeBar = GameObject.Find("Time Bar").GetComponent<Image>();
-                    timeBar.fillAmount = gameTimer / initialTime;
-                }
-                    
-                
-
-                break;
-
-            //Initial setup of scene, before pregame.
-            default:
-                
                 break;
         }
     }

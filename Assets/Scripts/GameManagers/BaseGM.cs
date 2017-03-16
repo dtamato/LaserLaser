@@ -37,13 +37,15 @@ public class BaseGM : MonoBehaviour
 
     //HUD Elements.
     protected List<Text> HUDText;
+    protected List<Text> joinText;
+    protected List<Text> inputText;
     protected GameObject readyText;
-    protected Text joinText;
+    protected Text joinCountdownText;
     protected GameObject gameOverPanel;
     protected GameObject whiteBorder;
 
     //State management.
-    public enum GAMESTATE { PREGAME, INGAME, POSTGAME, SETUP };
+    public enum GAMESTATE {SETUP, PREGAME, COUNTDOWN, INGAME, POSTGAME };
     protected GAMESTATE state;  //Set first to pregame in initializeGame().
     public string gameMode;
 
@@ -64,7 +66,7 @@ public class BaseGM : MonoBehaviour
     public float joinGameDelay;
     public float startGameDelay;
     public int playerCount = 0;
-    private int readyPlayers = -1; //to count how many players are ready to skip the pregame countdown
+    public int readyPlayers = 0;
     public List<int> playerScores;
     public int team1Score, team2Score;  //Only used in TB mode.
 
@@ -207,11 +209,7 @@ public class BaseGM : MonoBehaviour
 
     #endregion
 
-    public int GetReadyPlayers()
-    {
-        return readyPlayers;
-    }
-
+    /*
     public void IncrementReadyPlayers()
     {
         readyPlayers++;
@@ -221,6 +219,7 @@ public class BaseGM : MonoBehaviour
     {
         readyPlayers--;
     }
+    */
 
     //Called immediately when game manager is instantiated in Menu.
     protected void Awake()
@@ -233,6 +232,8 @@ public class BaseGM : MonoBehaviour
         DontDestroyOnLoad(gameObject);
         //Initialize HUD Text List and Spawn Points, will be referenced upon entering game scene.
         HUDText = new List<Text>(4);
+        joinText = new List<Text>(4);
+        inputText = new List<Text>(4);
         spawns = new List<GameObject>(4);
         playerScores = new List<int>(4);
 
@@ -240,13 +241,16 @@ public class BaseGM : MonoBehaviour
         for (int i = 0; i <= 3; i++)
         {
             HUDText.Add(null);
+            joinText.Add(null);
+            inputText.Add(null);
             spawns.Add(null);
             players.Add(null);
             playerScores.Add(0);
         }
 
+        //This will need to be changed when the GM is instantiated properly in the menu and carried into the game scene.
+        state = GAMESTATE.SETUP;
         FFAColourList();
-        SetState(GAMESTATE.SETUP);
     }
 
     #region MainGame Scene
@@ -258,38 +262,29 @@ public class BaseGM : MonoBehaviour
         for (int i = 0; i <= 3; i++)
         {
             HUDText[i] = GameObject.Find("PlayerScore" + i).GetComponent<Text>();
+            joinText[i] = GameObject.Find("JoinText" + i).GetComponent<Text>();
+            inputText[i] = GameObject.Find("InputText" + i).GetComponent<Text>();
             spawns[i] = GameObject.Find("SP" + i);
         }
 
         //Reference all UI elements, and the 1st player object.
         readyText = GameObject.Find("ReadyText");
         readyText.SetActive(false);
-        joinText = GameObject.Find("JoinText").GetComponent<Text>();
+        joinCountdownText = GameObject.Find("JoinCountdownText").GetComponent<Text>();
         whiteBorder = GameObject.Find ("White Border");
         gameOverPanel = GameObject.Find("GameOverPanel");
         gameOverPanel.SetActive(false);
-        //players[0] = GameObject.Find("Player").GetComponent<Cannon>();
 
+        Debug.Log("initialize ran.");
         //FillActivePlayersArray ();
-
-        //Start the countdown to choose preferences.
-        //StartCoroutine("PreGameCountDown");
-        
-    }
-
-    //Period for players to join game and select preferences.
-    IEnumerator PreGameCountDown()
-    {
-        yield return new WaitForSeconds(joinGameDelay);
-        joinText.gameObject.SetActive(false);
-        readyText.SetActive(true);
     }
 
     //Brief grace period before diamonds start spawning.
-    IEnumerator CountDown()
+    protected IEnumerator CountDown()
     {
         yield return new WaitForSeconds(startGameDelay);
         SetState(GAMESTATE.INGAME);
+        Debug.Log(state);
         readyText.SetActive(false);
     }
 
@@ -297,7 +292,7 @@ public class BaseGM : MonoBehaviour
     public void GameOver()
     {
         state = GAMESTATE.POSTGAME;
-        
+        Debug.Log(state);
         //Determine who was the winner.
         int highScore = 0;
         int winner = 0;
