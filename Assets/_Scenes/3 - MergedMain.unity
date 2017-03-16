@@ -1834,7 +1834,7 @@ MonoBehaviour:
   playerObj: {fileID: 1000012362012830, guid: 76f68068a86b4d14598968aa340a5996, type: 2}
   players: []
   gameMode: FFA
-  joinGameDelay: 5
+  joinGameDelay: 30
   startGameDelay: 3
   playerCount: 0
   playerScores: 

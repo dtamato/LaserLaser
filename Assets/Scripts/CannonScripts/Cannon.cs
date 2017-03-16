@@ -174,10 +174,12 @@ public class Cannon : MonoBehaviour
     {
         if (rewiredPlayer.GetButtonDown("Back"))        //Player presses B.
         {
+            Destroy(this.gameObject);
+            Debug.Log("Test");
+            gameManager.DecrementReadyPlayers();
             gameManager._colorlist[colorIdx].isAvailable = true;
             joinText.SetActive(true);
             gameManager.playerCount--;
-            Destroy(this.gameObject);
         }
 
         if (rewiredPlayer.GetButtonDown("RButt"))       //Player presses RB.
