@@ -4,6 +4,7 @@ using System.Collections;
 using UnityEngine.UI;
 using Rewired;
 
+[Serializable]
 public class ColorList
 {
     public bool isAvailable = true;
@@ -18,18 +19,7 @@ public class ColorList
 
 public class LobbyManager : MonoBehaviour {
 
-
-    void FFAColourList() //The available colours for the FFA lobby
-    {
-		_colorlist[0] = new ColorList(false, new Color(252/255f, 0, 1));
-		_colorlist[1] = new ColorList(false, new Color(156/255f, 0, 1));
-		_colorlist[2] = new ColorList(false, new Color(12/255f, 0, 1));
-		_colorlist[3] = new ColorList(false, new Color(79/255f, 1, 223/255f));
-		_colorlist[4] = new ColorList(true, new Color(89/255f, 254/255f, 50/255f));
-		//_colorlist[5] = new ColorList(true, new Color(240/255f, 1, 0)); // Yellow
-		_colorlist[5] = new ColorList(true, new Color(1, 168/255f, 0));
-		_colorlist[6] = new ColorList(true, new Color(1, 0, 0));
-    }
+	[SerializeField] GameObject startTextObject;
 
     private BaseGM gameManager;
     private bool playerReady;
@@ -45,13 +35,12 @@ public class LobbyManager : MonoBehaviour {
     public int team1Players;
     public int team2Players;
 
-    public string gameType;      //Passed from GM.
+    public string gameType = "FFA";      //Passed from GM.
     
 
     void Start()
     {
         gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<BaseGM>();
-        FFAColourList();
         playerCannons = new GameObject[4]; 
         playerCannons[0] = player1;
         playerCannons[1] = player2;
@@ -60,13 +49,22 @@ public class LobbyManager : MonoBehaviour {
 
         for (int i = 0; i < playerCannons.Length; i++) //iterating through each player to set their colour to grey.
         {
-            playerCannons[i].GetComponentInChildren<SpriteRenderer>().color = Color.gray;
-            playerCannons[i].transform.Find("Laser").GetComponent<SpriteRenderer>().color = Color.grey;
-            playerCannons[i].transform.Find("Laser").GetComponent<TrailRenderer>().material.color = Color.grey;
-            playerCannons[i].transform.Find("ColourBand").GetComponent<SpriteRenderer>().color = new Color(0f,0f,0f,0f);
+			SpriteRenderer[] spriteRenderers = playerCannons[i].GetComponentsInChildren<SpriteRenderer>();
+			foreach (SpriteRenderer spriteRenderer in spriteRenderers) {
+
+				spriteRenderer.color = Color.grey;
+			}
+
+			playerCannons[i].GetComponentInChildren<Light>().color = Color.black;
+
+            //playerCannons[i].GetComponentInChildren<SpriteRenderer>().color = Color.gray;
+            //playerCannons[i].transform.Find("Laser").GetComponent<SpriteRenderer>().color = Color.grey;
+            //playerCannons[i].transform.Find("Laser").GetComponent<TrailRenderer>().material.color = Color.grey;
+            //playerCannons[i].transform.Find("ColourBand").GetComponent<SpriteRenderer>().color = new Color(0f,0f,0f,0f);
         }
-        
+
         SwitchTeamMode();
+		StartCoroutine(ShowStartGameText());
     }
 
     public int IncrementIndex(int idx) //if the player wants to change their colour forward ->
@@ -75,7 +73,7 @@ public class LobbyManager : MonoBehaviour {
         do
         {
             idx++;
-            idx %= 7;
+            idx %= _colorlist.Length;
         } while (!_colorlist[idx].isAvailable);
         return idx;
     }
@@ -85,8 +83,8 @@ public class LobbyManager : MonoBehaviour {
         _colorlist[idx].isAvailable = true;
         do
         {
-            idx = (idx - 1) % 7;
-            idx = idx < 0 ? idx + 7 : idx; //is check 1 true? if yes, use check 2 (wraps around back to the end of the array when you're decrementing past the first element)
+            idx = (idx - 1) % _colorlist.Length;
+            idx = idx < 0 ? idx + _colorlist.Length : idx; //is check 1 true? if yes, use check 2 (wraps around back to the end of the array when you're decrementing past the first element)
         } while (!_colorlist[idx].isAvailable);
         return idx;
     }
@@ -104,78 +102,86 @@ public class LobbyManager : MonoBehaviour {
         playerLaser.GetComponent<Rigidbody2D>().isKinematic = true;
         playerLaser.GetComponent<Rigidbody2D>().isKinematic = false;
         playerLaser.position = GameObject.Find("Player" + (pId + 1) + " Overlay").GetComponent<OverlayController>().resetPos; //resetting the player's cannon to its original position
-        playerCannons[pId].transform.Find("ColourBand").GetComponent<SpriteRenderer>().color = new Color(0.8f,0.8f,0.8f,0f);
+        //playerCannons[pId].transform.Find("ColourBand").GetComponent<SpriteRenderer>().color = new Color(0.8f,0.8f,0.8f,0f);
         GameObject.Find("JoinText" + pId).GetComponent<Text>().enabled = true; //the player's 'Press 'A' to join text'
+		playerCannons[pId].GetComponentInChildren<Light>().color = Color.black;
     }
 
     public void UpdateColour(int cIdx, int pId) //if the player tries to change their colour, it will be updated here. Also, if the player joins too. 
     {
-        playerCannons[pId].transform.Find("Laser").GetComponentInChildren<SpriteRenderer>().color = _colorlist[cIdx]._color; //Laser colour
+		SpriteRenderer[] spriteRenderers = playerCannons[pId].GetComponentsInChildren<SpriteRenderer>();
+		foreach (SpriteRenderer spriteRenderer in spriteRenderers) {
+
+			spriteRenderer.color = _colorlist[cIdx]._color;
+		}
+
+        //playerCannons[pId].transform.Find("Laser").GetComponentInChildren<SpriteRenderer>().color = _colorlist[cIdx]._color; //Laser colour
         playerCannons[pId].transform.Find("Laser").GetComponent<TrailRenderer>().material.color = _colorlist[cIdx]._color; //Trail renderer colour
-        GameObject.Find("Player" + (pId + 1) + " Overlay").GetComponent<SpriteRenderer>().color = _colorlist[cIdx]._color; //Overlay colour
+        //GameObject.Find("Player" + (pId + 1) + " Overlay").GetComponent<SpriteRenderer>().color = _colorlist[cIdx]._color; //Overlay colour
         playerCannons[pId].GetComponentInChildren<SpriteRenderer>().color = _colorlist[cIdx]._color; //Cannon colour
         _colorlist[cIdx].isAvailable = false; //making sure other players cannot use the same colour
         playerCannons[pId].GetComponent<CannonCustomization>().myColor = _colorlist[cIdx]._color;   //Update Color variable, to be passed to the GM.
         //playerCannons[pId].GetComponent<CannonCustomization>().inputText.GetComponent<Text>().color = _colorlist[cIdx]._color;
-    }
+		playerCannons[pId].GetComponentInChildren<Light>().color = _colorlist[cIdx]._color;
+	}
 
     public void SwitchTeamMode()
     {
-        if (gameType == "FFA") {    //If the game is in FFA Mode. Now changing to TB Mode.
-            GameObject.Find("GameType").GetComponent<Text>().text = "Team Battle!";
-            //Turn on the TB overlays / Team Zones.
-            for (int x = 1; x < 3; x++) {
-                GameObject teamOverlay = GameObject.Find("Team" + x);
-                teamOverlay.GetComponent<SpriteRenderer>().enabled = true;
-                teamOverlay.GetComponent<BoxCollider2D>().enabled = true;
-            }
-            //Turn off the FFA overlays.
-            for (int i = 0; i < 4; i++) {
-                GameObject ffaOverlay = GameObject.Find("Player" + (i + 1) + " Overlay");
-                ffaOverlay.GetComponent<SpriteRenderer>().enabled = false;
-                ffaOverlay.GetComponent<BoxCollider2D>().enabled = false;
-                GameObject player = GameObject.Find("Player " + "(" + i + ")");
-                player.GetComponent<CannonCustomization>().canChange = false;
-                player.transform.Find("ColourBand").GetComponent<SpriteRenderer>().color = new Color(0.8f, 0.8f, 0.8f, 1f);     //???
-            }
-
-            gameType = "TB";
-            gameManager.gameMode = "TB";
-            for (int i = 0; i < 4; i++) {
-                playerCannons[i].GetComponent<CannonCustomization>().team = 0;
-                gameManager.setTeam(i, 0);
-            }
-        }
-
-        else {                      //Else the game is in TB Mode. Now changing to FFA Mode.
-            GameObject.Find("GameType").GetComponent<Text>().text = "Free For All!";
-            //Turn off the TB overlays / Team Zones.
-            for (int x = 1; x < 3; x++) {
-                GameObject teamOverlay = GameObject.Find("Team" + x);
-                teamOverlay.GetComponent<SpriteRenderer>().enabled = false;
-                teamOverlay.GetComponent<BoxCollider2D>().enabled = false;
-                team1Players = 0;
-                team2Players = 0;
-            }
-            //Turn on the FFA overlays.
-            for (int i = 0; i < 4; i++) {
-                GameObject ffaOverlay = GameObject.Find("Player" + (i + 1) + " Overlay");
-                ffaOverlay.GetComponent<SpriteRenderer>().enabled = true;
-                ffaOverlay.GetComponent<BoxCollider2D>().enabled = true;
-                GameObject player = GameObject.Find("Player " + "(" + i + ")");
-                player.GetComponent<CannonCustomization>().team = 0;
-                player.GetComponent<CannonCustomization>().canChange = false;
-                player.transform.Find("ColourBand").GetComponent<SpriteRenderer>().color = new Color(0f, 0f, 0f, 0f); //making the colour bands invisible
-                player.GetComponent<CannonCustomization>().myTeamColor = new Color(0f,0f,0f,0f);
-            }
-
-            gameType = "FFA";
-            gameManager.gameMode = "FFA";
-            for (int i = 0; i < 4; i++) {
-                playerCannons[i].GetComponent<CannonCustomization>().team = i;
-                gameManager.setTeam(i, (i + 1));
-            }
-        }
+//        if (gameType == "FFA") {    //If the game is in FFA Mode. Now changing to TB Mode.
+//            //GameObject.Find("GameType").GetComponent<Text>().text = "Team Battle!";
+//            //Turn on the TB overlays / Team Zones.
+//            for (int x = 1; x < 3; x++) {
+//                GameObject teamOverlay = GameObject.Find("Team" + x);
+//                teamOverlay.GetComponent<SpriteRenderer>().enabled = true;
+//                teamOverlay.GetComponent<BoxCollider2D>().enabled = true;
+//            }
+//            //Turn off the FFA overlays.
+//            for (int i = 0; i < 4; i++) {
+//                GameObject ffaOverlay = GameObject.Find("Player" + (i + 1) + " Overlay");
+//                ffaOverlay.GetComponent<SpriteRenderer>().enabled = false;
+//                ffaOverlay.GetComponent<BoxCollider2D>().enabled = false;
+//                GameObject player = GameObject.Find("Player " + "(" + i + ")");
+//                player.GetComponent<CannonCustomization>().canChange = false;
+//                //player.transform.Find("ColourBand").GetComponent<SpriteRenderer>().color = new Color(0.8f, 0.8f, 0.8f, 1f);     //???
+//            }
+//
+//            gameType = "TB";
+//            gameManager.gameMode = "TB";
+//            for (int i = 0; i < 4; i++) {
+//                playerCannons[i].GetComponent<CannonCustomization>().team = 0;
+//                gameManager.setTeam(i, 0);
+//            }
+//        }
+//
+//        else {                      //Else the game is in TB Mode. Now changing to FFA Mode.
+//            //GameObject.Find("GameType").GetComponent<Text>().text = "Free For All!";
+//            //Turn off the TB overlays / Team Zones.
+//            for (int x = 1; x < 3; x++) {
+//                GameObject teamOverlay = GameObject.Find("Team" + x);
+//                teamOverlay.GetComponent<SpriteRenderer>().enabled = false;
+//                teamOverlay.GetComponent<BoxCollider2D>().enabled = false;
+//                team1Players = 0;
+//                team2Players = 0;
+//            }
+//            //Turn on the FFA overlays.
+//            for (int i = 0; i < 4; i++) {
+//                GameObject ffaOverlay = GameObject.Find("Player" + (i + 1) + " Overlay");
+//                ffaOverlay.GetComponent<SpriteRenderer>().enabled = true;
+//                ffaOverlay.GetComponent<BoxCollider2D>().enabled = true;
+//                GameObject player = GameObject.Find("Player " + "(" + i + ")");
+//                player.GetComponent<CannonCustomization>().team = 0;
+//                player.GetComponent<CannonCustomization>().canChange = false;
+//                //player.transform.Find("ColourBand").GetComponent<SpriteRenderer>().color = new Color(0f, 0f, 0f, 0f); //making the colour bands invisible
+//                player.GetComponent<CannonCustomization>().myTeamColor = new Color(0f,0f,0f,0f);
+//            }
+//
+//            gameType = "FFA";
+//            gameManager.gameMode = "FFA";
+//            for (int i = 0; i < 4; i++) {
+//                playerCannons[i].GetComponent<CannonCustomization>().team = i;
+//                gameManager.setTeam(i, (i + 1));
+//            }
+//        }
     }
 
     //Called from CannonCustomization.cs. When player presses 'Start'.
@@ -183,9 +189,10 @@ public class LobbyManager : MonoBehaviour {
     {
         //Requires 2 players to have joined the game.
         if (gameType == "FFA") {
-            if (joinedPlayers >= 1)
+            if (joinedPlayers >= 2)
             {
                 Debug.Log("changing to FFA game");
+
                 gameManager.changeScene(gameManager.mainGameSceneIndex);
             }
         }
@@ -198,4 +205,20 @@ public class LobbyManager : MonoBehaviour {
             }
         }
     }
+
+	IEnumerator ShowStartGameText () {
+
+		Text startGameText = startTextObject.GetComponentInChildren<Text>();
+
+		startGameText.color = Color.clear;
+
+		yield return new WaitForSeconds(2);
+
+		while(startGameText.color.a < 1) {
+
+			float newAlpha = startGameText.color.a + Time.deltaTime;
+			startGameText.color = new Color(1, 1, 1, newAlpha);
+			yield return null;
+		}
+	}
 }

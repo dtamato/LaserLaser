@@ -41,7 +41,7 @@ public class ScoredGM : BaseGM
         #region Main Game Scene
 
         //When the GM enters the game scene, initialize the game.
-        else if (!initialized && SceneManager.GetActiveScene().buildIndex == mainGameSceneIndex)
+		else if (!initialized && (SceneManager.GetActiveScene().buildIndex == mainGameSceneIndex || SceneManager.GetActiveScene().buildIndex == controlGameSceneIndex))
         {
             //Run the base game intialization, all GMs run this.
             base.initializeGame();
@@ -61,6 +61,8 @@ public class ScoredGM : BaseGM
                         scorebar.SetActive(false);
                 }
             }
+
+			GameObject.Find("GetReadyText").GetComponent<Text>().text = "First to " + objectiveScore + " diamonds wins!";
 
             //Ensures this process runs once.
             initialized = true;

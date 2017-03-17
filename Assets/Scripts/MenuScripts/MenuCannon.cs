@@ -13,6 +13,8 @@ public class MenuCannon : MonoBehaviour {
 	[SerializeField] GameObject cannonExtension;
 	[SerializeField] GameObject aimUI;
 	[SerializeField] GameObject shootUI;
+	[SerializeField] GameObject leftDiamondArrows;
+	[SerializeField] GameObject rightDiamondArrows;
 
 	[Header("Parameters")]
 	[SerializeField] float baseRotationSpeed;
@@ -78,6 +80,9 @@ public class MenuCannon : MonoBehaviour {
 			currentRotationSpeed = baseRotationSpeed;
 		}
 
+		// Check for collisions from parallel walls
+		// rb2d.isTouchingLayers() ???
+
 		if (rewiredPlayer.GetAxisRaw ("Horizontal") != 0 && aimUI.activeSelf) {
 
 			aimUI.SetActive (false);
@@ -87,16 +92,16 @@ public class MenuCannon : MonoBehaviour {
 
 	void RestrictAngle()
 	{
-		currentAngle = cannonPivot.transform.rotation.eulerAngles.z;
-		if (currentAngle < 0) { currentAngle += 360; }
-		if (currentAngle >= maxAngle && currentAngle <= maxAngle + 5)
-		{
-			cannonPivot.transform.rotation = Quaternion.Euler(0, 0, maxAngle);
-		}
-		else if (currentAngle <= minAngle && currentAngle >= minAngle - 5)
-		{
-			cannonPivot.transform.rotation = Quaternion.Euler(0, 0, minAngle);
-		}
+//		currentAngle = cannonPivot.transform.rotation.eulerAngles.z;
+//		if (currentAngle < 0) { currentAngle += 360; }
+//		if (currentAngle >= maxAngle && currentAngle <= maxAngle + 5)
+//		{
+//			cannonPivot.transform.rotation = Quaternion.Euler(0, 0, maxAngle);
+//		}
+//		else if (currentAngle <= minAngle && currentAngle >= minAngle - 5)
+//		{
+//			cannonPivot.transform.rotation = Quaternion.Euler(0, 0, minAngle);
+//		}
 	}
 
 	void CheckFireInput()
@@ -111,7 +116,12 @@ public class MenuCannon : MonoBehaviour {
 			this.GetComponent<AudioSource>().Play();
 			inFlight = true;
 
-			if(shootUI.activeSelf) { shootUI.SetActive (false); }
+			if(shootUI.activeSelf) { 
+
+				shootUI.SetActive (false);
+				leftDiamondArrows.SetActive(true);
+				rightDiamondArrows.SetActive(true);
+			}
 		}
 	}
 		
@@ -134,5 +144,10 @@ public class MenuCannon : MonoBehaviour {
 	public void SetInFlight (bool isInFlight) {
 
 		inFlight = isInFlight;
+	}
+
+	public Player GetRewiredPlayer () {
+
+		return rewiredPlayer;
 	}
 }

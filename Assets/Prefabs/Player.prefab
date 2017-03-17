@@ -471,6 +471,7 @@ MonoBehaviour:
   myTeamColor: {r: 0, g: 0, b: 0, a: 0}
   myID: 0
   inputText: {fileID: 0}
+  testMode: look in inspector
 --- !u!114 &114000012008568226
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -485,9 +486,14 @@ MonoBehaviour:
   cannon: {fileID: 1000012362012830}
   scoreText: {fileID: 0}
   score: 0
-  comboCount: 0
   myPlayerID: 0
   myTeam: 0
+  testMode: look in inspector
+  scoreCounterPrefab: {fileID: 1322927671300292, guid: 2d6a30d102c43da42b229d3d1b5dc5a2,
+    type: 2}
+  comboCounterPrefab: {fileID: 1322927671300292, guid: d4b58d6e31a82944ba648e09e2f0f614,
+    type: 2}
+  comboTextColor: {r: 0, g: 0, b: 0, a: 0}
 --- !u!114 &114000012624769266
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -503,10 +509,12 @@ MonoBehaviour:
   laserRB: {fileID: 0}
   inFlight: 0
   playerId: 0
+  cannonExtension: {fileID: 0}
   baseRotationSpeed: 4
   maxBlastForce: 2200
   maxAngleOffset: 70
   currentRotationSpeed: 0
+  testMode: look in inspector
 --- !u!212 &212000010486402690
 SpriteRenderer:
   m_ObjectHideFlags: 1

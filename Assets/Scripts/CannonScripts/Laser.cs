@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Rewired;
+using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 using UnityEngine.SceneManagement;
@@ -17,11 +18,18 @@ public class Laser : MonoBehaviour
 
     //Score and other metrics.
     public int score = 0;
+	private int combo = 0;
+	private float pitchTracker = 1;
     public int myPlayerID;
     public int myTeam;
     private bool sendResults;
     private string gameMode;
     public string testMode = "look in inspector"; 
+	[SerializeField] GameObject scoreCounterPrefab;
+	[SerializeField] GameObject comboCounterPrefab;
+	[SerializeField] Color comboTextColor;
+
+	Player rewiredPlayer;
 
     void Awake()
     {
@@ -56,19 +64,52 @@ public class Laser : MonoBehaviour
     {
 		if (other.transform.CompareTag ("Boundary")) {
 			//rb2d.isKinematic = true;
-			rb2d.bodyType = RigidbodyType2D.Static; // HERE
+			rb2d.bodyType = RigidbodyType2D.Static;
+			rb2d.GetComponent<Collider2D>().isTrigger = true;
 			cannon.transform.position = other.contacts [0].point;
 			cannon.transform.rotation = other.transform.rotation;
-			this.transform.position = cannon.transform.position + 1.5f * cannon.transform.up;
+			cannon.transform.GetChild (0).rotation = other.transform.rotation;
+			this.transform.localPosition = new Vector3(0, 2f, 0);
 			this.transform.GetComponent<SpriteRenderer> ().enabled = false;
 			this.transform.GetComponent<TrailRenderer> ().enabled = false;
 			cannon.GetComponentInChildren<Cannon> ().SetNewBaseAngle ();
 			//cannon.GetComponentInChildren<Cannon>().SetStoredLaser(this);
 			cannon.GetComponent<Cannon> ().inFlight = false;
+
+			// Show final combo count
+			if(combo > 1) {
+
+				//float randomX = this.transform.position.x + Random.Range(0, 2) * 2 - 1;
+				float randomX = this.transform.position.x;
+				float randomY = this.transform.position.y + Random.Range(0, 2) * 2 - 1;
+				Vector3 comboCounterPosition = new Vector3(randomX, randomY, 0);
+				GameObject newComboCounter = Instantiate(comboCounterPrefab, comboCounterPosition, Quaternion.identity) as GameObject;
+				newComboCounter.GetComponent<ComboCounterCanvas>().SetText(combo);
+				newComboCounter.GetComponentInChildren<Text>().color = Color.white;
+			}
+
+			combo = 0;
+			pitchTracker = 1;
 		}
 		else if (other.transform.CompareTag ("Player")) {
 
 			Camera.main.GetComponent<CameraEffects> ().ShakeCamera ();
+		}
+		else if(other.transform.CompareTag("ControlBouncer")) {
+			
+			combo++;
+
+			pitchTracker += 0.05f;
+			this.GetComponent<AudioSource>().pitch = pitchTracker;
+			this.GetComponent<AudioSource>().Play();
+
+			float randomX = other.transform.position.x + Random.Range(0, 2) * 2 - 1;
+			float randomY = other.transform.position.y + Random.Range(0, 2) * 2 - 1;
+			Vector3 comboCounterPosition = new Vector3(randomX, randomY, 0);
+			GameObject newComboCounter = Instantiate(comboCounterPrefab, comboCounterPosition, Quaternion.identity) as GameObject;
+			newComboCounter.GetComponent<ComboCounterCanvas>().SetText(combo);
+			newComboCounter.GetComponentInChildren<Text>().color = comboTextColor;
+			StartCoroutine(Rumble(0.1f));
 		}
     }
 
@@ -77,9 +118,15 @@ public class Laser : MonoBehaviour
         if (other.CompareTag("Diamond"))
         {
 			scoreCounter ();
-        }
 
-        //Camera.main.GetComponent<CameraEffects>().ShakeCamera();
+			// Create score canvas
+//			float randomX = other.transform.position.x + Random.Range(0, 2) * 2 - 1;
+//			float randomY = other.transform.position.y + Random.Range(0, 2) * 2 - 1;
+//			Vector3 comboCounterPosition = new Vector3(randomX, randomY, 0);
+			GameObject newScoreCounter = Instantiate(scoreCounterPrefab, other.transform.position, Quaternion.identity) as GameObject;
+			newScoreCounter.GetComponent<ScoreCounterCanvas>().SetText(score);
+			newScoreCounter.GetComponentInChildren<Text>().color = this.GetComponentInChildren<SpriteRenderer>().color;
+        }
     }
 
 	public void scoreCounter()
@@ -89,42 +136,13 @@ public class Laser : MonoBehaviour
 		{
 			score++;
 			gameManager.addScore(myPlayerID, score);//this is where score text is set
-			//Debug.Log("works on regular");
 		}
 		//Team scoring.
 		else
 		{
 			gameManager.addToTeamScore (myTeam == 1);
-			//Debug.Log("works on regular2");
 		}
 	}
-
-    IEnumerator PulsateLight()
-    {
-        // Save current light settings and create temp variables
-        float initialLightRange = light.range;
-        float initialLightIntensity = light.intensity;
-        float maxLightRangeSize = 2f;
-        float growSpeed = 50;
-        float waitTime = 0.25f;
-        // Intensify light
-        while (light.range < maxLightRangeSize * initialLightRange)
-        {
-            light.range += growSpeed * Time.deltaTime;
-            light.intensity += growSpeed * Time.deltaTime;
-            yield return null;
-        }
-        yield return new WaitForSeconds(waitTime);
-        // Return light to initial settings
-        while (light.range > initialLightRange)
-        {
-            light.range -= growSpeed * Time.deltaTime;
-            light.intensity -= growSpeed * Time.deltaTime;
-            yield return null;
-        }
-        light.range = initialLightRange;
-        light.intensity = initialLightIntensity;
-    }
 
     public void ChangeColor(Color newColor)
     {
@@ -135,4 +153,57 @@ public class Laser : MonoBehaviour
 	{
 		return this.GetComponent<SpriteRenderer> ().color;
 	}
+
+	#region Rumble
+	// Variable length full-intensity rumble function
+	public IEnumerator Rumble(float duration)
+	{
+		rewiredPlayer = cannon.GetComponentInChildren<Cannon> ().GetRewiredPlayer();
+
+		foreach (Joystick j in rewiredPlayer.controllers.Joysticks)
+		{
+			if (!j.supportsVibration) continue;
+			j.SetVibration(1.0f, 1.0f);
+		}
+		yield return new WaitForSeconds(duration);
+		foreach (Joystick j in rewiredPlayer.controllers.Joysticks)
+		{
+			j.StopVibration();
+		}
+	}
+
+	// Variable length low-intensity bump function
+	public IEnumerator Bump(float duration)
+	{
+		rewiredPlayer = cannon.GetComponentInChildren<Cannon> ().GetRewiredPlayer();
+
+		foreach (Joystick j in rewiredPlayer.controllers.Joysticks)
+		{
+			if (!j.supportsVibration) continue;
+			j.SetVibration(0.25f, 0.25f);
+		}
+		yield return new WaitForSeconds(duration);
+		foreach (Joystick j in rewiredPlayer.controllers.Joysticks)
+		{
+			j.StopVibration();
+		}
+	}
+
+	// Variable direction half-second rumble function 
+	public IEnumerator DirectionalRumble(float leftIntensity, float rightIntensity)
+	{
+		rewiredPlayer = cannon.GetComponentInChildren<Cannon> ().GetRewiredPlayer();
+
+		foreach (Joystick j in rewiredPlayer.controllers.Joysticks)
+		{
+			if (!j.supportsVibration) continue;
+			j.SetVibration(leftIntensity, rightIntensity);
+		}
+		yield return new WaitForSeconds(0.5f);
+		foreach (Joystick j in rewiredPlayer.controllers.Joysticks)
+		{
+			j.StopVibration();
+		}
+	}
+	#endregion
 }

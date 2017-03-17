@@ -42,7 +42,7 @@ GameObject:
   - component: {fileID: 114899473295342526}
   m_Layer: 13
   m_Name: Menu Diamond
-  m_TagString: Diamond
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

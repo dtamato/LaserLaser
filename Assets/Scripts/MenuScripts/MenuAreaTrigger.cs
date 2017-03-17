@@ -11,6 +11,7 @@ public class MenuAreaTrigger : MonoBehaviour {
 	[SerializeField] Color highlightColor = Color.red;
 	[SerializeField] Text gameTypeText;
 	[SerializeField] Text gameTypeDescriptionText;
+	[SerializeField] Text pressStartText;
 	[SerializeField] string sceneToLoad;
 
 	Player rewiredPlayer;
@@ -26,10 +27,10 @@ public class MenuAreaTrigger : MonoBehaviour {
 
 	void Update () {
 
-		if(playerIn && rewiredPlayer.GetButton("StartGame")) {
+		if(playerIn && rewiredPlayer.GetButtonDown("StartGame")) {
 
-			Debug.Log ("Loading: " + sceneToLoad);
-			//SceneManager.LoadScene (sceneToLoad);
+			//Debug.Log ("Loading: " + sceneToLoad);
+			SceneManager.LoadScene (sceneToLoad);
 		}
 	}
 
@@ -41,6 +42,8 @@ public class MenuAreaTrigger : MonoBehaviour {
 			gameTypeText.color = highlightColor;
 			//gameTypeDescriptionText.gameObject.SetActive (true);
 			gameTypeDescriptionText.color = highlightColor;
+			pressStartText.gameObject.SetActive(true);
+			pressStartText.color = highlightColor;
 			playerIn = true;
 		}
 	}
@@ -53,6 +56,7 @@ public class MenuAreaTrigger : MonoBehaviour {
 			gameTypeText.color = Color.white;
 			//gameTypeDescriptionText.gameObject.SetActive (false);
 			gameTypeDescriptionText.color = Color.white;
+			pressStartText.gameObject.SetActive(false);
 			playerIn = false;
 		}
 	}

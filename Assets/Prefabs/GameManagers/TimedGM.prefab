@@ -60,7 +60,7 @@ MonoBehaviour:
   startGame: 0
   gameOver: 0
   playerCount: 0
-  gameMode: 
+  gameMode: FFA
   team1Score: 0
   team2Score: 0
   startGameDelay: 3

@@ -14,6 +14,7 @@ public class Cannon : MonoBehaviour
     [SerializeField] Rigidbody2D laserRB;   // Reference to the ball's RB.
     public bool inFlight;                   // True if laser/ball is in flight, false if stored in cannon.
     public int playerId;
+	[SerializeField] GameObject cannonExtension;
 
     //Control values.
     [SerializeField] float baseRotationSpeed;
@@ -33,27 +34,29 @@ public class Cannon : MonoBehaviour
     float maxAngle;
     public string testMode = "look in inspector";
 
+	// Misc
+	GameObject pauseMenu;
+	bool openedPauseMenu = false;
+
     void Awake()
     {
         inFlight = false;
         laserRB = pairedLaser.GetComponent<Rigidbody2D>();
 
-        if (testMode != "debug") //to be removed when game is published. for test lobby purposes
-        {
-            gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<BaseGM>(); //to be used for test scenes. When game is published, this is to be removed
-        //In the lobby this must be assigned. In the game scene the GM assigns it.
-        if (SceneManager.GetActiveScene().buildIndex == gameManager.LobbySceneIndex)
-                rewiredPlayer = ReInput.players.GetPlayer(playerId);
-        }
-
-        if (testMode == "debug")
-            rewiredPlayer = ReInput.players.GetPlayer(playerId);
+        gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<BaseGM>(); //to be used for test scenes. When game is published, this is to be removed
+		            
+		rewiredPlayer = ReInput.players.GetPlayer(playerId);
 
         if (maxAngleOffset < 0)
             maxAngleOffset *= -1;
 
         currentRotationSpeed = baseRotationSpeed;
         SetNewBaseAngle();
+
+		if(GameObject.Find("Pause Menu")) {
+			
+			pauseMenu = GameObject.Find("Pause Menu").gameObject;
+		}
     }
 
     void Update()
@@ -67,26 +70,27 @@ public class Cannon : MonoBehaviour
 
     void ProcessInputs()
     {
-        //In lobby, don't allow movement until player has joined.
-        //In main game scene, once game is over don't allow movement.
-        if (testMode != "debug") //to be removed when game is published. for test lobby purposes
-        {
-            if ((SceneManager.GetActiveScene().buildIndex == gameManager.LobbySceneIndex && this.GetComponent<CannonCustomization>().hasJoined) ||
-                (SceneManager.GetActiveScene().buildIndex == gameManager.mainGameSceneIndex && gameManager.gameOver == false))
-            {
-                GetRotationInput();
-                RestrictAngle();
-            }
+		if(SceneManager.GetActiveScene().name.Contains("4")) {
 
-        }
-        else
-        {
-            GetRotationInput();
-            RestrictAngle();
-        }
+			if(!openedPauseMenu && !pauseMenu.activeSelf) {
 
-        //Always check for firing, also checks return to menu prompt on game over.
-        GetFireInput();
+		        GetRotationInput();
+		        RestrictAngle();
+		        GetFireInput();
+				CheckOpenPauseMenu();
+			}
+			else if(openedPauseMenu) {
+
+				GetMenuInput();
+			}
+		}
+		else {
+
+
+			GetRotationInput();
+			RestrictAngle();
+			GetFireInput();
+		}
     }
 
     void GetRotationInput()
@@ -95,12 +99,12 @@ public class Cannon : MonoBehaviour
         if (rewiredPlayer.GetAxisRaw("Horizontal") < 0)
         {
             currentRotationSpeed = Mathf.Clamp(currentRotationSpeed, minRotationSpeed, maxRotationSpeed);
-            this.transform.Rotate(currentRotationSpeed * rotationModifier * Vector3.forward);
+			this.transform.Rotate(currentRotationSpeed * rotationModifier * Vector3.forward);
         }
         else if (rewiredPlayer.GetAxisRaw("Horizontal") > 0)
         {
             currentRotationSpeed = Mathf.Clamp(currentRotationSpeed, minRotationSpeed, maxRotationSpeed);
-            this.transform.Rotate(-currentRotationSpeed * rotationModifier * Vector3.forward);
+			this.transform.Rotate(-currentRotationSpeed * rotationModifier * Vector3.forward);
         }
         else if (rewiredPlayer.GetAxisRaw("Horizontal") == 0)
         {
@@ -110,71 +114,63 @@ public class Cannon : MonoBehaviour
 
     void RestrictAngle()
     {
-        currentAngle = this.transform.rotation.eulerAngles.z;
+		currentAngle = this.transform.rotation.eulerAngles.z;
         if (currentAngle < 0) { currentAngle += 360; }
         if (currentAngle >= maxAngle && currentAngle <= maxAngle + 5)
         {
-            this.transform.rotation = Quaternion.Euler(0, 0, maxAngle);
+			this.transform.rotation = Quaternion.Euler(0, 0, maxAngle);
         }
         else if (currentAngle <= minAngle && currentAngle >= minAngle - 5)
         {
-            this.transform.rotation = Quaternion.Euler(0, 0, minAngle);
+			this.transform.rotation = Quaternion.Euler(0, 0, minAngle);
         }
     }
 
     void GetFireInput()
     {
-        if (testMode != "debug") //to be removed when game is published. for test lobby purposes
-        {
         if (gameManager.gameOver == true && rewiredPlayer.GetButtonDown("StartGame")) {
             Debug.Log("changing to menu");
             gameManager.returnToMenu();
         }
-            
-        }
 
-        //When player fires, activate the laser and launch it with force.
-        //Always enabled in the lobby. Only enabled in game after the start game countdown, but before game over.
-        if (testMode != "debug")
-        {
-            if (rewiredPlayer.GetButtonDown("Fire") &&
-                (SceneManager.GetActiveScene().buildIndex == gameManager.LobbySceneIndex ||
-                 !gameManager.gameOver && gameManager.startGame))
-            {
-                //StartCoroutine(TempDisableCollider());
-                laserRB.bodyType = RigidbodyType2D.Dynamic;
-                laserRB.AddForce(maxBlastForce * this.transform.up);
-                pairedLaser.transform.GetComponent<SpriteRenderer>().enabled = true;
-                pairedLaser.transform.GetComponent<TrailRenderer>().enabled = true;
-                inFlight = true;
-                this.GetComponent<AudioSource>().pitch = Random.Range(0.5f, 1.5f);
-                this.GetComponent<AudioSource>().Play();
-            }
-        }
-        else
-        {
-            if (rewiredPlayer.GetButtonDown("Fire"))
-            {
-                laserRB.bodyType = RigidbodyType2D.Dynamic;
-                laserRB.AddForce(maxBlastForce * this.transform.up);
-                pairedLaser.transform.GetComponent<SpriteRenderer>().enabled = true;
-                pairedLaser.transform.GetComponent<TrailRenderer>().enabled = true;
-                inFlight = true;
-                this.GetComponent<AudioSource>().pitch = Random.Range(0.5f, 1.5f);
-                this.GetComponent<AudioSource>().Play();
-            }
-        }
-
+		if(rewiredPlayer.GetButtonDown("Fire")) {
+			
+	        //When player fires, activate the laser and launch it with force.
+			laserRB.bodyType = RigidbodyType2D.Dynamic;
+			laserRB.GetComponent<Collider2D>().isTrigger = false;
+			laserRB.AddForce(maxBlastForce * cannonExtension.transform.up);
+			pairedLaser.transform.GetComponent<SpriteRenderer>().enabled = true;
+			pairedLaser.transform.GetComponent<TrailRenderer>().enabled = true;
+			inFlight = true;
+			this.GetComponent<AudioSource>().pitch = Random.Range(0.5f, 1.5f);
+			this.GetComponent<AudioSource>().Play();
+		}
     }
 
-    /*
-    IEnumerator TempDisableCollider()
-    {
-        this.GetComponent<Collider2D>().enabled = false;
-        yield return new WaitForSeconds(0.15f);
-        this.GetComponent<Collider2D>().enabled = true;
-    }
-    */
+	void CheckOpenPauseMenu () {
+
+		if(rewiredPlayer.GetButtonDown("StartGame") && !gameManager.gameOver) {
+
+			pauseMenu.SetActive(true);
+			pauseMenu.GetComponent<PauseMenu>().PauseGame(this.gameObject);
+			openedPauseMenu = true;
+		}
+	}
+
+	void GetMenuInput () {
+
+		if(rewiredPlayer.GetAxisRaw("Horizontal") == 1) {
+
+			pauseMenu.GetComponent<PauseMenu>().NextButton();
+			Debug.Log("Next");
+		}
+
+		if(rewiredPlayer.GetButtonDown("StartGame")) {
+
+			openedPauseMenu = false;
+			pauseMenu.SetActive(false);
+		}
+	}
 
     #endregion
 
@@ -213,6 +209,15 @@ public class Cannon : MonoBehaviour
         baseRotationSpeed = newSpeed;
     }
 
+	public void SetIsPaused (bool isPaused) {
+
+		openedPauseMenu = false;
+	}
+
+	public void SetPauseMenu(GameObject menu) {
+
+		pauseMenu = menu;
+	}
     #endregion
 
     #region Getters
@@ -228,6 +233,10 @@ public class Cannon : MonoBehaviour
 	public GameObject GetLaser () {
 
 		return pairedLaser.gameObject;
+	}
+	public Player GetRewiredPlayer () {
+
+		return rewiredPlayer;
 	}
     #endregion
 }

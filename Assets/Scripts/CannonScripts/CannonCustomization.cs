@@ -11,7 +11,7 @@ public class CannonCustomization : MonoBehaviour
     float rotationSpeedIncrement;
     public bool isInLobby = true; //to check whether or not the player can change their color/rotation speed
     public bool hasJoined = false; //whether or not the player can control their cannon
-    public bool canChange = false; //whether or not the player can change their color
+    public bool canChange = true; //whether or not the player can change their color
     public int team;
     public bool inverted = false;
     public int sensitivity;
@@ -42,15 +42,24 @@ public class CannonCustomization : MonoBehaviour
         }
     }
     void Start()
-    {
-        if (testMode != "debug") //to be removed when game is published. for test lobby purposes
-        {
-            
+    {   
         if (SceneManager.GetActiveScene().buildIndex == gameManager.LobbySceneIndex) {
             myID = cannon.GetPlayerID();
             colorIdx = myID;
         }
-        }
+
+		// Automatically join first player
+		if(myID == 0) { 
+
+			lobbyManager.UpdateColour(colorIdx, myID);                                  //Switching from grey to their default colour (Initially controlled via player ID).
+			gameObject.GetComponent<Cannon>().enabled = true;                           //Letting the player control their cannon.
+			GameObject.Find("JoinText" + myID).GetComponent<Text>().enabled = false;    //Hiding the "press 'A' to join text".
+			lobbyManager.joinedPlayers++;
+			hasJoined = true;
+			team = (lobbyManager.gameType == "FFA") ? (myID + 1) : 0;
+			gameManager.playerCount++;
+			gameManager.playerJoin(myID, team, myColor,myTeamColor);    //Pass to GM.
+		}
     }
     void Update()
     {
@@ -64,7 +73,7 @@ public class CannonCustomization : MonoBehaviour
     {
         if (rewiredPlayer.GetButtonDown("Fire") && !hasJoined){    //If player presses 'A', and they are NOT currently in game.
             lobbyManager.UpdateColour(colorIdx, myID);                                  //Switching from grey to their default colour (Initially controlled via player ID).
-            inputText.GetComponent<Text>().color = myColor;
+            //inputText.GetComponent<Text>().color = myColor;
             gameObject.GetComponent<Cannon>().enabled = true;                           //Letting the player control their cannon.
             GameObject.Find("JoinText" + myID).GetComponent<Text>().enabled = false;    //Hiding the "press 'A' to join text".
             lobbyManager.joinedPlayers++;
@@ -91,7 +100,7 @@ public class CannonCustomization : MonoBehaviour
         {   //If the player presses 'Right Bumper', and are currently in their team zone.
             colorIdx = lobbyManager.IncrementIndex(colorIdx);                           //Mathematical function to INCREMENT the player's index within the colour array.
             lobbyManager.UpdateColour(colorIdx, myID);                                  //Updating the player's colour.
-            inputText.GetComponent<Text>().color = myColor;
+            //inputText.GetComponent<Text>().color = myColor;
             gameManager.setColor(myID, myColor);    //Pass to GM.
         }
 
@@ -99,7 +108,7 @@ public class CannonCustomization : MonoBehaviour
         {    //If the player presses 'Left Bumper', and are currently in their team zone.
             colorIdx = lobbyManager.DecrementIndex(colorIdx);                           //Mathematical function to DECREMENT the player's index within the colour array.
             lobbyManager.UpdateColour(colorIdx, myID);
-            inputText.GetComponent<Text>().color = myColor;
+            //inputText.GetComponent<Text>().color = myColor;
             gameManager.setColor(myID, myColor);    //Pass to GM.
         }
 
@@ -114,11 +123,11 @@ public class CannonCustomization : MonoBehaviour
         {                //If the player presses 'Right Trigger'.
             inverted = !inverted;
             gameManager.setInvert(myID, inverted);  //Pass to GM.
-            if (inverted)
-                inputText.GetComponent<Text>().text = "Inverted";
-            else
-                inputText.GetComponent<Text>().text = "Not Inverted";
-            inputText.GetComponent<InputTextScript>().checkText();
+//            if (inverted)
+//                inputText.GetComponent<Text>().text = "Inverted";
+//            else
+//                inputText.GetComponent<Text>().text = "Not Inverted";
+            //inputText.GetComponent<InputTextScript>().checkText();
             //Switch the player's inverted-ness. Needs to be implemented in Cannon.cs. Currently only passed as an empty setting.
         }
 
@@ -129,6 +138,7 @@ public class CannonCustomization : MonoBehaviour
 
         if (rewiredPlayer.GetButtonDown("StartGame"))
         {             //If the player presses 'Start'.
+			Debug.Log("Checking start game");
             lobbyManager.StartGameCheck();
         }
 
@@ -140,12 +150,12 @@ public class CannonCustomization : MonoBehaviour
                 sensitivity++;
             gameManager.setSensitivity(myID, sensitivity);  //Pass to GM.
 
-            if (sensitivity == 8)
-                inputText.GetComponent<Text>().text = "Sensitivity: MAX";
-            else
-                inputText.GetComponent<Text>().text = "Sensitivity: " + sensitivity;
+//            if (sensitivity == 8)
+//                inputText.GetComponent<Text>().text = "Sensitivity: MAX";
+//            else
+//                inputText.GetComponent<Text>().text = "Sensitivity: " + sensitivity;
 
-            inputText.GetComponent<InputTextScript>().checkText();
+            //inputText.GetComponent<InputTextScript>().checkText();
         }
 
         if (rewiredPlayer.GetButtonDown("DecreaseRotationSpeed"))
@@ -155,12 +165,12 @@ public class CannonCustomization : MonoBehaviour
                 sensitivity--;
             gameManager.setSensitivity(myID, sensitivity);  //Pass to GM.
 
-            if (sensitivity == 1)
-                inputText.GetComponent<Text>().text = "Sensitivity: MIN";
-            else
-                inputText.GetComponent<Text>().text = "Sensitivity: " + sensitivity;
+//            if (sensitivity == 1)
+//                inputText.GetComponent<Text>().text = "Sensitivity: MIN";
+//            else
+//                inputText.GetComponent<Text>().text = "Sensitivity: " + sensitivity;
 
-            inputText.GetComponent<InputTextScript>().checkText();
+            //inputText.GetComponent<InputTextScript>().checkText();
         }
     }
 }

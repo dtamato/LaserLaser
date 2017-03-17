@@ -14,10 +14,10 @@ public class InputTextScript : MonoBehaviour
         check2 = true;
     }
 
-    void Update()
-    {
-        gameObject.GetComponent<Text>().color = GameObject.Find("Player" + (ID + 1) + " Overlay").GetComponent<SpriteRenderer>().color;
-    }
+//    void Update()
+//    {
+//        gameObject.GetComponent<Text>().color = GameObject.Find("Player" + (ID + 1) + " Overlay").GetComponent<SpriteRenderer>().color;
+//    }
    
     //Adds time to the coroutine if the player is adjusting their settings many times in quick succession.
     public void checkText()

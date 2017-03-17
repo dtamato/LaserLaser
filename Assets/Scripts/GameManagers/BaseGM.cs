@@ -14,7 +14,8 @@ public class BaseGM : MonoBehaviour
     public int menuSceneIndex;
     public int LobbySceneIndex;
     public int mainGameSceneIndex;
-   
+	public int controlGameSceneIndex;
+
     //External References.
     public static BaseGM instance = null;
     protected LobbyManager lobbyManager;
@@ -23,6 +24,7 @@ public class BaseGM : MonoBehaviour
 	protected GameObject[] activePlayersArray;
     protected GameObject gameOverPanel;
     protected GameObject introText;
+	protected GameObject pauseMenu;
 	protected GameObject whiteBorder;
     protected List<GameObject> spawns;
     public GameObject playerObj;
@@ -245,6 +247,8 @@ public class BaseGM : MonoBehaviour
         //Reference the game over panel and get ready text.
         introText = GameObject.Find("GetReadyText");
 		whiteBorder = GameObject.Find ("White Border");
+		pauseMenu = GameObject.Find("Pause Menu");
+		pauseMenu.SetActive(false);
         gameOverPanel = GameObject.Find("GameOverPanel");
         gameOverPanel.SetActive(false);
 
@@ -279,25 +283,37 @@ public class BaseGM : MonoBehaviour
             playerList[i].obj.GetComponent<Cannon>().ApplyRotationSpeed(prefs.sensitivity);
 
             //Apply all the colour changes to the player's laser and cannon.
-            Laser laserScript = playerList[i].obj.transform.Find("Laser").GetComponent<Laser>();
+			Laser laserScript = playerList[i].obj.transform.Find("Laser").GetComponent<Laser>();
             laserScript.myPlayerID = prefs.myID;
             laserScript.myTeam = prefs.team;
-            playerList[i].obj.transform.Find("Laser").GetComponentInChildren<SpriteRenderer>().color = prefs.myColor; //Laser color
-            playerList[i].obj.transform.Find("Laser").GetComponent<TrailRenderer>().material.color = prefs.myColor; //Trail renderer color
-			playerList[i].obj.transform.Find("Light").GetComponent<Light>().color = prefs.myColor; // Light color
-            playerList[i].obj.GetComponentInChildren<SpriteRenderer>().color = prefs.myColor; //Cannon color
+
+			SpriteRenderer[] playerSpriteRenderers = playerList [i].obj.transform.GetComponentsInChildren<SpriteRenderer> ();
+			foreach (var spriteRenderer in playerSpriteRenderers) {
+
+				spriteRenderer.color = prefs.myColor;
+			}
+
+			//playerList[i].obj.transform.Find("Laser").GetComponentInChildren<SpriteRenderer>().color = prefs.myColor; //Laser color
+			playerList[i].obj.GetComponentInChildren<TrailRenderer>().material.color = prefs.myColor; //Trail renderer color
+			playerList[i].obj.GetComponent<Light>().color = prefs.myColor; // Light color
+            //playerList[i].obj.GetComponentInChildren<SpriteRenderer>().color = prefs.myColor; //Cannon color
             
             //If the mode is Team, set the player's colourband, otherwise disable it.
             if (gameMode == "TB") {
-                playerList[i].obj.transform.Find("ColourBand").GetComponent<SpriteRenderer>().color = prefs.myTeamColor;
+				//playerList[i].obj.transform.Find("Cannon Sprite/ColourBand").GetComponent<SpriteRenderer>().color = prefs.myTeamColor;
                 laserScript.scoreText = GameObject.Find("PlayerScore" + (prefs.team - 1)).GetComponent<Text>();   //Laser reference for team score updates.
             }
             //Else, in FFA set each player's score and combo color seperately.
             else {
-                playerList[i].obj.transform.Find("ColourBand").gameObject.SetActive(false);
+                playerList[i].obj.transform.Find("Cannon Sprite/ColourBand").gameObject.SetActive(false);
                 GameObject.Find("PlayerScore" + i).GetComponent<Text>().color = prefs.myColor; //Score color
                 laserScript.scoreText = GameObject.Find("PlayerScore" + prefs.myID).GetComponent<Text>();   //Laser reference for score updates.
             }
+
+			// Give them a reference to the pause menu
+			playerList[i].obj.GetComponent<Cannon>().SetPauseMenu(pauseMenu);
+
+			Destroy(playerList[i].obj.GetComponentInChildren<CannonCustomization>());
 
             Debug.Log("player added");
         }
@@ -355,7 +371,7 @@ public class BaseGM : MonoBehaviour
         int winner = 0;
 
         //Display the results.
-        gameOverPanel.SetActive(true);
+        //gameOverPanel.SetActive(true);
 
         //Scoring for FFA.
         if (gameMode == "FFA")
@@ -371,11 +387,11 @@ public class BaseGM : MonoBehaviour
             }
 
             //Set the Winner Text.
-            GameObject.Find("WinnerText").GetComponent<Text>().text = ("Player " + (winner + 1) + " Wins!");
-            GameObject.Find("FinalScoreText").GetComponent<Text>().text += highScore;
+            //GameObject.Find("WinnerText").GetComponent<Text>().text = ("Player " + (winner + 1) + " Wins!");
+            //GameObject.Find("FinalScoreText").GetComponent<Text>().text += highScore;
 
             //Set the panel color to that of the winner.
-            GameObject.Find("GameOverPanel").GetComponent<Image>().color = playerList[winner].getColor();
+            //GameObject.Find("GameOverPanel").GetComponent<Image>().color = playerList[winner].getColor();
         }
 
         //Scoring for TB.
@@ -386,12 +402,12 @@ public class BaseGM : MonoBehaviour
             highScore = team1Score > team2Score ? team1Score : team2Score;
 
             //Set the Winner Text.
-            GameObject.Find("WinnerText").GetComponent<Text>().text = ("Team " + (winner) + " Wins!");
-            GameObject.Find("FinalScoreText").GetComponent<Text>().text += highScore;
+            //GameObject.Find("WinnerText").GetComponent<Text>().text = ("Team " + (winner) + " Wins!");
+            //GameObject.Find("FinalScoreText").GetComponent<Text>().text += highScore;
 
             //Set the panel color to that of the winner.
-            Color winColor = winner == 1 ? Color.blue : Color.red;
-            GameObject.Find("GameOverPanel").GetComponent<Image>().color = winColor;
+            //Color winColor = winner == 1 ? Color.red : Color.blue;
+            //GameObject.Find("GameOverPanel").GetComponent<Image>().color = winColor;
         }
 
         Debug.Log("Game Over, Results Displayed.");

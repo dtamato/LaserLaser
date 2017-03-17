@@ -54,14 +54,15 @@ MonoBehaviour:
   menuSceneIndex: 1
   LobbySceneIndex: 3
   mainGameSceneIndex: 4
+  controlGameSceneIndex: 5
   playerList: []
   playerObj: {fileID: 1000012362012830, guid: 76f68068a86b4d14598968aa340a5996, type: 2}
   inGame: 0
   startGame: 0
   gameOver: 0
   playerCount: 0
-  gameMode: 
+  gameMode: FFA
   team1Score: 0
   team2Score: 0
   startGameDelay: 3
-  objectiveScore: 25
+  objectiveScore: 30
