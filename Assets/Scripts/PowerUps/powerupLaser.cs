@@ -38,43 +38,16 @@ public class powerupLaser : MonoBehaviour
 		if (other.gameObject.tag == "Diamond")
 		{
 			GetComponentInParent<Laser> ().scoreCounter ();
-			Debug.Log ("Works on powerup");
+			//Debug.Log ("Works on powerup");
 		}
 
 		if (other.gameObject.tag == "PowerupBoundary") 
 		{
 			Destroy (this.gameObject);
-			Debug.Log ("Object destroyed");
+			//Debug.Log ("Object destroyed");
 		}
 
 		Camera.main.GetComponent<CameraEffects>().ShakeCamera();
-	}
-
-	IEnumerator PulsateLight()
-	{
-		// Save current light settings and create temp variables
-		float initialLightRange = light.range;
-		float initialLightIntensity = light.intensity;
-		float maxLightRangeSize = 2f;
-		float growSpeed = 50;
-		float waitTime = 0.25f;
-		// Intensify light
-		while (light.range < maxLightRangeSize * initialLightRange)
-		{
-			light.range += growSpeed * Time.deltaTime;
-			light.intensity += growSpeed * Time.deltaTime;
-			yield return null;
-		}
-		yield return new WaitForSeconds(waitTime);
-		// Return light to initial settings
-		while (light.range > initialLightRange)
-		{
-			light.range -= growSpeed * Time.deltaTime;
-			light.intensity -= growSpeed * Time.deltaTime;
-			yield return null;
-		}
-		light.range = initialLightRange;
-		light.intensity = initialLightIntensity;
 	}
 
 	IEnumerator DestroyMe()

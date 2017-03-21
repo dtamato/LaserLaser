@@ -43,7 +43,14 @@ public class TitleSceneController : MonoBehaviour {
 
 		if (Input.anyKeyDown) {
 
-			SceneManager.LoadScene (SceneManager.GetActiveScene ().buildIndex + 1);
+			if(movieRenderer.gameObject.activeSelf) {
+
+				movieRenderer.gameObject.SetActive(false);
+			}
+			else {
+				
+				SceneManager.LoadScene (SceneManager.GetActiveScene ().buildIndex + 1);
+			}
 		}
 	}
 }
