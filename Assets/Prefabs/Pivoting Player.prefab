@@ -531,6 +531,8 @@ MonoBehaviour:
     type: 2}
   comboCounterPrefab: {fileID: 1322927671300292, guid: d4b58d6e31a82944ba648e09e2f0f614,
     type: 2}
+  trickshotCanvasPrefab: {fileID: 1202772419917046, guid: 8a7d7370bef45c4469bbec1c53fe5c0c,
+    type: 2}
   comboTextColor: {r: 0.97647065, g: 0.3137255, b: 0.3137255, a: 1}
 --- !u!114 &114263235989706994
 MonoBehaviour:

@@ -1242,6 +1242,12 @@ Prefab:
       propertyPath: m_IsTrigger
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 114161106247989564, guid: 1572a509eca4afa4daea9fef3acee343,
+        type: 2}
+      propertyPath: trickshotCanvasPrefab
+      value: 
+      objectReference: {fileID: 1202772419917046, guid: 8a7d7370bef45c4469bbec1c53fe5c0c,
+        type: 2}
     m_RemovedComponents:
     - {fileID: 108533905442585012, guid: 1572a509eca4afa4daea9fef3acee343, type: 2}
   m_ParentPrefab: {fileID: 100100000, guid: 1572a509eca4afa4daea9fef3acee343, type: 2}
@@ -1392,6 +1398,12 @@ Prefab:
       propertyPath: m_IsTrigger
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 114161106247989564, guid: 1572a509eca4afa4daea9fef3acee343,
+        type: 2}
+      propertyPath: trickshotCanvasPrefab
+      value: 
+      objectReference: {fileID: 1202772419917046, guid: 8a7d7370bef45c4469bbec1c53fe5c0c,
+        type: 2}
     m_RemovedComponents:
     - {fileID: 108533905442585012, guid: 1572a509eca4afa4daea9fef3acee343, type: 2}
   m_ParentPrefab: {fileID: 100100000, guid: 1572a509eca4afa4daea9fef3acee343, type: 2}
@@ -2341,6 +2353,12 @@ Prefab:
       propertyPath: m_IsTrigger
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 114161106247989564, guid: 1572a509eca4afa4daea9fef3acee343,
+        type: 2}
+      propertyPath: trickshotCanvasPrefab
+      value: 
+      objectReference: {fileID: 1202772419917046, guid: 8a7d7370bef45c4469bbec1c53fe5c0c,
+        type: 2}
     m_RemovedComponents:
     - {fileID: 108533905442585012, guid: 1572a509eca4afa4daea9fef3acee343, type: 2}
   m_ParentPrefab: {fileID: 100100000, guid: 1572a509eca4afa4daea9fef3acee343, type: 2}
@@ -2884,6 +2902,12 @@ Prefab:
       propertyPath: m_IsTrigger
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 114161106247989564, guid: 1572a509eca4afa4daea9fef3acee343,
+        type: 2}
+      propertyPath: trickshotCanvasPrefab
+      value: 
+      objectReference: {fileID: 1202772419917046, guid: 8a7d7370bef45c4469bbec1c53fe5c0c,
+        type: 2}
     m_RemovedComponents:
     - {fileID: 108533905442585012, guid: 1572a509eca4afa4daea9fef3acee343, type: 2}
   m_ParentPrefab: {fileID: 100100000, guid: 1572a509eca4afa4daea9fef3acee343, type: 2}
