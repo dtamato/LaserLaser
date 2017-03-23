@@ -9,45 +9,66 @@ Prefab:
     m_Modifications: []
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
-  m_RootGameObject: {fileID: 1000010131840992}
+  m_RootGameObject: {fileID: 1810530279701384}
   m_IsPrefabParent: 1
---- !u!1 &1000010131840992
+--- !u!1 &1810530279701384
 GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   serializedVersion: 5
   m_Component:
-  - component: {fileID: 4000011957730422}
-  - component: {fileID: 212000011093110514}
-  - component: {fileID: 58000013952621050}
-  - component: {fileID: 114000011680542418}
+  - component: {fileID: 4737551811135546}
+  - component: {fileID: 212162364324538562}
+  - component: {fileID: 58712275638928790}
+  - component: {fileID: 114330074557603118}
+  - component: {fileID: 50780258489840200}
   m_Layer: 13
-  m_Name: ParalysisContainer
-  m_TagString: Paralysis
+  m_Name: Blaster
+  m_TagString: AreaBlast
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &4000011957730422
+--- !u!4 &4737551811135546
 Transform:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1000010131840992}
+  m_GameObject: {fileID: 1810530279701384}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.77289754, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 5, y: 5, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!58 &58000013952621050
+--- !u!50 &50780258489840200
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1810530279701384}
+  m_BodyType: 1
+  m_Simulated: 0
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
+--- !u!58 &58712275638928790
 CircleCollider2D:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1000010131840992}
+  m_GameObject: {fileID: 1810530279701384}
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
@@ -55,25 +76,29 @@ CircleCollider2D:
   m_UsedByEffector: 0
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Radius: 0.4
---- !u!114 &114000011680542418
+  m_Radius: 0.5
+--- !u!114 &114330074557603118
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1000010131840992}
+  m_GameObject: {fileID: 1810530279701384}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 67a1957f2c71f7a48a2370b126c24a9e, type: 3}
+  m_Script: {fileID: 11500000, guid: 50e449b76abb2b649be1a4d4f8bdab13, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  paralysisTimer: 2
---- !u!212 &212000011093110514
+  blasterTimer: 3
+  playerNum: 0
+  teamNum: 0
+  score: 0
+  gameMode: 
+--- !u!212 &212162364324538562
 SpriteRenderer:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1000010131840992}
+  m_GameObject: {fileID: 1810530279701384}
   m_Enabled: 1
   m_CastShadows: 0
   m_ReceiveShadows: 0
@@ -99,7 +124,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -505003231
   m_SortingOrder: 1
-  m_Sprite: {fileID: 21300000, guid: 3defa453eac1a8e4683b5f741abec820, type: 3}
-  m_Color: {r: 0, g: 1, b: 0.6275863, a: 1}
+  m_Sprite: {fileID: 21300000, guid: d8ea176d85b3e544cbf496c7b17a6d71, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.153}
   m_FlipX: 0
   m_FlipY: 0

@@ -15,6 +15,7 @@ TagManager:
   - BigBall
   - Scattershot
   - PowerupBoundary
+  - AreaBlast
   layers:
   - Default
   - TransparentFX
