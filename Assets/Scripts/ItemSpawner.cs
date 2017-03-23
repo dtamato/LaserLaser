@@ -23,11 +23,20 @@ public class ItemSpawner : MonoBehaviour
     IEnumerator RecursiveSpawner()
     {
 		if (gameManager.getState() == BaseGM.GAMESTATE.INGAME) {
-			Bounds spawnerBounds = this.GetComponentInChildren<BoxCollider2D> ().bounds;
-			float newX = Random.Range (spawnerBounds.min.x, spawnerBounds.max.x);
-			float newY = Random.Range (spawnerBounds.min.y, spawnerBounds.max.y);
-			Vector3 itemLocation = new Vector3 (newX, newY, 0);
-			Instantiate (itemPrefab, itemLocation, Quaternion.identity);
+			//Bounds spawnerBounds = this.GetComponentInChildren<BoxCollider2D> ().bounds;
+   //         Collider2D itemRadius = itemPrefab.GetComponent<Collider2D>();
+   //         float newX = Random.Range (spawnerBounds.min.x, spawnerBounds.max.x);
+			//float newY = Random.Range (spawnerBounds.min.y, spawnerBounds.max.y);
+			//Vector3 itemLocation = new Vector3 (newX, newY, 0);
+   //         //Instantiate (itemPrefab, itemLocation, Quaternion.identity);
+   //         if (Physics2D.OverlapCircle(itemLocation, itemRadius.bounds.extents.x, LayerMask.NameToLayer("Diamond")) || Physics2D.OverlapCircle(itemLocation, itemRadius.bounds.extents.x, LayerMask.NameToLayer("Obstacle")))
+   //         {
+   //             StartCoroutine(RecursiveSpawner());
+   //         }
+   //         else
+   //         {
+   //             Instantiate(itemPrefab, itemLocation, Quaternion.identity);
+   //         }
 
 			//yield return new WaitForSeconds (Random.Range (spawnCooldown * 0.5f, spawnCooldown * 1.5f));
 			yield return new WaitForSeconds (spawnCooldown);
