@@ -9,9 +9,9 @@ public class Cannon : MonoBehaviour
 {
     //from customization script
     private int colorIdx; //the player's position within the color array
-    float rotationSpeedIncrement;
+    private float rotationSpeedIncrement = 1;
     public GameObject inputText;
-    public GameObject joinText;
+    private GameObject joinText;
     public Color myColor;
     public Color myTeamColor;
     public int team;
@@ -59,8 +59,10 @@ public class Cannon : MonoBehaviour
 
         colorIdx = playerId;
         gameManager.UpdateColour(colorIdx, playerId);
-        //inputText.GetComponent<Text>().color = myColor;
-        //joinText.SetActive(false);
+        inputText.GetComponent<Text>().color = myColor;
+
+        joinText.GetComponent<Text>().text = "";
+
 
         if (gameManager.gameMode == "FFA")
             team = playerId + 1;
@@ -103,14 +105,9 @@ public class Cannon : MonoBehaviour
                     Debug.Log("changing to menu");
                     gameManager.returnToMenu();
                 }
-
-
                 break;
+                
         }
-        
-        
-        
-        
     }
 
     void StandardInputs()
@@ -179,8 +176,6 @@ public class Cannon : MonoBehaviour
     void PregameInputs()
     {
 
-
-
         //*********************************HERE******************************
 
 
@@ -195,7 +190,7 @@ public class Cannon : MonoBehaviour
             {
                 spawnPoint.GetComponent<SpawnListener>().taken = false;
                 gameManager._colorlist[colorIdx].isAvailable = true;
-                joinText.SetActive(true);
+                joinText.GetComponent<Text>().text = "Press 'A' to Join";
                 gameManager.playerCount--;
                 Destroy(this.gameObject);
             }
@@ -222,34 +217,48 @@ public class Cannon : MonoBehaviour
             {
                 playerReady = true;
                 gameManager.readyPlayers++;
+                joinText.GetComponent<Text>().text = "Ready";
+            }
+            else
+            {
+                playerReady = false;
+                gameManager.readyPlayers--;
+                joinText.GetComponent<Text>().text = " ";
             }
         }
 
         if (rewiredPlayer.GetButtonDown("IncreaseRotationSpeed"))      //Player presses UpD.
         {
-            ChangeRotationSpeed(rotationSpeedIncrement);
+            
             //Sensitivity is on a scale of 1-8. Corresponds to minRotSpeed of 2.0f, and maxRotSpeed of 10.0f.
-            if (sensitivity < 8)
-                sensitivity++;
-
-            if (sensitivity == 8)
+            if (sensitivity >= 8)
+            {
                 inputText.GetComponent<Text>().text = "Sensitivity: MAX";
+            }
             else
-                inputText.GetComponent<Text>().text = "Sensitivity: " + sensitivity;
+            {
+                ChangeRotationSpeed(rotationSpeedIncrement);
+                sensitivity++;
+            }
+              
+            inputText.GetComponent<Text>().text = "Sensitivity: " + sensitivity;
 
             inputText.GetComponent<InputTextScript>().checkText();
         }
 
         if (rewiredPlayer.GetButtonDown("DecreaseRotationSpeed"))         //Player presses DownD.
         {
-            ChangeRotationSpeed(-rotationSpeedIncrement);
-            if (sensitivity > 1)
+            if (sensitivity >= 1)
+            {
                 sensitivity--;
-
-            if (sensitivity == 1)
-                inputText.GetComponent<Text>().text = "Sensitivity: MIN";
+                ChangeRotationSpeed(-rotationSpeedIncrement);
+            }
             else
-                inputText.GetComponent<Text>().text = "Sensitivity: " + sensitivity;
+            {
+                inputText.GetComponent<Text>().text = "Sensitivity: MIN";
+            }
+
+            inputText.GetComponent<Text>().text = "Sensitivity: " + sensitivity;
 
             inputText.GetComponent<InputTextScript>().checkText();
         }

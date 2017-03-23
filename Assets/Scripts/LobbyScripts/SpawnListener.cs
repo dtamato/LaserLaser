@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using UnityEngine.UI;
 using UnityEngine;
 using Rewired;
 
@@ -33,6 +32,7 @@ public class SpawnListener : MonoBehaviour
                 GameObject obj = Instantiate(playerRef, transform.position, transform.rotation);
                 obj.GetComponent<Cannon>().SetID(playerID);
                 obj.GetComponent<Cannon>().spawnPoint = this.gameObject;
+                obj.GetComponentInChildren<Laser>().setGameMode(gameManager.gameMode);
                 gameManager.playerCount++;
                 taken = true;
             }

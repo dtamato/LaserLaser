@@ -6,12 +6,14 @@ public class TimedGM : BaseGM
 {
     private Image timeBar;
 	private float initialTime;
+    private float initJoinDelay;
     public float gameTimer;
 
     new void Awake()
     {
         base.Awake();
 		initialTime = gameTimer;
+        initJoinDelay = joinGameDelay;
     }
 
     // Update is called once per frame
@@ -26,7 +28,6 @@ public class TimedGM : BaseGM
                     initializeGame();
                     timeBar = GameObject.Find("Time Bar").GetComponent<Image>();
                     timeBar.fillAmount = gameTimer / initialTime;
-
                     SetState(GAMESTATE.PREGAME);
                 }
 
@@ -34,13 +35,21 @@ public class TimedGM : BaseGM
 
             //Pregame runs from the time the game is initialized, until the end of the "Get Ready" countdown.
             case (GAMESTATE.PREGAME):
+                if (playerCount < 1)
+                {
+                    joinGameDelay = initJoinDelay;
+                    joinCountdownText.text = "Not enough players!";
+                }
+                else
+                {
+                    joinGameDelay -= Time.deltaTime;
+                    joinCountdownText.text = joinGameDelay.ToString("F1");
+                }
 
-                joinGameDelay -= Time.deltaTime;
-                joinCountdownText.text = joinGameDelay.ToString("F1");
 
                 if ((joinGameDelay <= 0 || readyPlayers == playerCount) && playerCount > 0)
                 {
-                    for (int i = 0; i < 3; i++)
+                    for (int i = 0; i < 4; i++)
                     {
                         joinText[i].gameObject.SetActive(false);
                         inputText[i].gameObject.SetActive(false);
@@ -50,7 +59,7 @@ public class TimedGM : BaseGM
 
                     SetState(GAMESTATE.COUNTDOWN);
                     //Debug.Log(state);
-                    StartCoroutine(CountDown());
+                    StartCoroutine(CountDown()); //pregame countdown. only activates after 'lobby countdown' has been executed.
                 }
 
                 break;
@@ -76,7 +85,7 @@ public class TimedGM : BaseGM
             //Postgame runs from the time the win condition is met, and the required players press return to menu.
             case (GAMESTATE.POSTGAME):
 
-                //No functionality yet.
+                
 
                 break;
         }

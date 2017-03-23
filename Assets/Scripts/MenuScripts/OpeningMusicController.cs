@@ -6,7 +6,7 @@ using UnityEngine.SceneManagement;
 [DisallowMultipleComponent]
 public class OpeningMusicController : MonoBehaviour {
 
-	[SerializeField] int lobbyBuildIndex = 3;
+	[SerializeField] int lobbyBuildIndex = 2;
 
 	static OpeningMusicController instance;
 

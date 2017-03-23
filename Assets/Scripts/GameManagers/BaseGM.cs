@@ -47,7 +47,7 @@ public class BaseGM : MonoBehaviour
 
     //State management.
     public enum GAMESTATE {SETUP, PREGAME, COUNTDOWN, INGAME, POSTGAME };
-    protected GAMESTATE state;  //Set first to pregame in initializeGame().
+    protected GAMESTATE state;  
     public string gameMode;
 
     //Color management.
@@ -276,7 +276,7 @@ public class BaseGM : MonoBehaviour
         gameOverPanel = GameObject.Find("GameOverPanel");
         gameOverPanel.SetActive(false);
 
-        Debug.Log("initialize ran.");
+        //Debug.Log("initialize ran.");
         //FillActivePlayersArray ();
     }
 
@@ -285,7 +285,7 @@ public class BaseGM : MonoBehaviour
     {
         yield return new WaitForSeconds(startGameDelay);
         SetState(GAMESTATE.INGAME);
-        Debug.Log(state);
+        //Debug.Log(state);
         readyText.SetActive(false);
     }
 
@@ -293,7 +293,7 @@ public class BaseGM : MonoBehaviour
     public void GameOver()
     {
         state = GAMESTATE.POSTGAME;
-        Debug.Log(state);
+        //Debug.Log(state);
         //Determine who was the winner.
         int highScore = 0;
         int winner = 0;
@@ -331,7 +331,7 @@ public class BaseGM : MonoBehaviour
 
             //Set the Winner Text.
             GameObject.Find("WinnerText").GetComponent<Text>().text = ("Team " + (winner) + " Wins!");
-            GameObject.Find("FinalScoreText").GetComponent<Text>().text += highScore;
+            GameObject.Find("FinalScoreText").GetComponent<Text>().text = highScore.ToString();
 
             //Set the panel color to that of the winner.
             Color winColor = winner == 1 ? Color.blue : Color.red;
@@ -479,7 +479,10 @@ public class BaseGM : MonoBehaviour
         players[pId].myColor = _colorlist[cIdx]._color;   //Update Color variable, to be passed to the GM.
         //players[pId].GetComponent<Cannon>().inputText.GetComponent<Text>().color = _colorlist[cIdx]._color;
         players[pId].GetComponent<Cannon>().myColor = _colorlist[cIdx]._color; ;
+        
     }
+
+
 
     //Called from cannon.cs.
     public GAMESTATE getState()
