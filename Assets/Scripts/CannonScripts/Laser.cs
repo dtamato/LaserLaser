@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using Rewired;
 using UnityEngine.SceneManagement;
 [DisallowMultipleComponent]
 [RequireComponent(typeof(Collider2D), typeof(Rigidbody2D))]
@@ -11,6 +12,7 @@ public class Laser : MonoBehaviour
     [SerializeField] GameObject cannon;
     Rigidbody2D rb2d;
     Light light;
+    private Player rewiredPlayer;
 
     //Set Dynamically from GameManager.
     public Text scoreText;
@@ -21,7 +23,7 @@ public class Laser : MonoBehaviour
     public int myTeam;
     private bool sendResults;
     private string gameMode;
-    public string testMode = "look in inspector"; 
+    public string testMode = "look in inspector"; //to be removed when refactoring code
 
     void Awake()
     {
@@ -42,7 +44,7 @@ public class Laser : MonoBehaviour
         {
             //if (gameMode == "FFA")
             //{
-                scoreText.text = "P" + (myPlayerID + 1) + ": " + score;
+                //scoreText.text = "P" + (myPlayerID + 1) + ": " + score;//to be removed when refactoring code
             //}
         }
     }
@@ -130,6 +132,61 @@ public class Laser : MonoBehaviour
 	{
 		return this.GetComponent<SpriteRenderer> ().color;
 	}
+
+    #region Rumble
+    // Variable length full-intensity rumble function
+    public IEnumerator Rumble(float duration)
+    {
+        rewiredPlayer = cannon.GetComponentInChildren<Cannon>().GetRewiredPlayer();
+
+        foreach (Joystick j in rewiredPlayer.controllers.Joysticks)
+        {
+            if (!j.supportsVibration) continue;
+            j.SetVibration(1.0f, 1.0f);
+        }
+        yield return new WaitForSeconds(duration);
+        foreach (Joystick j in rewiredPlayer.controllers.Joysticks)
+        {
+            j.StopVibration();
+        }
+    }
+
+    // Variable length low-intensity bump function
+    public IEnumerator Bump(float duration)
+    {
+        rewiredPlayer = cannon.GetComponentInChildren<Cannon>().GetRewiredPlayer();
+
+        foreach (Joystick j in rewiredPlayer.controllers.Joysticks)
+        {
+            if (!j.supportsVibration) continue;
+            j.SetVibration(0.25f, 0.25f);
+        }
+        yield return new WaitForSeconds(duration);
+        foreach (Joystick j in rewiredPlayer.controllers.Joysticks)
+        {
+            j.StopVibration();
+        }
+    }
+
+    // Variable direction half-second rumble function 
+    public IEnumerator DirectionalRumble(float leftIntensity, float rightIntensity)
+    {
+        rewiredPlayer = cannon.GetComponentInChildren<Cannon>().GetRewiredPlayer();
+
+        foreach (Joystick j in rewiredPlayer.controllers.Joysticks)
+        {
+            if (!j.supportsVibration) continue;
+            j.SetVibration(leftIntensity, rightIntensity);
+        }
+        yield return new WaitForSeconds(0.5f);
+        foreach (Joystick j in rewiredPlayer.controllers.Joysticks)
+        {
+            j.StopVibration();
+        }
+    }
+    #endregion
+
+
 
     #region Setters
 

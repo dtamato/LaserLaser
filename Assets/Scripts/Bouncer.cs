@@ -17,15 +17,27 @@ public class Bouncer : MonoBehaviour {
 
 	void OnCollisionEnter2D(Collision2D other) {
 
-		if (other.transform.CompareTag ("Player")) {
+        if (other.transform.CompareTag("Player"))
+        {
 
-			animator.SetTrigger ("Bounce");
-			this.GetComponent<AudioSource> ().Play ();
-			this.GetComponent<SpriteRenderer> ().color = other.transform.GetComponent<SpriteRenderer> ().color;
-			StartCoroutine (RestoreColor ());
-			Camera.main.GetComponent<CameraEffects> ().ShakeCamera ();
-		}
-	}
+            animator.SetTrigger("Bounce");
+            this.GetComponent<AudioSource>().Play();
+            this.GetComponent<SpriteRenderer>().color = other.transform.GetComponent<SpriteRenderer>().color;
+            StartCoroutine(RestoreColor());
+            Camera.main.GetComponent<CameraEffects>().ShakeCamera();
+
+            if (other.transform.GetComponent<MenuLaser>())
+            {
+
+                other.transform.GetComponent<MenuLaser>().StartCoroutine("Bump", 0.3f);
+            }
+            else if (other.transform.GetComponent<Laser>())
+            {
+
+                other.transform.GetComponent<Laser>().StartCoroutine("Bump", 0.3f);
+            }
+        }
+    }
 
 	IEnumerator RestoreColor () {
 
@@ -44,4 +56,7 @@ public class Bouncer : MonoBehaviour {
 
 		Destroy (this.gameObject);
 	}
+
+
+
 }

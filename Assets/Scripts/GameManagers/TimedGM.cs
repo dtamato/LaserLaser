@@ -9,6 +9,7 @@ public class TimedGM : BaseGM
     private float initJoinDelay;
     public float gameTimer;
 
+
     new void Awake()
     {
         base.Awake();
@@ -66,9 +67,12 @@ public class TimedGM : BaseGM
 
             //Ingame runs from the time the "Get Ready" countdown ends, and the win condition is met.
             case (GAMESTATE.INGAME):
-
-                gameTimer -= Time.deltaTime;
-                timeBar.fillAmount = gameTimer / initialTime;
+                if (GetPaused() == false)
+                {
+                    gameTimer -= Time.deltaTime;
+                    timeBar.fillAmount = gameTimer / initialTime;
+                }
+                
 
                 if (gameTimer < (0.25f * initialTime) && gameTimer > (0.22f * initialTime))
                 {
@@ -85,9 +89,9 @@ public class TimedGM : BaseGM
             //Postgame runs from the time the win condition is met, and the required players press return to menu.
             case (GAMESTATE.POSTGAME):
 
-                
-
                 break;
         }
     }
+
+    
 }
