@@ -11,11 +11,7 @@ public class Laser : MonoBehaviour
     BaseGM gameManager;
     [SerializeField] GameObject cannon;
     Rigidbody2D rb2d;
-    Light light;
     private Player rewiredPlayer;
-
-    //Set Dynamically from GameManager.
-    public Text scoreText;
 
     //Score and other metrics.
     public int score = 0;
@@ -23,36 +19,31 @@ public class Laser : MonoBehaviour
     public int myTeam;
     private bool sendResults;
     private string gameMode;
-    public string testMode = "look in inspector"; //to be removed when refactoring code
+	private int diamondCombo = 0;
+	private int bounceCombo = 0;
+	private int controlCombo = 0;
+	private float pitchTracker = 1;
+
+	[SerializeField] GameObject scoreCounterPrefab;
+	[SerializeField] GameObject comboCounterPrefab;
+	[SerializeField] GameObject trickshotCanvasPrefab;
+	[SerializeField] Color comboTextColor;
 
     void Awake()
     {
-        
         gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<BaseGM>();
         rb2d = this.GetComponentInChildren<Rigidbody2D>();
-        light = this.GetComponentInChildren<Light>();
         this.GetComponentInChildren<TrailRenderer>().sortingLayerName = this.GetComponent<SpriteRenderer>().sortingLayerName;
         this.GetComponentInChildren<TrailRenderer>().sortingOrder = this.GetComponent<SpriteRenderer>().sortingOrder - 1;
 
         //Record the game mode, for scoring purposes.
-            gameMode = gameManager.gameMode;
-    }
-
-    void Update()
-    {
-        if (SceneManager.GetActiveScene().buildIndex == 2)
-        {
-            //if (gameMode == "FFA")
-            //{
-                //scoreText.text = "P" + (myPlayerID + 1) + ": " + score;//to be removed when refactoring code
-            //}
-        }
+        gameMode = gameManager.gameMode;
     }
 
     void OnCollisionEnter2D(Collision2D other)
     {
 		if (other.transform.CompareTag ("Boundary")) {
-			//rb2d.isKinematic = true;
+			
 			rb2d.bodyType = RigidbodyType2D.Static; // HERE
 			cannon.transform.position = other.contacts [0].point;
 			cannon.transform.rotation = other.transform.rotation;
@@ -62,22 +53,101 @@ public class Laser : MonoBehaviour
 			cannon.GetComponentInChildren<Cannon> ().SetNewBaseAngle ();
 			//cannon.GetComponentInChildren<Cannon>().SetStoredLaser(this);
 			cannon.GetComponent<Cannon> ().inFlight = false;
+
+			// Show final combo count
+			if(controlCombo > 1) {
+
+				//float randomX = this.transform.position.x + Random.Range(0, 2) * 2 - 1;
+				float randomX = this.transform.position.x;
+				float randomY = this.transform.position.y + Random.Range(0, 2) * 2 - 1;
+				Vector3 comboCounterPosition = new Vector3(randomX, randomY, 0);
+				GameObject newComboCounter = Instantiate(comboCounterPrefab, comboCounterPosition, Quaternion.identity) as GameObject;
+				newComboCounter.GetComponent<ComboCounterCanvas>().SetText(controlCombo);
+				newComboCounter.GetComponentInChildren<Text>().color = Color.white;
+			}
+
+			diamondCombo = 0;
+			bounceCombo = 0;
+			controlCombo = 0;
+			pitchTracker = 1;
 		}
 		else if (other.transform.CompareTag ("Player")) {
 
+			float randomX = other.transform.position.x + Random.Range(0, 2) * 2 - 1;
+			float randomY = other.transform.position.y + Random.Range(0, 2) * 2 - 1;
+			Vector3 randomPosition = new Vector3(randomX, randomY, 0);
+			GameObject newCanvasObject = Instantiate(trickshotCanvasPrefab, randomPosition, Quaternion.identity) as GameObject;
+			newCanvasObject.GetComponent<TrickshotCanvas>().SetText("#$%#@#$");
+			newCanvasObject.GetComponentInChildren<Text>().color = this.GetComponent<SpriteRenderer>().color;
 			Camera.main.GetComponent<CameraEffects> ().ShakeCamera ();
+		}
+		else if(other.transform.CompareTag("Bouncer")) {
+
+			bounceCombo++;
+		}
+		else if(other.transform.CompareTag("ControlBouncer")) {
+
+			controlCombo++;
+
+			pitchTracker += 0.05f;
+			this.GetComponent<AudioSource>().pitch = pitchTracker;
+			this.GetComponent<AudioSource>().Play();
+
+			float randomX = other.transform.position.x + Random.Range(0, 2) * 2 - 1;
+			float randomY = other.transform.position.y + Random.Range(0, 2) * 2 - 1;
+			Vector3 comboCounterPosition = new Vector3(randomX, randomY, 0);
+			GameObject newComboCounter = Instantiate(comboCounterPrefab, comboCounterPosition, Quaternion.identity) as GameObject;
+			newComboCounter.GetComponent<ComboCounterCanvas>().SetText(controlCombo);
+			newComboCounter.GetComponentInChildren<Text>().color = comboTextColor;
+			StartCoroutine(Rumble(0.1f));
 		}
     }
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.CompareTag("Diamond"))
-        {
-			scoreCounter();
-        }
+		if (other.CompareTag("Diamond"))
+		{
+			scoreCounter ();
 
-        //Camera.main.GetComponent<CameraEffects>().ShakeCamera();
+			// Create score canvas
+			GameObject newScoreCounter = Instantiate(scoreCounterPrefab, other.transform.position, Quaternion.identity) as GameObject;
+			newScoreCounter.GetComponent<ScoreCounterCanvas>().SetText(score);
+			newScoreCounter.GetComponentInChildren<Text>().color = this.GetComponentInChildren<SpriteRenderer>().color;
+
+			diamondCombo++;
+
+			CheckIfTrickshot(other.transform.position);
+		}
     }
+
+	void CheckIfTrickshot (Vector3 diamondPosition) {
+
+		float randomX = diamondPosition.x + Random.Range(0, 2) * 2 - 1;
+		float randomY = diamondPosition.y + Random.Range(0, 2) * 2 - 1;
+		Vector3 trickshotCanvasPosition = new Vector3(randomX, randomY, 0);
+
+		// Combos
+		if(diamondCombo == 2) {
+
+			GameObject newTrickshotCanvas = Instantiate(trickshotCanvasPrefab, trickshotCanvasPosition, Quaternion.identity) as GameObject;
+			newTrickshotCanvas.GetComponent<TrickshotCanvas>().SetText("DOUBLE SHOT");
+			newTrickshotCanvas.GetComponentInChildren<Text>().color = this.GetComponentInChildren<SpriteRenderer>().color;
+		}
+		else if(diamondCombo == 3) {
+
+			GameObject newTrickshotCanvas = Instantiate(trickshotCanvasPrefab, trickshotCanvasPosition, Quaternion.identity) as GameObject;
+			newTrickshotCanvas.GetComponent<TrickshotCanvas>().SetText("TRIPLE SHOT");
+			newTrickshotCanvas.GetComponentInChildren<Text>().color = this.GetComponentInChildren<SpriteRenderer>().color;
+		}
+
+		// Trickshots
+		if(bounceCombo > 0) {
+
+			GameObject newTrickshotCanvas = Instantiate(trickshotCanvasPrefab, trickshotCanvasPosition, Quaternion.identity) as GameObject;
+			newTrickshotCanvas.GetComponent<TrickshotCanvas>().SetText("TRICK SHOT");
+			newTrickshotCanvas.GetComponentInChildren<Text>().color = this.GetComponentInChildren<SpriteRenderer>().color;
+		}
+	}
 
 	public void scoreCounter()
 	{
@@ -95,33 +165,6 @@ public class Laser : MonoBehaviour
 			//Debug.Log("works on regular2");
 		}
 	}
-
-    IEnumerator PulsateLight()
-    {
-        // Save current light settings and create temp variables
-        float initialLightRange = light.range;
-        float initialLightIntensity = light.intensity;
-        float maxLightRangeSize = 2f;
-        float growSpeed = 50;
-        float waitTime = 0.25f;
-        // Intensify light
-        while (light.range < maxLightRangeSize * initialLightRange)
-        {
-            light.range += growSpeed * Time.deltaTime;
-            light.intensity += growSpeed * Time.deltaTime;
-            yield return null;
-        }
-        yield return new WaitForSeconds(waitTime);
-        // Return light to initial settings
-        while (light.range > initialLightRange)
-        {
-            light.range -= growSpeed * Time.deltaTime;
-            light.intensity -= growSpeed * Time.deltaTime;
-            yield return null;
-        }
-        light.range = initialLightRange;
-        light.intensity = initialLightIntensity;
-    }
 
     public void ChangeColor(Color newColor)
     {

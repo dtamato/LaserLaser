@@ -31,7 +31,6 @@ public class BaseGM : MonoBehaviour
    
     //External References.
     public static BaseGM instance = null;
-    public GameObject playerObj;
     public List<Cannon> players;
     protected List<GameObject> spawns;
     protected GameObject[] activePlayersArray;
@@ -502,17 +501,17 @@ public class BaseGM : MonoBehaviour
     //We'll have to fix this.
     public void UpdateColour(int cIdx, int pId) //if the player tries to change their colour, it will be updated here. Also, if the player joins too. 
     {
-        players[pId].transform.Find("Laser").GetComponentInChildren<SpriteRenderer>().color = _colorlist[cIdx]._color; //Laser colour
-        players[pId].transform.Find("Laser").GetComponent<TrailRenderer>().material.color = _colorlist[cIdx]._color; //Trail renderer 
-        players[pId].GetComponentInChildren<SpriteRenderer>().color = _colorlist[cIdx]._color; //Cannon colour
+		// Color all player parts
+		SpriteRenderer[] spriteRenderers = players[pId].GetComponentsInChildren<SpriteRenderer>();
+		foreach (var spriteRenderer in spriteRenderers) { spriteRenderer.color = _colorlist[cIdx]._color; }
+        players[pId].GetComponentInChildren<TrailRenderer>().material.color = _colorlist[cIdx]._color; //Trail renderer
+		players[pId].GetComponentInChildren<Light>().color = _colorlist[cIdx]._color;
+
         _colorlist[cIdx].isAvailable = false; //making sure other players cannot use the same colour
         players[pId].myColor = _colorlist[cIdx]._color;   //Update Color variable, to be passed to the GM.
         //players[pId].GetComponent<Cannon>().inputText.GetComponent<Text>().color = _colorlist[cIdx]._color;
         players[pId].GetComponent<Cannon>().myColor = _colorlist[cIdx]._color; ;
-        
     }
-
-
 
     //Called from cannon.cs.
     public GAMESTATE getState()
