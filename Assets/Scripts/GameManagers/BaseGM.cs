@@ -44,6 +44,7 @@ public class BaseGM : MonoBehaviour
     protected Text joinCountdownText;
     protected GameObject gameOverPanel;
     protected GameObject whiteBorder;
+    protected GameObject pauseMenu;
 
     //State management.
     public enum GAMESTATE {SETUP, PREGAME, COUNTDOWN, INGAME, POSTGAME };
@@ -70,6 +71,9 @@ public class BaseGM : MonoBehaviour
     public int readyPlayers = 0;
     public List<int> playerScores;
     public int team1Score, team2Score;  //Only used in TB mode.
+
+    bool isPaused = false;
+    private int playerPauseId;
 
     #endregion
 
@@ -232,7 +236,7 @@ public class BaseGM : MonoBehaviour
             Destroy(gameObject);
         DontDestroyOnLoad(gameObject);
         //Initialize HUD Text List and Spawn Points, will be referenced upon entering game scene.
-        HUDText = new List<Text>(4);
+        //HUDText = new List<Text>(4);
         joinText = new List<Text>(4);
         inputText = new List<Text>(4);
         spawns = new List<GameObject>(4);
@@ -241,7 +245,7 @@ public class BaseGM : MonoBehaviour
         //Initialize HUD, Spawns, Scores, and Colourlist.
         for (int i = 0; i <= 3; i++)
         {
-            HUDText.Add(null);
+            //HUDText.Add(null); //to be removed when refactoring code
             joinText.Add(null);
             inputText.Add(null);
             spawns.Add(null);
@@ -254,6 +258,31 @@ public class BaseGM : MonoBehaviour
         FFAColourList();
     }
 
+    public GameObject GetPauseMenu()
+    {
+        return pauseMenu;
+    }
+
+    public bool GetPaused()
+    {
+        return isPaused;
+    }
+
+    public void SetPaused(bool input)
+    {
+        isPaused = input;
+    }
+
+    public int GetPlayerPauseId()
+    {
+        return playerPauseId;
+    }
+
+    public void SetPlayerPauseId(int newId)
+    {
+        playerPauseId = newId;
+    }
+
     #region MainGame Scene
 
     //Called when entering game scene, initializes players, HUD and timer.
@@ -262,7 +291,7 @@ public class BaseGM : MonoBehaviour
         //Reference members of HUD and Spawns.
         for (int i = 0; i <= 3; i++)
         {
-            HUDText[i] = GameObject.Find("PlayerScore" + i).GetComponent<Text>();
+            //HUDText[i] = GameObject.Find("PlayerScore" + i).GetComponent<Text>(); //to be removed when refactoring code
             joinText[i] = GameObject.Find("JoinText" + i).GetComponent<Text>();
             inputText[i] = GameObject.Find("InputText" + i).GetComponent<Text>();
             spawns[i] = GameObject.Find("SP" + i);
@@ -275,7 +304,8 @@ public class BaseGM : MonoBehaviour
         whiteBorder = GameObject.Find ("White Border");
         gameOverPanel = GameObject.Find("GameOverPanel");
         gameOverPanel.SetActive(false);
-
+        pauseMenu = GameObject.Find("Pause Menu");
+        pauseMenu.SetActive(false);
         //Debug.Log("initialize ran.");
         //FillActivePlayersArray ();
     }
@@ -363,7 +393,7 @@ public class BaseGM : MonoBehaviour
     {
         playerScores[pID] += score;
 		UpdateWhiteBorderFFA ();
-        HUDText[pID].text = "P" + (pID + 1) + "- " + score.ToString("00");
+        //HUDText[pID].text = "P" + (pID + 1) + "- " + score.ToString("00"); //to be removed when refactoring code
     }
 
     //Called to update the border of the arena with the color of the leading player.

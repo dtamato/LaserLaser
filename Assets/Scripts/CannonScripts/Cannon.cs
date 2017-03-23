@@ -44,6 +44,19 @@ public class Cannon : MonoBehaviour
     float minAngle;
     float maxAngle;
 
+    //Pause
+    GameObject pauseMenu;
+    
+
+    void Awake()
+    {
+        if (GameObject.Find("Pause Menu") != null)
+        {
+            Debug.Log("Test");
+            pauseMenu = GameObject.Find("Pause Menu").gameObject;
+        }
+    }
+
     void Start()
     {
         gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<BaseGM>();
@@ -69,7 +82,7 @@ public class Cannon : MonoBehaviour
         else
             team = 0;
 
-        
+       
 
         //Setup for rotation.
         if (maxAngleOffset < 0)
@@ -94,7 +107,20 @@ public class Cannon : MonoBehaviour
                 break;
 
             case (BaseGM.GAMESTATE.INGAME):
-                StandardInputs();
+                if (gameManager.GetPaused() == false && !pauseMenu.activeSelf)
+                {
+                    StandardInputs();
+                    CheckOpenPauseMenu();
+                }
+                else if (gameManager.GetPaused())
+                {
+                    GetMenuInput();
+                }
+
+                else
+                {
+                    StandardInputs();
+                }
                 break;
 
             case (BaseGM.GAMESTATE.POSTGAME):
@@ -118,6 +144,7 @@ public class Cannon : MonoBehaviour
             RestrictAngle();
             GetFireInput();
         }
+
     }
 
     #region Inputs
@@ -139,6 +166,41 @@ public class Cannon : MonoBehaviour
         else if (rewiredPlayer.GetAxisRaw("Horizontal") == 0)
         {
             currentRotationSpeed = baseRotationSpeed;
+        }
+    }
+
+    void CheckOpenPauseMenu()
+    {
+
+        if (rewiredPlayer.GetButtonDown("StartGame") && gameManager.getState() != BaseGM.GAMESTATE.POSTGAME)
+        {
+
+            pauseMenu.SetActive(true);
+            pauseMenu.GetComponent<PauseMenu>().PauseGame(this.gameObject);
+            gameManager.SetPaused(true);
+            gameManager.SetPlayerPauseId(this.playerId);
+        }
+    }
+
+    void GetMenuInput()
+    {
+
+        if (rewiredPlayer.GetAxisRaw("Horizontal") == 1)
+        {
+            Debug.Log(gameManager.GetPlayerPauseId());
+            if (this.playerId == gameManager.GetPlayerPauseId())
+            {
+            pauseMenu.GetComponent<PauseMenu>().NextButton();
+            Debug.Log("Next");
+            }
+        }
+
+        if (rewiredPlayer.GetButtonDown("StartGame"))
+        {
+
+            gameManager.SetPaused(false);
+            gameManager.SetPlayerPauseId(-1);
+            pauseMenu.SetActive(false);
         }
     }
 
@@ -306,6 +368,18 @@ public class Cannon : MonoBehaviour
         playerId = newId;
     }
 
+    public void SetIsPaused(bool isPaused)
+    {
+
+        gameManager.SetPaused(isPaused);
+    }
+
+    public void SetPauseMenu(GameObject menu)
+    {
+
+        pauseMenu = menu;
+    }
+
     #endregion
 
     #region Getters
@@ -329,6 +403,13 @@ public class Cannon : MonoBehaviour
     {
         return myColor;
     }
+
+    public Player GetRewiredPlayer()
+    {
+        return rewiredPlayer;
+    }
+
+
 
     #endregion
 }
