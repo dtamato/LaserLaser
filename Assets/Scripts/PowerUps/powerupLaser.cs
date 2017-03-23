@@ -37,14 +37,17 @@ public class powerupLaser : MonoBehaviour
 	{
 		if (other.gameObject.tag == "Diamond")
 		{
-			GetComponentInParent<Laser> ().scoreCounter ();
-			Debug.Log ("Works on powerup");
+		    if (other.GetComponentInParent<Laser>() != null)
+		    {
+			GetComponentInParent<Laser>().scoreCounter();
+			//Debug.Log ("Works on powerup");
+		    }
 		}
 
 		if (other.gameObject.tag == "PowerupBoundary") 
 		{
 			Destroy (this.gameObject);
-			Debug.Log ("Object destroyed");
+			//Debug.Log ("Object destroyed");
 		}
 
 		Camera.main.GetComponent<CameraEffects>().ShakeCamera();

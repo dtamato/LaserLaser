@@ -65,4 +65,4 @@ MonoBehaviour:
   playerScores: 
   team1Score: 0
   team2Score: 0
-  gameTimer: 15
+  gameTimer: 30

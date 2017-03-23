@@ -40,10 +40,10 @@ public class Laser : MonoBehaviour
     {
         if (SceneManager.GetActiveScene().buildIndex == 2)
         {
-            if (gameMode == "FFA")
-            {
+            //if (gameMode == "FFA")
+            //{
                 scoreText.text = "P" + (myPlayerID + 1) + ": " + score;
-            }
+            //}
         }
     }
 
@@ -71,7 +71,7 @@ public class Laser : MonoBehaviour
     {
         if (other.CompareTag("Diamond"))
         {
-			scoreCounter ();
+			scoreCounter();
         }
 
         //Camera.main.GetComponent<CameraEffects>().ShakeCamera();
@@ -130,4 +130,19 @@ public class Laser : MonoBehaviour
 	{
 		return this.GetComponent<SpriteRenderer> ().color;
 	}
+
+    #region Setters
+
+    public void setGameMode(string newGM)
+    {
+        gameMode = newGM;
+    }
+    #endregion
+    #region Getters
+
+    public string GetGameMode()
+    {
+        return gameMode;
+    }
+    #endregion
 }

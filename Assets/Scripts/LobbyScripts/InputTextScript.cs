@@ -33,7 +33,6 @@ public class InputTextScript : MonoBehaviour
 
     IEnumerator showText()
     {
-        Debug.Log("ran");
         this.GetComponent<Text>().enabled = true;
         while (check2)
         {

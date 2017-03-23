@@ -57,7 +57,7 @@ MonoBehaviour:
   gameOverSceneIndex: 4
   playerObj: {fileID: 1000012362012830, guid: 76f68068a86b4d14598968aa340a5996, type: 2}
   players: []
-  gameMode: 
+  gameMode: FFA
   joinGameDelay: 30
   startGameDelay: 3
   playerCount: 0
