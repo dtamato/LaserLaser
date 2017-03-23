@@ -390,7 +390,7 @@ public class BaseGM : MonoBehaviour
     //Called from Laser.cs
     public void addScore(int pID, int score)
     {
-        playerScores[pID] += score;
+        playerScores[pID] = score;
 		UpdateWhiteBorderFFA ();
         //HUDText[pID].text = "P" + (pID + 1) + "- " + score.ToString("00"); //to be removed when refactoring code
     }

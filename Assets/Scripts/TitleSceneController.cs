@@ -1,25 +1,56 @@
-﻿using Rewired;
-using UnityEngine;
+﻿using System.Collections;
 using UnityEngine.SceneManagement;
-using System.Collections;
+using UnityEngine;
 
 [DisallowMultipleComponent]
 public class TitleSceneController : MonoBehaviour {
 
-	Player player;
+	[SerializeField] GameObject pressStartObject;
+	[SerializeField] float pressStartFlickerTime = 1;
+	[SerializeField] float secondsUntilDemoPlays = 3;
+	[SerializeField] Renderer movieRenderer;
 
-	// Use this for initialization
+	float flickerTimer;
+
 	void Start () {
-	
-		player = ReInput.players.GetPlayer (0);
+
+		flickerTimer = pressStartFlickerTime;
+		movieRenderer.gameObject.SetActive(false);
+		StartCoroutine(LoadDemo());
 	}
-	
-	// Update is called once per frame
+
+	IEnumerator LoadDemo () {
+
+		yield return new WaitForSeconds(secondsUntilDemoPlays);
+
+		movieRenderer.gameObject.SetActive(true);
+		MovieTexture movie = (MovieTexture)movieRenderer.material.mainTexture;
+		movie.Play();
+		movie.loop = true;
+	}
+
 	void Update () {
 
-		if (player.GetAnyButton()) {
+		if(flickerTimer > 0) {
 
-			SceneManager.LoadScene (SceneManager.GetActiveScene ().buildIndex + 1);
+			flickerTimer -= Time.deltaTime;
+		}
+		else {
+
+			pressStartObject.SetActive(!pressStartObject.activeSelf);
+			flickerTimer = pressStartFlickerTime;
+		}
+
+		if (Input.anyKeyDown) {
+
+			if(movieRenderer.gameObject.activeSelf) {
+
+				movieRenderer.gameObject.SetActive(false);
+			}
+			else {
+
+				SceneManager.LoadScene (SceneManager.GetActiveScene ().buildIndex + 1);
+			}
 		}
 	}
 }

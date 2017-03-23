@@ -260,6 +260,10 @@ Prefab:
       propertyPath: gameTimer
       value: 120
       objectReference: {fileID: 0}
+    - target: {fileID: 1000010725953750, guid: ada36bcb359bb8b4ead79d8a4babfd4a, type: 2}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: ada36bcb359bb8b4ead79d8a4babfd4a, type: 2}
   m_IsPrefabParent: 0

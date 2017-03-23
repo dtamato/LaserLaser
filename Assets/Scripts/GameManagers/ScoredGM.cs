@@ -6,7 +6,6 @@ using UnityEngine.UI;
 
 public class ScoredGM : BaseGM
 {
-    /*
     #region Variables
 
     //References for initialization process.
@@ -30,12 +29,11 @@ public class ScoredGM : BaseGM
         #region Lobby Scene
         switch (state)
         {
+			case(GAMESTATE.SETUP):
+				initializeGame();
+				GameObject.Find("Time Bar").SetActive(false);
+				break;
             case (GAMESTATE.PREGAME):
-
-                //When the GM enters the game scene, initialize the game.
-
-                //Run the base game initialization, all GMs run this.
-                base.initializeGame();
 
                 //Remove the timer.
                 GameObject.Find("Time Bar").SetActive(false);
@@ -43,15 +41,15 @@ public class ScoredGM : BaseGM
                 //timeText.text = "Target: " + objectiveScore;
 
                 //Deactivate inactive player's scores. FFA Only.
-                if (gameMode == "FFA")
-                {
-                    for (int i = 0; i <= 3; i++)
-                    {
-                        GameObject scorebar = GameObject.Find("PlayerScore" + i);
-                        if (!playerList[i].active())
-                            scorebar.SetActive(false);
-                    }
-                }
+//                if (gameMode == "FFA")
+//                {
+//                    for (int i = 0; i <= 3; i++)
+//                    {
+//                        GameObject scorebar = GameObject.Find("PlayerScore" + i);
+//                        if (!playerList[i].active())
+//                            scorebar.SetActive(false);
+//                    }
+//                }
 
                 //Ensures this process runs once.
                 state = GAMESTATE.INGAME;
@@ -72,10 +70,10 @@ public class ScoredGM : BaseGM
                 {
                     for (int i = 0; i < 4; i++)
                     {
-                        int score = playerList[i].getScore();
+						int score = playerScores[i];
                         if (score >= objectiveScore)
                         {
-                            Transform ballTransform = playerList[i].obj.GetComponent<Cannon>().GetLaser().transform;
+						Transform ballTransform = players[i].GetComponent<Cannon>().GetLaser().transform;
                             Camera.main.GetComponent<CameraEffects>().SetZoomTarget(ballTransform);
                             GameOver();
                         }
@@ -101,9 +99,7 @@ public class ScoredGM : BaseGM
             lobbyManager.SwitchTeamMode();
             enteredLobby = true;
         }
-
+		*/
         #endregion
-    
     }
-    */
 }

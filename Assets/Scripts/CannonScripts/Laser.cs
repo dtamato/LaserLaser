@@ -15,7 +15,6 @@ public class Laser : MonoBehaviour
 
     //Score and other metrics.
     public int score = 0;
-    public int myPlayerID;
     public int myTeam;
     private bool sendResults;
     private string gameMode;
@@ -44,7 +43,8 @@ public class Laser : MonoBehaviour
     {
 		if (other.transform.CompareTag ("Boundary")) {
 			
-			rb2d.bodyType = RigidbodyType2D.Static; // HERE
+			rb2d.bodyType = RigidbodyType2D.Static;
+			rb2d.GetComponent<Collider2D>().isTrigger = true;
 			cannon.transform.position = other.contacts [0].point;
 			cannon.transform.rotation = other.transform.rotation;
 			this.transform.position = cannon.transform.position + 1.5f * cannon.transform.up;
@@ -155,7 +155,7 @@ public class Laser : MonoBehaviour
 		if (gameMode == "FFA")
 		{
 			score++;
-			gameManager.addScore(myPlayerID, score);//this is where score text is set
+			gameManager.addScore(cannon.GetComponent<Cannon>().GetPlayerID(), score);//this is where score text is set
 			//Debug.Log("works on regular");
 		}
 		//Team scoring.
