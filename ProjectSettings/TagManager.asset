@@ -17,6 +17,8 @@ TagManager:
   - PowerupBoundary
   - Bouncer
   - ControlBouncer
+  - Grid
+  - BackGround
   layers:
   - Default
   - TransparentFX
