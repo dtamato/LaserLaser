@@ -132,4 +132,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9867390c5c1d9da478bf94f5aaced02e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lobbyBuildIndex: 3
+  gameBuildIndex: 3

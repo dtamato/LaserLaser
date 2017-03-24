@@ -247,52 +247,9 @@ public class BaseGM : MonoBehaviour
         state = GAMESTATE.SETUP;
     }
 
-    public GameObject GetPauseMenu()
-    {
-        return pauseMenu;
-    }
+    
 
-    public bool GetPaused()
-    {
-        return isPaused;
-    }
-
-    public void SetPaused(bool input)
-    {
-        isPaused = input;
-    }
-
-    public int GetPlayerPauseId()
-    {
-        return playerPauseId;
-    }
-
-    public void SetPlayerPauseId(int newId)
-    {
-        playerPauseId = newId;
-    }
-
-    public void DisablePlayerControllers(int exception)
-    {
-        //Debug.Log("Still enabled" + exception);
-        for (int i = 0; i < playerCount; i++)
-        {
-            if (i != exception)
-            {
-                players[i].rewiredPlayer.controllers.maps.SetMapsEnabled(false, "Default");
-                //Debug.Log("Disabled: " + i);
-            }
-        }
-    }
-
-    public void EnablePlayerControllers()
-    {
-        for (int i = 0; i < playerCount; i++)
-        {
-            players[i].rewiredPlayer.controllers.maps.SetMapsEnabled(true, "Default");
-            //Debug.Log("Re-enabled: " + i);
-        }
-    }
+    
 
     #region MainGame Scene
 
@@ -525,15 +482,80 @@ public class BaseGM : MonoBehaviour
         players[pId].GetComponent<Cannon>().myColor = _colorlist[cIdx]._color; ;
     }
 
+
+    public void DisablePlayerControllers(int exception)
+    {
+        //Debug.Log("Still enabled" + exception);
+        for (int i = 0; i < playerCount; i++)
+        {
+            if (i != exception)
+            {
+                players[i].rewiredPlayer.controllers.maps.SetMapsEnabled(false, "Default");
+                //Debug.Log("Disabled: " + i);
+            }
+        }
+    }
+
+    public void EnablePlayerControllers()
+    {
+        for (int i = 0; i < playerCount; i++)
+        {
+            players[i].rewiredPlayer.controllers.maps.SetMapsEnabled(true, "Default");
+            //Debug.Log("Re-enabled: " + i);
+        }
+    }
+
+
+
+    #region Getters
+    #region StateGetters
     //Called from cannon.cs.
     public GAMESTATE getState()
     {
         return state;
     }
+    #endregion
+    #region PauseGetters
+    public GameObject GetPauseMenu()
+    {
+        return pauseMenu;
+    }
 
+    public bool GetPaused()
+    {
+        return isPaused;
+    }
+
+    public int GetPlayerPauseId()
+    {
+        return playerPauseId;
+    }
+    #endregion
+
+
+    #endregion
+    #region Setters
+    #region StateSetters
     public void SetState(GAMESTATE test)
     {
         state = test;
     }
+    #endregion
+    #region PasuseSetters
+    public void SetPaused(bool input)
+    {
+        isPaused = input;
+    }
+
+
+
+    public void SetPlayerPauseId(int newId)
+    {
+        playerPauseId = newId;
+    }
+    #endregion
+
+
+    #endregion
 
 }

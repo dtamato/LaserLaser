@@ -459,11 +459,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cannon: {fileID: 1000012362012830}
-  scoreText: {fileID: 0}
   score: 0
-  myPlayerID: 0
   myTeam: 0
-  testMode: look in inspector
+  scoreCounterPrefab: {fileID: 0}
+  comboCounterPrefab: {fileID: 0}
+  trickshotCanvasPrefab: {fileID: 0}
+  comboTextColor: {r: 0, g: 0, b: 0, a: 0}
 --- !u!114 &114000012624769266
 MonoBehaviour:
   m_ObjectHideFlags: 1

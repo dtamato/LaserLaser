@@ -113,8 +113,7 @@ public class Cannon : MonoBehaviour
 
             //In countdown player can only rotate, no firing.
             case (BaseGM.GAMESTATE.COUNTDOWN):
-                GetRotationInput();
-                RestrictAngle();
+                StandardInputs();
                 break;
 
             case (BaseGM.GAMESTATE.INGAME):
