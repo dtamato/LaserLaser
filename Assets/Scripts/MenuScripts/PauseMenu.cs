@@ -12,7 +12,12 @@ public class PauseMenu : MonoBehaviour {
 	[SerializeField] Text pauseText;
 
 	GameObject playerPausing;
+    private BaseGM gameManager;
 
+    void Start()
+    {
+        gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<BaseGM>();
+    }
 
 	public void PauseGame (GameObject player) {
 
@@ -31,12 +36,15 @@ public class PauseMenu : MonoBehaviour {
 
 		playerPausing.GetComponentInChildren<Cannon>().SetIsPaused(false);
 		this.gameObject.SetActive(false);
-	}
+        gameManager.EnablePlayerControllers();
+    }
 
 	public void RestartGame () {
 
-		this.gameObject.SetActive(false);
-		SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+		/*this.gameObject.SetActive(false);
+        gameManager.EnablePlayerControllers();
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);*/
+	    Debug.Log("Breaks Game");
 	}
 
 	public void QuitGame () {

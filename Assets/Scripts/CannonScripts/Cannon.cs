@@ -37,7 +37,13 @@ public class Cannon : MonoBehaviour
     int rotationModifier = 1;
     float minRotationSpeed = 1.5f;
     float maxRotationSpeed = 5.0f;
-    
+
+    private Transform midPoint;
+    private const float cornerOffset = 0.6f;
+    private Vector2 cornerOrigin;
+    private int Layer_Mask;
+
+
     //Angles
     float currentAngle;
     float baseAngle;
@@ -70,7 +76,12 @@ public class Cannon : MonoBehaviour
         inFlight = false;
         sensitivity = 5;
 
-        colorIdx = playerId;
+        midPoint = transform.Find("MidPoint").transform;
+        cornerOrigin = new Vector2(midPoint.transform.position.x,midPoint.transform.position.y);
+        Layer_Mask = LayerMask.GetMask("Boundary");
+
+
+    colorIdx = playerId;
         gameManager.UpdateColour(colorIdx, playerId);
         inputText.GetComponent<Text>().color = myColor;
 
@@ -155,13 +166,19 @@ public class Cannon : MonoBehaviour
         // Get controller joystick input
         if (rewiredPlayer.GetAxisRaw("Horizontal") < 0)
         {
-            currentRotationSpeed = Mathf.Clamp(currentRotationSpeed, minRotationSpeed, maxRotationSpeed);
-            this.transform.Rotate(currentRotationSpeed * rotationModifier * Vector3.forward);
+            if (!Physics2D.Linecast(cornerOrigin,new Vector2(midPoint.transform.position.x-cornerOffset,midPoint.transform.position.y),Layer_Mask))
+            {
+                currentRotationSpeed = Mathf.Clamp(currentRotationSpeed, minRotationSpeed, maxRotationSpeed);
+                this.transform.Rotate(currentRotationSpeed * rotationModifier * Vector3.forward);
+            }
         }
         else if (rewiredPlayer.GetAxisRaw("Horizontal") > 0)
         {
-            currentRotationSpeed = Mathf.Clamp(currentRotationSpeed, minRotationSpeed, maxRotationSpeed);
-            this.transform.Rotate(-currentRotationSpeed * rotationModifier * Vector3.forward);
+            if (!Physics2D.Linecast(cornerOrigin, new Vector2(midPoint.transform.position.x + cornerOffset, midPoint.transform.position.y), Layer_Mask))
+            {
+                currentRotationSpeed = Mathf.Clamp(currentRotationSpeed, minRotationSpeed, maxRotationSpeed);
+                this.transform.Rotate(-currentRotationSpeed * rotationModifier * Vector3.forward);
+            }
         }
         else if (rewiredPlayer.GetAxisRaw("Horizontal") == 0)
         {
@@ -174,30 +191,30 @@ public class Cannon : MonoBehaviour
 
         if (rewiredPlayer.GetButtonDown("StartGame") && gameManager.getState() != BaseGM.GAMESTATE.POSTGAME)
         {
-
+            
             pauseMenu.SetActive(true);
             pauseMenu.GetComponent<PauseMenu>().PauseGame(this.gameObject);
             gameManager.SetPaused(true);
             gameManager.SetPlayerPauseId(this.playerId);
+            gameManager.DisablePlayerControllers(playerId);
         }
     }
+
+
 
     void GetMenuInput()
     {
 
-        if (rewiredPlayer.GetAxisRaw("Horizontal") == 1)
+        if (rewiredPlayer.GetAxisRaw("Horizontal") == 1 && playerId == gameManager.GetPlayerPauseId())
         {
-            Debug.Log(gameManager.GetPlayerPauseId());
-            if (this.playerId == gameManager.GetPlayerPauseId())
-            {
             pauseMenu.GetComponent<PauseMenu>().NextButton();
             Debug.Log("Next");
-            }
         }
 
         if (rewiredPlayer.GetButtonDown("StartGame"))
         {
 
+            gameManager.EnablePlayerControllers();
             gameManager.SetPaused(false);
             gameManager.SetPlayerPauseId(-1);
             pauseMenu.SetActive(false);
