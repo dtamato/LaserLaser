@@ -6,6 +6,7 @@ using UnityEngine.UI;
 using Rewired;
 
 //Used to assign color's to players when they press RB or LB.
+[System.Serializable]
 public class ColorList
 {
     public bool isAvailable = true;
@@ -51,17 +52,7 @@ public class BaseGM : MonoBehaviour
     public string gameMode;
 
     //Color management.
-    public ColorList[] _colorlist = new ColorList[7];
-    void FFAColourList() //The available colours for the FFA lobby
-    {
-        _colorlist[0] = new ColorList(false, new Color(252 / 255f, 0, 1));
-        _colorlist[1] = new ColorList(false, new Color(156 / 255f, 0, 1));
-        _colorlist[2] = new ColorList(false, new Color(12 / 255f, 0, 1));
-        _colorlist[3] = new ColorList(false, new Color(79 / 255f, 1, 223 / 255f));
-        _colorlist[4] = new ColorList(true, new Color(89 / 255f, 254 / 255f, 50 / 255f));
-        _colorlist[5] = new ColorList(true, new Color(1, 168 / 255f, 0));
-        _colorlist[6] = new ColorList(true, new Color(1, 0, 0));
-    }
+	public ColorList[] _colorlist;
     
     //Timer and score metrics.
     public float joinGameDelay;
@@ -254,7 +245,6 @@ public class BaseGM : MonoBehaviour
 
         //This will need to be changed when the GM is instantiated properly in the menu and carried into the game scene.
         state = GAMESTATE.SETUP;
-        FFAColourList();
     }
 
     public GameObject GetPauseMenu()
@@ -482,7 +472,7 @@ public class BaseGM : MonoBehaviour
         do
         {
             idx++;
-            idx %= 7;
+            idx %= _colorlist.Length;
         } while (!_colorlist[idx].isAvailable);
         return idx;
     }
@@ -492,8 +482,8 @@ public class BaseGM : MonoBehaviour
         _colorlist[idx].isAvailable = true;
         do
         {
-            idx = (idx - 1) % 7;
-            idx = idx < 0 ? idx + 7 : idx; //is check 1 true? if yes, use check 2 (wraps around back to the end of the array when you're decrementing past the first element)
+			idx = (idx - 1) % _colorlist.Length;
+			idx = idx < 0 ? idx + _colorlist.Length : idx; //is check 1 true? if yes, use check 2 (wraps around back to the end of the array when you're decrementing past the first element)
         } while (!_colorlist[idx].isAvailable);
         return idx;
     }

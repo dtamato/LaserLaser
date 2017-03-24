@@ -258,10 +258,65 @@ Prefab:
     - target: {fileID: 114000012455943666, guid: ada36bcb359bb8b4ead79d8a4babfd4a,
         type: 2}
       propertyPath: gameTimer
-      value: 120
+      value: 60
       objectReference: {fileID: 0}
     - target: {fileID: 1000010725953750, guid: ada36bcb359bb8b4ead79d8a4babfd4a, type: 2}
       propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114000012455943666, guid: ada36bcb359bb8b4ead79d8a4babfd4a,
+        type: 2}
+      propertyPath: _colorlist.Array.data[0].isAvailable
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114000012455943666, guid: ada36bcb359bb8b4ead79d8a4babfd4a,
+        type: 2}
+      propertyPath: _colorlist.Array.data[1].isAvailable
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114000012455943666, guid: ada36bcb359bb8b4ead79d8a4babfd4a,
+        type: 2}
+      propertyPath: _colorlist.Array.data[2].isAvailable
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114000012455943666, guid: ada36bcb359bb8b4ead79d8a4babfd4a,
+        type: 2}
+      propertyPath: _colorlist.Array.data[3].isAvailable
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114000012455943666, guid: ada36bcb359bb8b4ead79d8a4babfd4a,
+        type: 2}
+      propertyPath: _colorlist.Array.data[4].isAvailable
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114000012455943666, guid: ada36bcb359bb8b4ead79d8a4babfd4a,
+        type: 2}
+      propertyPath: _colorlist.Array.data[5].isAvailable
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114000012455943666, guid: ada36bcb359bb8b4ead79d8a4babfd4a,
+        type: 2}
+      propertyPath: _colorlist.Array.data[6].isAvailable
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114000012455943666, guid: ada36bcb359bb8b4ead79d8a4babfd4a,
+        type: 2}
+      propertyPath: _colorlist.Array.data[7].isAvailable
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114000012455943666, guid: ada36bcb359bb8b4ead79d8a4babfd4a,
+        type: 2}
+      propertyPath: _colorlist.Array.data[8].isAvailable
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114000012455943666, guid: ada36bcb359bb8b4ead79d8a4babfd4a,
+        type: 2}
+      propertyPath: _colorlist.Array.data[9].isAvailable
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114000012455943666, guid: ada36bcb359bb8b4ead79d8a4babfd4a,
+        type: 2}
+      propertyPath: _colorlist.Array.data[10].isAvailable
       value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -2111,7 +2166,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: f4a81d4a47a3874448cb3242057df654, type: 3}
+  m_audioClip: {fileID: 8300000, guid: 9ab2b9ce91007d246ba4ad1f09d167ab, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 1
   m_Pitch: 1

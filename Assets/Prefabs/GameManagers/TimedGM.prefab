@@ -55,9 +55,31 @@ MonoBehaviour:
   menuSceneIndex: 2
   mainGameSceneIndex: 3
   gameOverSceneIndex: 4
-  playerObj: {fileID: 1000012362012830, guid: 76f68068a86b4d14598968aa340a5996, type: 2}
   players: []
   gameMode: 
+  _colorlist:
+  - isAvailable: 0
+    _color: {r: 0.8235295, g: 0.54509807, b: 1, a: 1}
+  - isAvailable: 0
+    _color: {r: 1, g: 0, b: 0.40000004, a: 1}
+  - isAvailable: 0
+    _color: {r: 0.30980393, g: 1, b: 0.8745099, a: 1}
+  - isAvailable: 0
+    _color: {r: 0.34901962, g: 0.9960785, b: 0.19607845, a: 1}
+  - isAvailable: 0
+    _color: {r: 1, g: 0.65882355, b: 0, a: 1}
+  - isAvailable: 0
+    _color: {r: 0.19215688, g: 0.6156863, b: 0.9725491, a: 1}
+  - isAvailable: 0
+    _color: {r: 1, g: 0.6784314, b: 0.8705883, a: 1}
+  - isAvailable: 0
+    _color: {r: 0.19215688, g: 0.6039216, b: 0.6039216, a: 1}
+  - isAvailable: 0
+    _color: {r: 0.6117647, g: 0, b: 1, a: 1}
+  - isAvailable: 0
+    _color: {r: 0.5647059, g: 0.8313726, b: 0.9686275, a: 1}
+  - isAvailable: 0
+    _color: {r: 1, g: 0, b: 0, a: 1}
   joinGameDelay: 30
   startGameDelay: 3
   playerCount: 0
