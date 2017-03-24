@@ -16,14 +16,14 @@ GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 4000011956774366}
-  - 20: {fileID: 20000014277816324}
-  - 92: {fileID: 92000011074162730}
-  - 124: {fileID: 124000011290593512}
-  - 81: {fileID: 81000013472093542}
-  - 114: {fileID: 114000011683783614}
+  - component: {fileID: 4000011956774366}
+  - component: {fileID: 20000014277816324}
+  - component: {fileID: 92000011074162730}
+  - component: {fileID: 124000011290593512}
+  - component: {fileID: 81000013472093542}
+  - component: {fileID: 114000011683783614}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -40,10 +40,10 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!20 &20000014277816324
 Camera:
   m_ObjectHideFlags: 1
@@ -53,7 +53,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 2
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0.019607844}
+  m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
   m_NormalizedViewPortRect:
     serializedVersion: 2
     x: 0

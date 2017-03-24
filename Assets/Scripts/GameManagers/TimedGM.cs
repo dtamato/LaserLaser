@@ -1,75 +1,97 @@
 ﻿using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
+
 public class TimedGM : BaseGM
 {
-    #region Variables
-    //References for initialization process.
-    private bool initialized = false;
-    private bool enteredLobby = false;
-    private Text timeText;
-    //How long the game will run for.
+    private Image timeBar;
+	private float initialTime;
+    private float initJoinDelay;
     public float gameTimer;
-    #endregion
 
-    void Awake()
+
+    new void Awake()
     {
         base.Awake();
-        gameTimer = 60.0f;
+		initialTime = gameTimer;
+        initJoinDelay = joinGameDelay;
     }
-
 
     // Update is called once per frame
     void Update()
     {
-        //When first entering the lobby from the menu scene.
-        if (enteredLobby == false && SceneManager.GetActiveScene().buildIndex == LobbySceneIndex)
+        switch (state)
         {
-            lobbyManager = GameObject.Find("LobbyManager").GetComponent<LobbyManager>();
-            lobbyManager.gameType = gameMode;
-            lobbyManager.SwitchTeamMode();
-            enteredLobby = true;
-        }
-        #region MainGame Scene
-        //When the GM enters the game scene, initialize the game.
-        else if (!initialized && SceneManager.GetActiveScene().buildIndex == mainGameSceneIndex)
-        {
-            //Run the base game intialization, all GMs run this.
-            base.initializeGame();
-            
-            //Put the time on the clock.
-            timeText = GameObject.Find("TimeText").GetComponent<Text>();
-            timeText.text = gameTimer.ToString("F1");
-            
             //
-            for (int i = 0; i <= 3; i++) {
-                GameObject scorebar = GameObject.Find("PlayerScore" + i);
-                if (!playerList[i].active())
-                    scorebar.SetActive(false);
-            }
+            case (GAMESTATE.SETUP):
+                if (SceneManager.GetActiveScene().buildIndex == mainGameSceneIndex)
+                {
+                    initializeGame();
+                    timeBar = GameObject.Find("Time Bar").GetComponent<Image>();
+                    timeBar.fillAmount = gameTimer / initialTime;
+                    SetState(GAMESTATE.PREGAME);
+                }
 
-            //Ensures this process runs once.
-            initialized = true;
+                break;
+
+            //Pregame runs from the time the game is initialized, until the end of the "Get Ready" countdown.
+            case (GAMESTATE.PREGAME):
+                if (playerCount < 1)
+                {
+                    joinGameDelay = initJoinDelay;
+                    joinCountdownText.text = "Not enough players!";
+                }
+                else
+                {
+                    joinGameDelay -= Time.deltaTime;
+                    joinCountdownText.text = joinGameDelay.ToString("F1");
+                }
+
+
+                if ((joinGameDelay <= 0 || readyPlayers == playerCount) && playerCount > 0)
+                {
+                    for (int i = 0; i < 4; i++)
+                    {
+                        joinText[i].gameObject.SetActive(false);
+                        inputText[i].gameObject.SetActive(false);
+                    }
+                    joinCountdownText.gameObject.SetActive(false);
+                    readyText.SetActive(true);
+
+                    SetState(GAMESTATE.COUNTDOWN);
+                    //Debug.Log(state);
+                    StartCoroutine(CountDown()); //pregame countdown. only activates after 'lobby countdown' has been executed.
+                }
+
+                break;
+
+            //Ingame runs from the time the "Get Ready" countdown ends, and the win condition is met.
+            case (GAMESTATE.INGAME):
+                if (GetPaused() == false)
+                {
+                    gameTimer -= Time.deltaTime;
+                    timeBar.fillAmount = gameTimer / initialTime;
+                }
+                
+
+                if (gameTimer < (0.25f * initialTime) && gameTimer > (0.22f * initialTime))
+                {
+
+                    GameObject.FindGameObjectWithTag("AudioManager").GetComponent<AudioSource>().pitch = 1.1f;
+                    timeBar.color = Color.red;
+                }
+
+                if (gameTimer <= 0)
+                    GameOver();
+
+                break;
+
+            //Postgame runs from the time the win condition is met, and the required players press return to menu.
+            case (GAMESTATE.POSTGAME):
+
+                break;
         }
-        //Core game loop once in the game scene. inGame is set in BaseGM.initializeGame().
-        else if (inGame && !gameOver)
-        {
-
-            Debug.Log("timedGM update");
-            gameTimer -= Time.deltaTime;
-           
-
-
-            timeText.text = gameTimer.ToString("F1");
-
-            if (gameTimer <= 0)
-                GameOver();
-            
-            
-        }
-
-        #endregion
     }
+
+    
 }

@@ -11,6 +11,12 @@ public class CameraEffects : MonoBehaviour {
 
 	float shakeTimer = 0;
 	Vector3 startPosition;
+	Transform target;
+
+	void Awake () {
+
+		startPosition = this.transform.position;
+	}
 
 	void Update () {
 
@@ -25,11 +31,38 @@ public class CameraEffects : MonoBehaviour {
 			// Check if need to reset camera position
 			if(shakeTimer <= 0) { this.transform.position = startPosition; }
 		}
+
+		if (target) {
+
+			this.transform.position = Vector3.MoveTowards (this.transform.position, target.position - 5f * Vector3.forward, 50 * Time.deltaTime);
+
+			if (Vector3.Distance (this.transform.position, target.position) < 1) {
+			
+				RestoreTimeScale ();
+			}
+		}
 	}
 
 	public void ShakeCamera () {
 
-		startPosition = this.transform.position;
 		shakeTimer = shakeDuration;
+	}
+
+	public void SetZoomTarget (Transform newTarget) {
+		Debug.Log ("HI");
+		// Get that noice slow mo going
+		Time.timeScale = 0.1f;
+		this.GetComponent<Camera> ().orthographic = false;
+		target = newTarget;
+	}
+
+	void RestoreTimeScale () {
+
+		Time.timeScale = 1f;
+	}
+
+	void OnDestroy () {
+
+		RestoreTimeScale ();
 	}
 }

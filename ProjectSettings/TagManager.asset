@@ -11,6 +11,14 @@ TagManager:
   - AudioManager
   - Paralysis
   - GameManager
+  - Slow
+  - BigBall
+  - Scattershot
+  - PowerupBoundary
+  - Bouncer
+  - ControlBouncer
+  - Grid
+  - BackGround
   layers:
   - Default
   - TransparentFX
@@ -27,7 +35,7 @@ TagManager:
   - Boundary
   - Diamond
   - Overlay
-  - 
+  - Obstacle
   - 
   - 
   - 
