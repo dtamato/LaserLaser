@@ -390,7 +390,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0e1e8bc46a60783408f3aaa2a68491ab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  eventSystem: {fileID: 964037499}
   selectedObject: {fileID: 1135162791}
   defaultButton: {fileID: 1135162791}
 --- !u!114 &511836865
@@ -680,6 +679,7 @@ GameObject:
   - component: {fileID: 964037500}
   - component: {fileID: 964037499}
   - component: {fileID: 964037498}
+  - component: {fileID: 964037501}
   m_Layer: 0
   m_Name: EventSystem
   m_TagString: Untagged
@@ -693,7 +693,7 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 964037497}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 1077351063, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
   m_Name: 
@@ -732,6 +732,30 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &964037501
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 964037497}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 10efa70eea88e69459c632aac286892d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  useAllRewiredGamePlayers: 1
+  useRewiredSystemPlayer: 1
+  rewiredPlayerIds: 00000000010000000200000003000000
+  moveOneElementPerAxisPress: 1
+  m_HorizontalAxis: Horizontal
+  m_VerticalAxis: Vertical
+  m_SubmitButton: Fire
+  m_CancelButton: Back
+  m_InputActionsPerSecond: 10
+  m_RepeatDelay: 0.5
+  m_AllowActivationOnMobileDevice: 0
+  m_allowMouseInput: 0
+  m_allowMouseInputIfTouchSupported: 0
 --- !u!1 &1135162791
 GameObject:
   m_ObjectHideFlags: 0

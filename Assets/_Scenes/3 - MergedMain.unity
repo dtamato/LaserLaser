@@ -1504,9 +1504,43 @@ Prefab:
       propertyPath: m_RootOrder
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 114000014033571204, guid: 9c0356452a8a0214baafbd4dde2d7428,
+        type: 2}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 9c0356452a8a0214baafbd4dde2d7428, type: 2}
   m_IsPrefabParent: 0
+--- !u!1 &645831097 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 1000011983642716, guid: 9c0356452a8a0214baafbd4dde2d7428,
+    type: 2}
+  m_PrefabInternal: {fileID: 645831096}
+--- !u!114 &645831098
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 645831097}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 10efa70eea88e69459c632aac286892d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  useAllRewiredGamePlayers: 1
+  useRewiredSystemPlayer: 1
+  rewiredPlayerIds: 00000000010000000200000003000000
+  moveOneElementPerAxisPress: 1
+  m_HorizontalAxis: 
+  m_VerticalAxis: Vertical
+  m_SubmitButton: Fire
+  m_CancelButton: Back
+  m_InputActionsPerSecond: 10
+  m_RepeatDelay: 0.5
+  m_AllowActivationOnMobileDevice: 0
+  m_allowMouseInput: 0
+  m_allowMouseInputIfTouchSupported: 0
 --- !u!1 &695963650
 GameObject:
   m_ObjectHideFlags: 0

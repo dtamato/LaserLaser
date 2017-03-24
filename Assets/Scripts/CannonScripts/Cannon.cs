@@ -191,11 +191,12 @@ public class Cannon : MonoBehaviour
 
         if (rewiredPlayer.GetButtonDown("StartGame") && gameManager.getState() != BaseGM.GAMESTATE.POSTGAME)
         {
-
+            
             pauseMenu.SetActive(true);
             pauseMenu.GetComponent<PauseMenu>().PauseGame(this.gameObject);
             gameManager.SetPaused(true);
             gameManager.SetPlayerPauseId(this.playerId);
+            gameManager.DisablePlayerControllers(playerId);
         }
     }
 
@@ -213,6 +214,7 @@ public class Cannon : MonoBehaviour
         if (rewiredPlayer.GetButtonDown("StartGame"))
         {
 
+            gameManager.EnablePlayerControllers();
             gameManager.SetPaused(false);
             gameManager.SetPlayerPauseId(-1);
             pauseMenu.SetActive(false);
