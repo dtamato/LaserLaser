@@ -39,7 +39,7 @@ public class Cannon : MonoBehaviour
     float maxRotationSpeed = 5.0f;
 
     private Transform midPoint;
-    private const float cornerOffset = 0.6f;
+    private const float cornerOffset = 0.7f;
     private Vector2 cornerOrigin;
     private int Layer_Mask;
 
