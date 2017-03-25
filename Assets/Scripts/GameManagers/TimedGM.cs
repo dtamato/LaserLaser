@@ -78,7 +78,6 @@ public class TimedGM : BaseGM
                 {
 
                     GameObject.FindGameObjectWithTag("AudioManager").GetComponent<AudioSource>().pitch = 1.1f;
-                    timeBar.color = Color.red;
                 }
 
                 if (gameTimer <= 0)
