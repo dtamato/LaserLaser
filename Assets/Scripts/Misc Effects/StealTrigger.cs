@@ -19,7 +19,7 @@ public class StealTrigger : MonoBehaviour {
 
 	void OnTriggerEnter2D (Collider2D other) {
 
-		if(other.CompareTag("Player")) {
+		if(other.CompareTag("Player") && other.GetComponentInChildren<SpriteRenderer>().color != textColor) {
 
 			GameObject newTrickshotCanvas = Instantiate(trickshotCanvasPrefab, this.transform.position, Quaternion.identity) as GameObject;
 			newTrickshotCanvas.GetComponentInChildren<Text>().color = textColor;
