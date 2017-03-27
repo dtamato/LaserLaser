@@ -10,6 +10,6 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/_Scenes/1 - Title.unity
   - enabled: 1
-    path: Assets/_Scenes/2 - Temp Main Menu.unity
+    path: Assets/_Scenes/2 - Main Menu.unity
   - enabled: 1
     path: Assets/_Scenes/3 - MergedMain.unity
