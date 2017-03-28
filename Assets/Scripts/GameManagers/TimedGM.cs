@@ -27,7 +27,7 @@ public class TimedGM : BaseGM
                 if (SceneManager.GetActiveScene().buildIndex == mainGameSceneIndex)
                 {
                     initializeGame();
-                    timeBar = GameObject.Find("Time Bar").GetComponent<Image>();
+                    timeBar = GameObject.Find("White Border").GetComponent<Image>();
                     timeBar.fillAmount = gameTimer / initialTime;
                     SetState(GAMESTATE.PREGAME);
                 }
@@ -39,14 +39,26 @@ public class TimedGM : BaseGM
                 if (playerCount < 1)
                 {
                     joinGameDelay = initJoinDelay;
-                    joinCountdownText.text = "Not enough players!";
                 }
                 else
                 {
                     joinGameDelay -= Time.deltaTime;
-                    joinCountdownText.text = joinGameDelay.ToString("F1");
+                    joinCountdownImage.fillAmount = joinGameDelay / initJoinDelay;
+
+					if(joinCountdownImage.fillAmount < 0.25f) {
+
+						joinCountdownImage.color = Color.red;
+					}
+					else if(joinCountdownImage.fillAmount < 0.5f) {
+
+						joinCountdownImage.color = Color.yellow;
+					}
                 }
 
+				if(playerCount == 4 && joinUI.activeSelf) {
+
+					joinUI.SetActive(false);
+				}
 
                 if ((joinGameDelay <= 0 || readyPlayers == playerCount) && playerCount > 0)
                 {
@@ -55,8 +67,11 @@ public class TimedGM : BaseGM
                         joinText[i].gameObject.SetActive(false);
                         inputText[i].gameObject.SetActive(false);
                     }
-                    joinCountdownText.gameObject.SetActive(false);
-                    readyText.SetActive(true);
+                    joinCountdownImage.gameObject.SetActive(false);
+					joinUI.SetActive(false);
+                    
+					readyText.SetActive(true);
+					readyText.GetComponent<Text>().text = (Random.value < 0.5) ? "Fire Away, Player" : "Aim True, Player";
 
                     SetState(GAMESTATE.COUNTDOWN);
                     //Debug.Log(state);
@@ -73,16 +88,23 @@ public class TimedGM : BaseGM
                     timeBar.fillAmount = gameTimer / initialTime;
                 }
                 
-
                 if (gameTimer < (0.25f * initialTime) && gameTimer > (0.22f * initialTime))
                 {
-
                     GameObject.FindGameObjectWithTag("AudioManager").GetComponent<AudioSource>().pitch = 1.1f;
+					// Up spawn rate?	
                 }
 
-                if (gameTimer <= 0)
-                    GameOver();
+				if(gameTimer <= 10) {
 
+					endCountdownText.gameObject.SetActive(true);
+					endCountdownText.text = Mathf.FloorToInt(gameTimer + 1).ToString("00");
+				}
+
+				if (gameTimer <= 0) {
+					
+					endCountdownText.gameObject.SetActive(false);
+                    GameOver();
+				}
                 break;
 
             //Postgame runs from the time the win condition is met, and the required players press return to menu.
@@ -91,6 +113,4 @@ public class TimedGM : BaseGM
                 break;
         }
     }
-
-    
 }

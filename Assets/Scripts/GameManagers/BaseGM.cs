@@ -41,11 +41,14 @@ public class BaseGM : MonoBehaviour
     protected List<Text> joinText;
     protected List<Text> inputText;
     protected GameObject readyText;
+	protected Image joinCountdownImage;
     protected Text joinCountdownText;
     protected GameObject gameOverPanel;
     protected GameObject whiteBorder;
     protected GameObject pauseMenu;
-
+	protected GameObject joinUI;
+	protected Text endCountdownText;
+	
     //State management.
     public enum GAMESTATE {SETUP, PREGAME, COUNTDOWN, INGAME, POSTGAME };
     protected GAMESTATE state;  
@@ -268,12 +271,15 @@ public class BaseGM : MonoBehaviour
         //Reference all UI elements, and the 1st player object.
         readyText = GameObject.Find("ReadyText");
         readyText.SetActive(false);
-        joinCountdownText = GameObject.Find("JoinCountdownText").GetComponent<Text>();
+        joinCountdownImage = GameObject.Find("JoinCountdownImage").GetComponent<Image>(); // THIS
         whiteBorder = GameObject.Find ("White Border");
         gameOverPanel = GameObject.Find("GameOverPanel");
         gameOverPanel.SetActive(false);
         pauseMenu = GameObject.Find("Pause Menu");
         pauseMenu.SetActive(false);
+		joinUI = GameObject.Find("Join UI");
+		endCountdownText = GameObject.Find("End Countdown Text").GetComponent<Text>();
+		endCountdownText.gameObject.SetActive(false);
         //Debug.Log("initialize ran.");
         //FillActivePlayersArray ();
     }
@@ -342,6 +348,8 @@ public class BaseGM : MonoBehaviour
 
             //Set the panel color to that of the winner.
             GameObject.Find("GameOverPanel").GetComponent<Image>().color = players[winner].GetColor();
+			
+			GameObject.Find("Camera Overlay").GetComponent<FadeCameraOverlay>().FadeToBlack();
         }
 
         //Scoring for TB.
@@ -400,11 +408,11 @@ public class BaseGM : MonoBehaviour
             {
                 winningScore = playerScores[i];
                 winningPlayerIndex = i;
-                whiteBorder.GetComponent<SpriteRenderer>().color = players[i].GetColor();
+				whiteBorder.GetComponent<Image>().color = players[i].GetColor();
 			}
 			else if (playerScores[i] == winningScore)
             {
-				whiteBorder.GetComponent<SpriteRenderer> ().color = Color.white;
+				whiteBorder.GetComponent<Image> ().color = Color.white;
 			}
 		}
 	}
@@ -414,15 +422,15 @@ public class BaseGM : MonoBehaviour
     {
         if (team1Score > team2Score)
         {
-            whiteBorder.GetComponent<SpriteRenderer>().color = Color.blue;
+			whiteBorder.GetComponent<Image>().color = Color.blue;
         }
         else if (team2Score > team1Score)
         {
-            whiteBorder.GetComponent<SpriteRenderer>().color = Color.red;
+			whiteBorder.GetComponent<Image>().color = Color.red;
         }
         else
         {
-            whiteBorder.GetComponent<SpriteRenderer>().color = Color.white;
+			whiteBorder.GetComponent<Image>().color = Color.white;
         }
     }
 

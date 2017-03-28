@@ -81,6 +81,7 @@ public class Laser : MonoBehaviour
 			float randomY = other.transform.position.y + Random.Range(0, 2) * 2 - 1;
 			Vector3 randomPosition = new Vector3(randomX, randomY, 0);
 			GameObject newCanvasObject = Instantiate(trickshotCanvasPrefab, randomPosition, Quaternion.identity) as GameObject;
+			newCanvasObject.GetComponentInChildren<Text>().fontSize = 80;
 			newCanvasObject.GetComponent<TrickshotCanvas>().SetText("#$%@");
 			newCanvasObject.GetComponentInChildren<Text>().color = this.GetComponent<SpriteRenderer>().color;
 			Camera.main.GetComponent<CameraEffects> ().ShakeCamera ();
@@ -160,7 +161,8 @@ public class Laser : MonoBehaviour
 		if(bounceCombo > 0) {
 
 			GameObject newTrickshotCanvas = Instantiate(trickshotCanvasPrefab, trickshotCanvasPosition, Quaternion.identity) as GameObject;
-			newTrickshotCanvas.GetComponent<TrickshotCanvas>().SetText("TRICK SHOT");
+			string canvasText = (Random.value < 0.5) ? "TRICK SHOT" : "TRICKSHOT?!";
+			newTrickshotCanvas.GetComponent<TrickshotCanvas>().SetText(canvasText);
 			newTrickshotCanvas.GetComponentInChildren<Text>().color = this.GetComponentInChildren<SpriteRenderer>().color;
 		}
 	}

@@ -4,24 +4,44 @@ using System.Collections;
 [DisallowMultipleComponent]
 public class Bouncer : MonoBehaviour {
 
+	[Header("Parameters")]
+	[SerializeField] float appearTime = 1;
 	[SerializeField] float killTime = 5;
 
-	Animator animator;
+	[Header("Audio")]
+	[SerializeField] AudioClip bouncerHitAudioClip;
 
+	Animator animator;
+	float appearTimer;
 
 	void Start () {
 
 		animator = this.GetComponentInChildren<Animator> ();
-		StartCoroutine (StartShrinkAnimation ());
+		appearTimer = 0;
+	}
+
+	void Update () {
+
+		if(appearTimer < appearTime) {
+
+			appearTimer += Time.deltaTime;
+		}
+		else {
+
+			this.GetComponent<SpriteRenderer>().enabled = true;
+			this.GetComponent<Collider2D>().enabled = true;
+			this.GetComponent<Animator>().enabled = true;
+			StartCoroutine (StartShrinkAnimation ());
+		}
 	}
 
 	void OnCollisionEnter2D(Collision2D other) {
 
         if (other.transform.CompareTag("Player"))
         {
-
             animator.SetTrigger("Bounce");
-            this.GetComponent<AudioSource>().Play();
+			this.GetComponent<AudioSource>().clip = bouncerHitAudioClip;
+			this.GetComponent<AudioSource>().Play();
             this.GetComponent<SpriteRenderer>().color = other.transform.GetComponent<SpriteRenderer>().color;
             StartCoroutine(RestoreColor());
             Camera.main.GetComponent<CameraEffects>().ShakeCamera();
@@ -56,7 +76,4 @@ public class Bouncer : MonoBehaviour {
 
 		Destroy (this.gameObject);
 	}
-
-
-
 }

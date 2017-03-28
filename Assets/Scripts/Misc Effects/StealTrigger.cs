@@ -24,7 +24,7 @@ public class StealTrigger : MonoBehaviour {
 			GameObject newTrickshotCanvas = Instantiate(trickshotCanvasPrefab, this.transform.position, Quaternion.identity) as GameObject;
 			newTrickshotCanvas.GetComponentInChildren<Text>().color = textColor;
 			newTrickshotCanvas.GetComponentInChildren<Text>().fontSize = 80;
-			newTrickshotCanvas.GetComponentInChildren<Text>().text = "TOO SLOW!";
+			newTrickshotCanvas.GetComponentInChildren<Text>().text = "MINE!";
 			newTrickshotCanvas.transform.localScale = Vector3.one;
 			newTrickshotCanvas.GetComponent<Animator>().enabled = false;
 			Destroy(this.gameObject);

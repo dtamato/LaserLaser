@@ -20,11 +20,13 @@ public class MainMenuController : MonoBehaviour {
 	[Header("Game Mode Loading")]
 	[SerializeField] GameObject[] gameModePrefabs;
 	int gameModeIndex = 0;
+	bool loadingGame = false;
 
 	[Header("References")]
 	[SerializeField] GameObject gameModeParent;
 	[SerializeField] Image leftArrowImage;
 	[SerializeField] Image rightArrowImage;
+	[SerializeField] Image screenOverlay;
 	Player rewiredPlayer;
 
 
@@ -73,21 +75,34 @@ public class MainMenuController : MonoBehaviour {
 				rightArrowImage.color = Color.white;
 				StartCoroutine(ArrowBackToWhite());
 			}
-			else if(rewiredPlayer.GetButtonDown("Fire")) {
+			else if(rewiredPlayer.GetButtonDown("Fire") || rewiredPlayer.GetButtonDown("StartGame")) {
 
 				Debug.Log("Loading game mode: " + gameModeIndex);
 
-				if(gameModePrefabs.Length > 0) {
 
-					//Instantiate(gameModePrefabs[gameModeIndex], Vector3.zero, Quaternion.identity);
-				}
 
-				SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+				loadingGame = true;
 			}
 		}
 		else if(inputCooldownTimer > 0) {
 
 			inputCooldownTimer -= Time.deltaTime;
+		}
+
+		if(loadingGame) {
+
+			float newAlpha = screenOverlay.color.a + Time.deltaTime;
+			screenOverlay.color = new Color(0, 0, 0, newAlpha);
+
+			if(newAlpha >= 1) {
+
+				SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+
+				if(gameModePrefabs.Length > 0) {
+
+					Instantiate(gameModePrefabs[gameModeIndex], Vector3.zero, Quaternion.identity);
+				}
+			}
 		}
 	}
 
