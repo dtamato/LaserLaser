@@ -84,6 +84,7 @@ public class Laser : MonoBehaviour
 			newCanvasObject.GetComponentInChildren<Text>().fontSize = 80;
 			newCanvasObject.GetComponent<TrickshotCanvas>().SetText("#$%@");
 			newCanvasObject.GetComponentInChildren<Text>().color = this.GetComponent<SpriteRenderer>().color;
+			this.GetComponent<AudioSource>().Play();
 			Camera.main.GetComponent<CameraEffects> ().ShakeCamera ();
 		}
 		else if(other.transform.CompareTag("Bouncer")) {

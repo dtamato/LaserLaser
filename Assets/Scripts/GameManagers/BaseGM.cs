@@ -250,10 +250,6 @@ public class BaseGM : MonoBehaviour
         state = GAMESTATE.SETUP;
     }
 
-    
-
-    
-
     #region MainGame Scene
 
     //Called when entering game scene, initializes players, HUD and timer.
@@ -514,7 +510,6 @@ public class BaseGM : MonoBehaviour
         players[pId].GetComponent<Cannon>().myColor = _colorlist[cIdx]._color; ;
     }
 
-
     public void DisablePlayerControllers(int exception)
     {
         //Debug.Log("Still enabled" + exception);
@@ -536,8 +531,6 @@ public class BaseGM : MonoBehaviour
             //Debug.Log("Re-enabled: " + i);
         }
     }
-
-
 
     #region Getters
     #region StateGetters
@@ -579,15 +572,11 @@ public class BaseGM : MonoBehaviour
         isPaused = input;
     }
 
-
-
     public void SetPlayerPauseId(int newId)
     {
         playerPauseId = newId;
     }
     #endregion
 
-
     #endregion
-
 }

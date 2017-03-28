@@ -170,7 +170,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   appearTime: 1.5
   killTime: 10
-  bouncerHitAudioClip: {fileID: 8300000, guid: 47f2eaa6c4d3c684c9b8c6f30d418eef, type: 3}
+  bouncerHitAudioClip: {fileID: 8300000, guid: b22dfe5fab1dfe249ac9399ca4887a41, type: 3}
 --- !u!198 &198673172198778164
 ParticleSystem:
   m_ObjectHideFlags: 1

@@ -23,6 +23,7 @@ public class MainMenuController : MonoBehaviour {
 	bool loadingGame = false;
 
 	[Header("References")]
+	[SerializeField] GameObject[] moviePlaneArray;
 	[SerializeField] GameObject gameModeParent;
 	[SerializeField] Image leftArrowImage;
 	[SerializeField] Image rightArrowImage;
@@ -78,9 +79,11 @@ public class MainMenuController : MonoBehaviour {
 			else if(rewiredPlayer.GetButtonDown("Fire") || rewiredPlayer.GetButtonDown("StartGame")) {
 
 				Debug.Log("Loading game mode: " + gameModeIndex);
+				for(int i = 0; i < moviePlaneArray.Length; i++) {
 
-
-
+					moviePlaneArray[i].gameObject.SetActive(false);
+				}
+				this.GetComponent<AudioSource>().Play();
 				loadingGame = true;
 			}
 		}

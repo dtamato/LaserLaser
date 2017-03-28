@@ -248,7 +248,7 @@ public class Cannon : MonoBehaviour
 	         pairedLaser.transform.GetComponent<SpriteRenderer>().enabled = true;
 	         pairedLaser.transform.GetComponent<TrailRenderer>().enabled = true;
 	         inFlight = true;
-	         this.GetComponent<AudioSource>().pitch = Random.Range(0.5f, 1.5f);
+	         this.GetComponent<AudioSource>().pitch = Random.Range(0.85f, 1.15f);
 	         this.GetComponent<AudioSource>().Play();
          }
     }

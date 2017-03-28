@@ -90,7 +90,7 @@ public class TimedGM : BaseGM
                 
                 if (gameTimer < (0.25f * initialTime) && gameTimer > (0.22f * initialTime))
                 {
-                    GameObject.FindGameObjectWithTag("AudioManager").GetComponent<AudioSource>().pitch = 1.1f;
+                    //GameObject.FindGameObjectWithTag("AudioManager").GetComponent<AudioSource>().pitch = 1.05f;
 					// Up spawn rate?	
                 }
 

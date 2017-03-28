@@ -1,6 +1,7 @@
 ﻿using System.Collections;
-using UnityEngine.SceneManagement;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 [DisallowMultipleComponent]
 public class TitleSceneController : MonoBehaviour {
@@ -9,6 +10,7 @@ public class TitleSceneController : MonoBehaviour {
 	[SerializeField] float pressStartFlickerTime = 1;
 	[SerializeField] float secondsUntilDemoPlays = 3;
 	[SerializeField] Renderer movieRenderer;
+	[SerializeField] FadeCameraOverlay cameraOverlay;
 
 	float flickerTimer;
 
@@ -49,8 +51,14 @@ public class TitleSceneController : MonoBehaviour {
 			}
 			else {
 
-				SceneManager.LoadScene (SceneManager.GetActiveScene ().buildIndex + 1);
+				cameraOverlay.FadeToBlack();
+				this.GetComponent<AudioSource>().Play();
 			}
+		}
+
+		if(cameraOverlay.GetComponent<Image>().color.a >= 1) {
+
+			SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
 		}
 	}
 }
