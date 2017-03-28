@@ -38,9 +38,11 @@ public class Cannon : MonoBehaviour
     float minRotationSpeed = 1.5f;
     float maxRotationSpeed = 5.0f;
 
-    private Transform midPoint;
-    private const float cornerOffset = 0.7f;
-    private Vector2 cornerOrigin;
+    private Transform MPoint;
+    private Transform RPoint;
+    private const float cornerOffset = 0.6f;
+    private Vector2 MOrigin;
+    private Vector2 ROrigin;
     private int Layer_Mask;
 
 
@@ -58,7 +60,6 @@ public class Cannon : MonoBehaviour
     {
         if (GameObject.Find("Pause Menu") != null)
         {
-            Debug.Log("Test");
             pauseMenu = GameObject.Find("Pause Menu").gameObject;
         }
     }
@@ -76,15 +77,18 @@ public class Cannon : MonoBehaviour
         inFlight = false;
         sensitivity = 5;
 
-        midPoint = transform.Find("MidPoint").transform;
-        cornerOrigin = new Vector2(midPoint.transform.position.x,midPoint.transform.position.y);
+        MPoint = transform.Find("LPoint").transform;
+        MOrigin = new Vector2(MPoint.transform.position.x,MPoint.transform.position.y);
+
+        RPoint = transform.Find("RPoint").transform;
+        ROrigin = new Vector2(RPoint.transform.position.x, RPoint.transform.position.y);
+
         Layer_Mask = LayerMask.GetMask("Boundary");
 
 
     	colorIdx = playerId;
         gameManager.UpdateColour(colorIdx, playerId);
-        inputText.GetComponent<Text>().color = myColor;
-
+        inputText.GetComponent<Text>().color = myColor; //to be changed when control is fixed
         joinText.GetComponent<Text>().text = "";
 
 
@@ -156,25 +160,25 @@ public class Cannon : MonoBehaviour
     }
 
     #region Inputs
-    
     //
     void GetRotationInput()
     {
         // Get controller joystick input
         if (rewiredPlayer.GetAxisRaw("Horizontal") < 0)
         {
-            if (!Physics2D.Linecast(cornerOrigin,new Vector2(midPoint.transform.position.x-cornerOffset,midPoint.transform.position.y),Layer_Mask))
-            {
-                currentRotationSpeed = Mathf.Clamp(currentRotationSpeed, minRotationSpeed, maxRotationSpeed);
-                this.transform.Rotate(currentRotationSpeed * rotationModifier * Vector3.forward);
-            }
+            if (!Physics2D.Linecast(MOrigin, new Vector2(MPoint.transform.position.x - cornerOffset, MPoint.transform.position.y), Layer_Mask))
+                {
+                    currentRotationSpeed = Mathf.Clamp(currentRotationSpeed, minRotationSpeed, maxRotationSpeed);
+                    this.transform.Rotate(currentRotationSpeed * rotationModifier * Vector3.forward);
+                }
+
         }
-        else if (rewiredPlayer.GetAxisRaw("Horizontal") > 0)
+         if (rewiredPlayer.GetAxisRaw("Horizontal") > 0)
         {
-            if (!Physics2D.Linecast(cornerOrigin, new Vector2(midPoint.transform.position.x + cornerOffset, midPoint.transform.position.y), Layer_Mask))
-            {
-                currentRotationSpeed = Mathf.Clamp(currentRotationSpeed, minRotationSpeed, maxRotationSpeed);
-                this.transform.Rotate(-currentRotationSpeed * rotationModifier * Vector3.forward);
+            if (!Physics2D.Linecast(MOrigin, new Vector2(MPoint.transform.position.x + cornerOffset, MPoint.transform.position.y), Layer_Mask))
+                {
+                    currentRotationSpeed = Mathf.Clamp(currentRotationSpeed, minRotationSpeed, maxRotationSpeed);
+                    this.transform.Rotate(-currentRotationSpeed * rotationModifier * Vector3.forward);
             }
         }
         else if (rewiredPlayer.GetAxisRaw("Horizontal") == 0)

@@ -44,7 +44,7 @@ public class Laser : MonoBehaviour
 
     void OnCollisionEnter2D(Collision2D other)
     {
-		if (other.transform.CompareTag ("Boundary")) {
+		if (other.transform.CompareTag ("Boundary") || other.transform.CompareTag("YBoundary")) {
 			
 			rb2d.bodyType = RigidbodyType2D.Static;
 			rb2d.GetComponent<Collider2D>().isTrigger = true;
