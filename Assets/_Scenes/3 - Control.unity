@@ -37,7 +37,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.12731716, g: 0.13414739, b: 0.12107863, a: 1}
+  m_IndirectSpecularColor: {r: 0.37311992, g: 0.38074034, b: 0.35872713, a: 1}
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
@@ -129,6 +129,10 @@ Prefab:
     - target: {fileID: 4223277411961152, guid: 1572a509eca4afa4daea9fef3acee343, type: 2}
       propertyPath: m_RootOrder
       value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 4908657852312984, guid: 1572a509eca4afa4daea9fef3acee343, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 1572a509eca4afa4daea9fef3acee343, type: 2}
@@ -293,7 +297,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 1, y: 1.2}
 --- !u!212 &94661852
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -1191,7 +1195,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 1419219860379582, guid: a13a5cfc4a8b5f647845402297d285fb, type: 2}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: a13a5cfc4a8b5f647845402297d285fb, type: 2}
@@ -1564,7 +1568,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 1000010624406378, guid: 6b49d4f6375a156409d4a53c08dbab49, type: 2}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 6b49d4f6375a156409d4a53c08dbab49, type: 2}
@@ -1683,7 +1687,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &632179375
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1973,6 +1977,11 @@ Prefab:
     - target: {fileID: 1000011983642716, guid: 9c0356452a8a0214baafbd4dde2d7428, type: 2}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114000014033571204, guid: 9c0356452a8a0214baafbd4dde2d7428,
+        type: 2}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 9c0356452a8a0214baafbd4dde2d7428, type: 2}
@@ -2453,6 +2462,15 @@ Prefab:
       propertyPath: comboTextColor.b
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 114263235989706994, guid: 1572a509eca4afa4daea9fef3acee343,
+        type: 2}
+      propertyPath: playerId
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4908657852312984, guid: 1572a509eca4afa4daea9fef3acee343, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 0.6
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 1572a509eca4afa4daea9fef3acee343, type: 2}
   m_IsPrefabParent: 0
@@ -2882,7 +2900,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1066185200
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4379,6 +4397,35 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1635529007}
+--- !u!1 &1650931242 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 1000011983642716, guid: 9c0356452a8a0214baafbd4dde2d7428,
+    type: 2}
+  m_PrefabInternal: {fileID: 645831096}
+--- !u!114 &1650931243
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1650931242}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 10efa70eea88e69459c632aac286892d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  useAllRewiredGamePlayers: 1
+  useRewiredSystemPlayer: 1
+  rewiredPlayerIds: 00000000010000000200000003000000
+  moveOneElementPerAxisPress: 1
+  m_HorizontalAxis: 
+  m_VerticalAxis: Vertical
+  m_SubmitButton: Fire
+  m_CancelButton: Back
+  m_InputActionsPerSecond: 10
+  m_RepeatDelay: 0.5
+  m_AllowActivationOnMobileDevice: 0
+  m_allowMouseInput: 0
+  m_allowMouseInputIfTouchSupported: 0
 --- !u!1 &1755279657
 GameObject:
   m_ObjectHideFlags: 0
@@ -4778,7 +4825,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 1654258398871442, guid: 8fdaa23e7fadccc4fb1579ef6233f641, type: 2}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 114860745168698372, guid: 8fdaa23e7fadccc4fb1579ef6233f641, type: 2}

@@ -278,6 +278,30 @@ public class BaseGM : MonoBehaviour
         //FillActivePlayersArray ();
     }
 
+    protected void controlInitializeGame() //used for the conrol game mode. as the players will not have input text and such for now. will be altered in the future
+    {
+        //Reference members of HUD and Spawns.
+        for (int i = 0; i <= 3; i++)
+        {
+            //HUDText[i] = GameObject.Find("PlayerScore" + i).GetComponent<Text>(); //to be removed when refactoring code
+            /*joinText[i] = GameObject.Find("JoinText" + i).GetComponent<Text>();
+            inputText[i] = GameObject.Find("InputText" + i).GetComponent<Text>();
+            spawns[i] = GameObject.Find("SP" + i);*/
+        }
+
+        //Reference all UI elements, and the 1st player object.
+        //readyText = GameObject.Find("ReadyText");
+        //readyText.SetActive(false);
+        //joinCountdownText = GameObject.Find("JoinCountdownText").GetComponent<Text>();
+        whiteBorder = GameObject.Find("White Border");
+        gameOverPanel = GameObject.Find("GameOverPanel");
+        gameOverPanel.SetActive(false);
+        pauseMenu = GameObject.Find("Pause Menu");
+        pauseMenu.SetActive(false);
+        //Debug.Log("initialize ran.");
+        //FillActivePlayersArray ();
+    }
+
     //Brief grace period before diamonds start spawning.
     protected IEnumerator CountDown()
     {
