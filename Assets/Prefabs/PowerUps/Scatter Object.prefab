@@ -21,10 +21,10 @@ GameObject:
   - component: {fileID: 4081924310456818}
   - component: {fileID: 212800276865357502}
   - component: {fileID: 58506423191089154}
+  - component: {fileID: 114767087748677400}
   - component: {fileID: 50470387460127264}
   - component: {fileID: 96555576421124452}
   - component: {fileID: 108567669740594348}
-  - component: {fileID: 114767087748677400}
   - component: {fileID: 82494425575170990}
   m_Layer: 8
   m_Name: Scatter Object
