@@ -27,11 +27,11 @@ public class ObstacleSpawner : MonoBehaviour {
 			Vector3 randomLocation = new Vector3 (newX, newY, 0);
             GameObject newObstacle = Instantiate(obstaclePrefabs[Random.Range(0, obstaclePrefabs.Length)], randomLocation, Quaternion.identity) as GameObject;
             
-            Collider2D[] diamondsFound = Physics2D.OverlapCircleAll(randomLocation, bumperRadius.bounds.extents.x);
+            /*Collider2D[] diamondsFound = Physics2D.OverlapCircleAll(randomLocation, bumperRadius.bounds.extents.x);
             for (int i = 0; i < diamondsFound.Length; i++)
             {
                 Debug.Log("DiamondsFound: " + diamondsFound[i].name);
-            }
+            }*/
 
             //bool diamondFound = (.Length > 0) ? true : false;
             //bool obstacleFound = (Physics2D.OverlapCircleAll(randomLocation, bumperRadius.bounds.extents.x, LayerMask.NameToLayer("Obstacle")).Length > 0) ? true : false;
