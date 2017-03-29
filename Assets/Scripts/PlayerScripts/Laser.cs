@@ -142,19 +142,22 @@ public class Laser : MonoBehaviour
 			GameObject newTrickshotCanvas = Instantiate(trickshotCanvasPrefab, trickshotCanvasPosition, Quaternion.identity) as GameObject;
 			newTrickshotCanvas.GetComponent<TrickshotCanvas>().SetText("DOUBLE SHOT");
 			newTrickshotCanvas.GetComponentInChildren<Text>().color = this.GetComponentInChildren<SpriteRenderer>().color;
+            gameManager.doubleshots[cannon.GetComponent<Cannon>().playerId]++;  //Record the shot.
 		}
 		else if(diamondCombo == 3) {
 
 			GameObject newTrickshotCanvas = Instantiate(trickshotCanvasPrefab, trickshotCanvasPosition, Quaternion.identity) as GameObject;
 			newTrickshotCanvas.GetComponent<TrickshotCanvas>().SetText("TRIPLE SHOT");
 			newTrickshotCanvas.GetComponentInChildren<Text>().color = this.GetComponentInChildren<SpriteRenderer>().color;
-		}
+            gameManager.tripleshots[cannon.GetComponent<Cannon>().playerId]++;  //Record the shot.
+        }
 		else if(travelDistance > longShotDistance) {
 
 			GameObject newTrickshotCanvas = Instantiate(trickshotCanvasPrefab, trickshotCanvasPosition, Quaternion.identity) as GameObject;
 			newTrickshotCanvas.GetComponent<TrickshotCanvas>().SetText("LONG SHOT");
 			newTrickshotCanvas.GetComponentInChildren<Text>().color = this.GetComponentInChildren<SpriteRenderer>().color;
-		}
+            gameManager.longshots[cannon.GetComponent<Cannon>().playerId]++;  //Record the shot.
+        }
 
 		// Trickshots
 		if(bounceCombo > 0) {
@@ -162,7 +165,8 @@ public class Laser : MonoBehaviour
 			GameObject newTrickshotCanvas = Instantiate(trickshotCanvasPrefab, trickshotCanvasPosition, Quaternion.identity) as GameObject;
 			newTrickshotCanvas.GetComponent<TrickshotCanvas>().SetText("TRICK SHOT");
 			newTrickshotCanvas.GetComponentInChildren<Text>().color = this.GetComponentInChildren<SpriteRenderer>().color;
-		}
+            gameManager.trickshots[cannon.GetComponent<Cannon>().playerId]++;  //Record the shot.
+        }
 	}
 
 	public void scoreCounter()

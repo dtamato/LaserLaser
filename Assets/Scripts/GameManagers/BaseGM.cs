@@ -26,13 +26,13 @@ public class BaseGM : MonoBehaviour
     //Scene build index integers.
     public int titleSceneIndex;
     public int menuSceneIndex;
-    //public int LobbySceneIndex;
     public int mainGameSceneIndex;
     public int gameOverSceneIndex;
    
     //External References.
     public static BaseGM instance = null;
     public List<Cannon> players;
+    public List<Color> playerColors;
     protected List<GameObject> spawns;
     protected GameObject[] activePlayersArray;
 
@@ -42,24 +42,30 @@ public class BaseGM : MonoBehaviour
     protected List<Text> inputText;
     protected GameObject readyText;
     protected Text joinCountdownText;
-    protected GameObject gameOverPanel;
     protected GameObject whiteBorder;
     protected GameObject pauseMenu;
 
     //State management.
     public enum GAMESTATE {SETUP, PREGAME, COUNTDOWN, INGAME, POSTGAME };
     protected GAMESTATE state;  
-    public string gameMode;
+    public string gameMode;     //FFA or TB.
+    public string gameType;     //Timed, Scored, etc. Set in child GM.
 
     //Color management.
 	public ColorList[] _colorlist;
     
-    //Timer and score metrics.
+    //Timer and game flow metrics.
     public float joinGameDelay;
     public float startGameDelay;
     public int playerCount = 0;
     public int readyPlayers = 0;
+
+    //Scoring Metrics.
     public List<int> playerScores;
+    public List<int> longshots;
+    public List<int> trickshots;
+    public List<int> doubleshots;
+    public List<int> tripleshots;
     public int team1Score, team2Score;  //Only used in TB mode.
 
     bool isPaused = false;
@@ -230,7 +236,13 @@ public class BaseGM : MonoBehaviour
         joinText = new List<Text>(4);
         inputText = new List<Text>(4);
         spawns = new List<GameObject>(4);
+
+        playerColors = new List<Color>(4);
         playerScores = new List<int>(4);
+        longshots = new List<int>(4);
+        trickshots = new List<int>(4);
+        doubleshots = new List<int>(4);
+        tripleshots = new List<int>(4);
 
         //Initialize HUD, Spawns, Scores, and Colourlist.
         for (int i = 0; i <= 3; i++)
@@ -240,16 +252,17 @@ public class BaseGM : MonoBehaviour
             inputText.Add(null);
             spawns.Add(null);
             players.Add(null);
+            playerColors.Add(Color.grey);
             playerScores.Add(0);
+            longshots.Add(0);
+            trickshots.Add(0);
+            doubleshots.Add(0);
+            tripleshots.Add(0);
         }
 
         //This will need to be changed when the GM is instantiated properly in the menu and carried into the game scene.
         state = GAMESTATE.SETUP;
     }
-
-    
-
-    
 
     #region MainGame Scene
 
@@ -270,8 +283,6 @@ public class BaseGM : MonoBehaviour
         readyText.SetActive(false);
         joinCountdownText = GameObject.Find("JoinCountdownText").GetComponent<Text>();
         whiteBorder = GameObject.Find ("White Border");
-        gameOverPanel = GameObject.Find("GameOverPanel");
-        gameOverPanel.SetActive(false);
         pauseMenu = GameObject.Find("Pause Menu");
         pauseMenu.SetActive(false);
         //Debug.Log("initialize ran.");
@@ -290,53 +301,8 @@ public class BaseGM : MonoBehaviour
     //Called from each subclass GM.
     public void GameOver()
     {
+        changeScene(gameOverSceneIndex);
         state = GAMESTATE.POSTGAME;
-        //Debug.Log(state);
-        //Determine who was the winner.
-        int highScore = 0;
-        int winner = 0;
-
-        //Display the results.
-        gameOverPanel.SetActive(true);
-
-        //Scoring for FFA.
-        if (gameMode == "FFA")
-        {
-            for (int i = 0; i < 4; i++)
-            {
-                int score = playerScores[i];
-                if (score > highScore)
-                {
-                    highScore = score;
-                    winner = i;
-                }
-            }
-
-            //Set the Winner Text.
-            GameObject.Find("WinnerText").GetComponent<Text>().text = ("Player " + (winner + 1) + " Wins!");
-            GameObject.Find("FinalScoreText").GetComponent<Text>().text += highScore;
-
-            //Set the panel color to that of the winner.
-            GameObject.Find("GameOverPanel").GetComponent<Image>().color = players[winner].GetColor();
-        }
-
-        //Scoring for TB.
-        else
-        {
-            //Determine winning team.
-            winner = team1Score > team2Score ? 1 : 2;
-            highScore = team1Score > team2Score ? team1Score : team2Score;
-
-            //Set the Winner Text.
-            GameObject.Find("WinnerText").GetComponent<Text>().text = ("Team " + (winner) + " Wins!");
-            GameObject.Find("FinalScoreText").GetComponent<Text>().text = highScore.ToString();
-
-            //Set the panel color to that of the winner.
-            Color winColor = winner == 1 ? Color.blue : Color.red;
-            GameObject.Find("GameOverPanel").GetComponent<Image>().color = winColor;
-        }
-
-        Debug.Log("Game Over, Results Displayed.");
     }
 
     #endregion
@@ -479,7 +445,8 @@ public class BaseGM : MonoBehaviour
         _colorlist[cIdx].isAvailable = false; //making sure other players cannot use the same colour
         players[pId].myColor = _colorlist[cIdx]._color;   //Update Color variable, to be passed to the GM.
         //players[pId].GetComponent<Cannon>().inputText.GetComponent<Text>().color = _colorlist[cIdx]._color;
-        players[pId].GetComponent<Cannon>().myColor = _colorlist[cIdx]._color; ;
+        players[pId].GetComponent<Cannon>().myColor = _colorlist[cIdx]._color;
+        playerColors[pId] = _colorlist[cIdx]._color;
     }
 
 

@@ -56,7 +56,9 @@ MonoBehaviour:
   mainGameSceneIndex: 3
   gameOverSceneIndex: 4
   players: []
+  playerColors: []
   gameMode: 
+  gameType: 
   _colorlist:
   - isAvailable: 0
     _color: {r: 0.8235295, g: 0.54509807, b: 1, a: 1}
@@ -85,6 +87,10 @@ MonoBehaviour:
   playerCount: 0
   readyPlayers: 0
   playerScores: 
+  longshots: 
+  trickshots: 
+  doubleshots: 
+  tripleshots: 
   team1Score: 0
   team2Score: 0
-  gameTimer: 30
+  gameTimer: 5
