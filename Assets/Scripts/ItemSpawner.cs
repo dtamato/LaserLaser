@@ -4,18 +4,18 @@ using System.Collections;
 [DisallowMultipleComponent]
 public class ItemSpawner : MonoBehaviour
 {
-    [SerializeField]
-    GameObject itemPrefab;
-    [SerializeField]
-    float spawnCooldown = 1.0f;
+    [SerializeField] GameObject itemPrefab;
+    
     private BaseGM gameManager;
-    void Start()
+	private float spawnCooldown;
+
+	void Start()
     {
         // Scale the spawn cooldown based on number of players.
         gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<BaseGM>();
         int playerCount = gameManager.playerCount;
         //spawnCooldown = 2f - (0.5f * playerCount);
-		spawnCooldown = -0.5f * playerCount + 2.5f;
+		spawnCooldown = -0.5f * playerCount + 1.5f;
         // Start spawning diamonds
         StartCoroutine("RecursiveSpawner");
     }

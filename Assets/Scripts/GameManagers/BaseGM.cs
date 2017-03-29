@@ -6,6 +6,7 @@ using UnityEngine.UI;
 using Rewired;
 
 //Used to assign color's to players when they press RB or LB.
+[System.Serializable]
 public class ColorList
 {
     public bool isAvailable = true;
@@ -31,7 +32,6 @@ public class BaseGM : MonoBehaviour
    
     //External References.
     public static BaseGM instance = null;
-    public GameObject playerObj;
     public List<Cannon> players;
     protected List<GameObject> spawns;
     protected GameObject[] activePlayersArray;
@@ -41,28 +41,21 @@ public class BaseGM : MonoBehaviour
     protected List<Text> joinText;
     protected List<Text> inputText;
     protected GameObject readyText;
+	protected Image joinCountdownImage;
     protected Text joinCountdownText;
     protected GameObject gameOverPanel;
     protected GameObject whiteBorder;
     protected GameObject pauseMenu;
-
+	protected GameObject joinUI;
+	protected Text endCountdownText;
+	
     //State management.
     public enum GAMESTATE {SETUP, PREGAME, COUNTDOWN, INGAME, POSTGAME };
     protected GAMESTATE state;  
     public string gameMode;
 
     //Color management.
-    public ColorList[] _colorlist = new ColorList[7];
-    void FFAColourList() //The available colours for the FFA lobby
-    {
-        _colorlist[0] = new ColorList(false, new Color(252 / 255f, 0, 1));
-        _colorlist[1] = new ColorList(false, new Color(156 / 255f, 0, 1));
-        _colorlist[2] = new ColorList(false, new Color(12 / 255f, 0, 1));
-        _colorlist[3] = new ColorList(false, new Color(79 / 255f, 1, 223 / 255f));
-        _colorlist[4] = new ColorList(true, new Color(89 / 255f, 254 / 255f, 50 / 255f));
-        _colorlist[5] = new ColorList(true, new Color(1, 168 / 255f, 0));
-        _colorlist[6] = new ColorList(true, new Color(1, 0, 0));
-    }
+	public ColorList[] _colorlist;
     
     //Timer and score metrics.
     public float joinGameDelay;
@@ -255,32 +248,6 @@ public class BaseGM : MonoBehaviour
 
         //This will need to be changed when the GM is instantiated properly in the menu and carried into the game scene.
         state = GAMESTATE.SETUP;
-        FFAColourList();
-    }
-
-    public GameObject GetPauseMenu()
-    {
-        return pauseMenu;
-    }
-
-    public bool GetPaused()
-    {
-        return isPaused;
-    }
-
-    public void SetPaused(bool input)
-    {
-        isPaused = input;
-    }
-
-    public int GetPlayerPauseId()
-    {
-        return playerPauseId;
-    }
-
-    public void SetPlayerPauseId(int newId)
-    {
-        playerPauseId = newId;
     }
 
     #region MainGame Scene
@@ -300,8 +267,35 @@ public class BaseGM : MonoBehaviour
         //Reference all UI elements, and the 1st player object.
         readyText = GameObject.Find("ReadyText");
         readyText.SetActive(false);
-        joinCountdownText = GameObject.Find("JoinCountdownText").GetComponent<Text>();
+        joinCountdownImage = GameObject.Find("JoinCountdownImage").GetComponent<Image>(); // THIS
         whiteBorder = GameObject.Find ("White Border");
+        gameOverPanel = GameObject.Find("GameOverPanel");
+        gameOverPanel.SetActive(false);
+        pauseMenu = GameObject.Find("Pause Menu");
+        pauseMenu.SetActive(false);
+		joinUI = GameObject.Find("Join UI");
+		endCountdownText = GameObject.Find("End Countdown Text").GetComponent<Text>();
+		endCountdownText.gameObject.SetActive(false);
+        //Debug.Log("initialize ran.");
+        //FillActivePlayersArray ();
+    }
+
+    protected void controlInitializeGame() //used for the conrol game mode. as the players will not have input text and such for now. will be altered in the future
+    {
+        //Reference members of HUD and Spawns.
+        for (int i = 0; i <= 3; i++)
+        {
+            //HUDText[i] = GameObject.Find("PlayerScore" + i).GetComponent<Text>(); //to be removed when refactoring code
+            /*joinText[i] = GameObject.Find("JoinText" + i).GetComponent<Text>();
+            inputText[i] = GameObject.Find("InputText" + i).GetComponent<Text>();
+            spawns[i] = GameObject.Find("SP" + i);*/
+        }
+
+        //Reference all UI elements, and the 1st player object.
+        //readyText = GameObject.Find("ReadyText");
+        //readyText.SetActive(false);
+        //joinCountdownText = GameObject.Find("JoinCountdownText").GetComponent<Text>();
+        whiteBorder = GameObject.Find("White Border");
         gameOverPanel = GameObject.Find("GameOverPanel");
         gameOverPanel.SetActive(false);
         pauseMenu = GameObject.Find("Pause Menu");
@@ -350,6 +344,8 @@ public class BaseGM : MonoBehaviour
 
             //Set the panel color to that of the winner.
             GameObject.Find("GameOverPanel").GetComponent<Image>().color = players[winner].GetColor();
+			
+			GameObject.Find("Camera Overlay").GetComponent<FadeCameraOverlay>().FadeToBlack();
         }
 
         //Scoring for TB.
@@ -391,7 +387,7 @@ public class BaseGM : MonoBehaviour
     //Called from Laser.cs
     public void addScore(int pID, int score)
     {
-        playerScores[pID] += score;
+        playerScores[pID] = score;
 		UpdateWhiteBorderFFA ();
         //HUDText[pID].text = "P" + (pID + 1) + "- " + score.ToString("00"); //to be removed when refactoring code
     }
@@ -408,11 +404,11 @@ public class BaseGM : MonoBehaviour
             {
                 winningScore = playerScores[i];
                 winningPlayerIndex = i;
-                whiteBorder.GetComponent<SpriteRenderer>().color = players[i].GetColor();
+				whiteBorder.GetComponent<Image>().color = players[i].GetColor();
 			}
 			else if (playerScores[i] == winningScore)
             {
-				whiteBorder.GetComponent<SpriteRenderer> ().color = Color.white;
+				whiteBorder.GetComponent<Image> ().color = Color.white;
 			}
 		}
 	}
@@ -422,15 +418,15 @@ public class BaseGM : MonoBehaviour
     {
         if (team1Score > team2Score)
         {
-            whiteBorder.GetComponent<SpriteRenderer>().color = Color.blue;
+			whiteBorder.GetComponent<Image>().color = Color.blue;
         }
         else if (team2Score > team1Score)
         {
-            whiteBorder.GetComponent<SpriteRenderer>().color = Color.red;
+			whiteBorder.GetComponent<Image>().color = Color.red;
         }
         else
         {
-            whiteBorder.GetComponent<SpriteRenderer>().color = Color.white;
+			whiteBorder.GetComponent<Image>().color = Color.white;
         }
     }
 
@@ -483,7 +479,7 @@ public class BaseGM : MonoBehaviour
         do
         {
             idx++;
-            idx %= 7;
+            idx %= _colorlist.Length;
         } while (!_colorlist[idx].isAvailable);
         return idx;
     }
@@ -493,8 +489,8 @@ public class BaseGM : MonoBehaviour
         _colorlist[idx].isAvailable = true;
         do
         {
-            idx = (idx - 1) % 7;
-            idx = idx < 0 ? idx + 7 : idx; //is check 1 true? if yes, use check 2 (wraps around back to the end of the array when you're decrementing past the first element)
+			idx = (idx - 1) % _colorlist.Length;
+			idx = idx < 0 ? idx + _colorlist.Length : idx; //is check 1 true? if yes, use check 2 (wraps around back to the end of the array when you're decrementing past the first element)
         } while (!_colorlist[idx].isAvailable);
         return idx;
     }
@@ -502,27 +498,85 @@ public class BaseGM : MonoBehaviour
     //We'll have to fix this.
     public void UpdateColour(int cIdx, int pId) //if the player tries to change their colour, it will be updated here. Also, if the player joins too. 
     {
-        players[pId].transform.Find("Laser").GetComponentInChildren<SpriteRenderer>().color = _colorlist[cIdx]._color; //Laser colour
-        players[pId].transform.Find("Laser").GetComponent<TrailRenderer>().material.color = _colorlist[cIdx]._color; //Trail renderer 
-        players[pId].GetComponentInChildren<SpriteRenderer>().color = _colorlist[cIdx]._color; //Cannon colour
+		// Color all player parts
+		SpriteRenderer[] spriteRenderers = players[pId].GetComponentsInChildren<SpriteRenderer>();
+		foreach (var spriteRenderer in spriteRenderers) { spriteRenderer.color = _colorlist[cIdx]._color; }
+        players[pId].GetComponentInChildren<TrailRenderer>().material.color = _colorlist[cIdx]._color; //Trail renderer
+		players[pId].GetComponentInChildren<Light>().color = _colorlist[cIdx]._color;
+
         _colorlist[cIdx].isAvailable = false; //making sure other players cannot use the same colour
         players[pId].myColor = _colorlist[cIdx]._color;   //Update Color variable, to be passed to the GM.
         //players[pId].GetComponent<Cannon>().inputText.GetComponent<Text>().color = _colorlist[cIdx]._color;
         players[pId].GetComponent<Cannon>().myColor = _colorlist[cIdx]._color; ;
-        
     }
 
+    public void DisablePlayerControllers(int exception)
+    {
+        //Debug.Log("Still enabled" + exception);
+        for (int i = 0; i < playerCount; i++)
+        {
+            if (i != exception)
+            {
+                players[i].rewiredPlayer.controllers.maps.SetMapsEnabled(false, "Default");
+                //Debug.Log("Disabled: " + i);
+            }
+        }
+    }
 
+    public void EnablePlayerControllers()
+    {
+        for (int i = 0; i < playerCount; i++)
+        {
+            players[i].rewiredPlayer.controllers.maps.SetMapsEnabled(true, "Default");
+            //Debug.Log("Re-enabled: " + i);
+        }
+    }
 
+    #region Getters
+    #region StateGetters
     //Called from cannon.cs.
     public GAMESTATE getState()
     {
         return state;
     }
+    #endregion
+    #region PauseGetters
+    public GameObject GetPauseMenu()
+    {
+        return pauseMenu;
+    }
 
+    public bool GetPaused()
+    {
+        return isPaused;
+    }
+
+    public int GetPlayerPauseId()
+    {
+        return playerPauseId;
+    }
+    #endregion
+
+
+    #endregion
+    #region Setters
+    #region StateSetters
     public void SetState(GAMESTATE test)
     {
         state = test;
     }
+    #endregion
+    #region PasuseSetters
+    public void SetPaused(bool input)
+    {
+        isPaused = input;
+    }
 
+    public void SetPlayerPauseId(int newId)
+    {
+        playerPauseId = newId;
+    }
+    #endregion
+
+    #endregion
 }
