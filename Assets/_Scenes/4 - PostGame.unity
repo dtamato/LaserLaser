@@ -881,7 +881,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6b6f9d46c7902c840876161d83738ba5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bonusScore: 0
+  bonusScore: 3
   diamondWinner: 
   longshotWinner: 
   trickshotWinner: 

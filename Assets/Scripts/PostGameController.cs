@@ -34,7 +34,7 @@ public class PostGameController : MonoBehaviour
     private float briefPause = 0.1f;
     private float midPause = 1.0f;
     private float longPause = 2.0f;
-    private float distFromCanvasEdge = 240.0f;
+    private float distFromCanvasEdge = 0.0f;
     private bool resultsDisplayed = false;
 
     public Text winningText;
