@@ -70,7 +70,6 @@ public class PostGameController : MonoBehaviour
         }
 
         displayResults();
-
 	}
 
     void Update()
@@ -120,6 +119,26 @@ public class PostGameController : MonoBehaviour
             doubleshotText[i].text = "Doubleshots: " + doubleshotScore[i];
             tripleshotText[i].text = "Tripleshots: " + tripleshotScore[i];
         }
+
+        if (diamondWinner[0] != -1)
+            for (int i = 0; i < diamondWinner.Length; i++)
+                diamondText[diamondWinner[i]].color = Color.yellow;
+
+        if (longshotWinner[0] != -1)
+            for (int i = 0; i < longshotWinner.Length; i++)
+                longshotText[longshotWinner[i]].color = Color.yellow;
+
+        if (trickshotWinner[0] != -1)
+            for (int i = 0; i < trickshotWinner.Length; i++)
+                trickshotText[trickshotWinner[i]].color = Color.yellow;
+
+        if (doubleshotWinner[0] != -1)
+            for (int i = 0; i < doubleshotWinner.Length; i++)
+                doubleshotText[doubleshotWinner[i]].color = Color.yellow;
+
+        if (tripleshotWinner[0] != -1)
+            for (int i = 0; i < tripleshotWinner.Length; i++)
+                tripleshotText[tripleshotWinner[i]].color = Color.yellow;
     }
 
     //Base score metric.
@@ -147,6 +166,10 @@ public class PostGameController : MonoBehaviour
                 tie++;
                 tiedWinner[tie] = i;
             }
+            else if (diamondScore[i] >= hi && diamondScore[i] == 0)
+            {
+                tiedWinner[0] = -1;
+            }
         }
 
         //Record the winner in the array.
@@ -155,10 +178,15 @@ public class PostGameController : MonoBehaviour
             diamondWinner = new int[1];
             diamondWinner[0] = loneWinner;
         }
+        else if (tiedWinner[0] == -1)
+        {
+            diamondWinner = new int[1];
+            diamondWinner[0] = -1;
+        }
         else
         {
-            diamondWinner = new int[tie];
-            for (int i = 0; i < tie; i++)
+            diamondWinner = new int[tie + 1];
+            for (int i = 0; i <= tie; i++)
                 diamondWinner[i] = tiedWinner[i];
         }
     }
@@ -186,6 +214,10 @@ public class PostGameController : MonoBehaviour
                 tie++;
                 tiedWinner[tie] = i;
             }
+            else if (longshotScore[i] >= hi && longshotScore[i] == 0)
+            {
+                tiedWinner[0] = -1;
+            }
         }
 
         if (tie == 0)
@@ -193,10 +225,15 @@ public class PostGameController : MonoBehaviour
             longshotWinner = new int[1];
             longshotWinner[0] = loneWinner;
         }
-        else
+        else if (tiedWinner[0] == -1)
         {
-            longshotWinner = new int[tie];
-            for (int i = 0; i < tie; i++)
+            longshotWinner = new int[1];
+            longshotWinner[0] = -1;
+        }
+        else 
+        {
+            longshotWinner = new int[tie + 1];
+            for (int i = 0; i <= tie; i++)
                 longshotWinner[i] = tiedWinner[i];
         }
     }
@@ -222,6 +259,10 @@ public class PostGameController : MonoBehaviour
                 tie++;
                 tiedWinner[tie] = i;
             }
+            else if (trickshotScore[i] >= hi && trickshotScore[i] == 0)
+            {
+                tiedWinner[0] = -1;
+            }
         }
 
         if (tie == 0)
@@ -229,10 +270,15 @@ public class PostGameController : MonoBehaviour
             trickshotWinner = new int[1];
             trickshotWinner[0] = loneWinner;
         }
+        else if (tiedWinner[0] == -1)
+        {
+            trickshotWinner = new int[1];
+            trickshotWinner[0] = -1;
+        }
         else
         {
-            trickshotWinner = new int[tie];
-            for (int i = 0; i < tie; i++)
+            trickshotWinner = new int[tie + 1];
+            for (int i = 0; i <= tie; i++)
                 trickshotWinner[i] = tiedWinner[i];
         }
     }
@@ -258,6 +304,10 @@ public class PostGameController : MonoBehaviour
                 tie++;
                 tiedWinner[tie] = i;
             }
+            else if (doubleshotScore[i] >= hi && doubleshotScore[i] == 0)
+            {
+                tiedWinner[0] = -1;
+            }
         }
 
         if (tie == 0)
@@ -265,10 +315,15 @@ public class PostGameController : MonoBehaviour
             doubleshotWinner = new int[1];
             doubleshotWinner[0] = loneWinner;
         }
+        else if (tiedWinner[0] == -1)
+        {
+            doubleshotWinner = new int[1];
+            doubleshotWinner[0] = -1;
+        }
         else
         {
-            doubleshotWinner = new int[tie];
-            for (int i = 0; i < tie; i++)
+            doubleshotWinner = new int[tie + 1];
+            for (int i = 0; i <= tie; i++)
                 doubleshotWinner[i] = tiedWinner[i];
         }
     }
@@ -294,6 +349,10 @@ public class PostGameController : MonoBehaviour
                 tie++;
                 tiedWinner[tie] = i;
             }
+            else if (tripleshotScore[i] >= hi && tripleshotScore[i] == 0)
+            {
+                tiedWinner[0] = -1;
+            }
         }
 
         if (tie == 0)
@@ -301,10 +360,15 @@ public class PostGameController : MonoBehaviour
             tripleshotWinner = new int[1];
             tripleshotWinner[0] = loneWinner;
         }
+        else if (tiedWinner[0] == -1)
+        {
+            tripleshotWinner = new int[1];
+            tripleshotWinner[0] = -1;
+        }
         else
         {
-            tripleshotWinner = new int[tie];
-            for (int i = 0; i < tie; i++)
+            tripleshotWinner = new int[tie + 1];
+            for (int i = 0; i <= tie; i++)
                 tripleshotWinner[i] = tiedWinner[i];
         }
     }

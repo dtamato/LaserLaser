@@ -258,7 +258,7 @@ Prefab:
     - target: {fileID: 114000012455943666, guid: ada36bcb359bb8b4ead79d8a4babfd4a,
         type: 2}
       propertyPath: gameTimer
-      value: 60
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 1000010725953750, guid: ada36bcb359bb8b4ead79d8a4babfd4a, type: 2}
       propertyPath: m_IsActive
