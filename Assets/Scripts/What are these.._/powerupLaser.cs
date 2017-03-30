@@ -44,7 +44,7 @@ public class powerupLaser : MonoBehaviour
 		    }
 		}
 
-		if (other.gameObject.tag == "PowerupBoundary") 
+		if (other.gameObject.tag == "Boundary") 
 		{
 			Destroy (this.gameObject);
 			//Debug.Log ("Object destroyed");

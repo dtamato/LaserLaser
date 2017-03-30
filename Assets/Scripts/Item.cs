@@ -50,7 +50,7 @@ public class Item : MonoBehaviour {
 
 	void OnTriggerEnter2D(Collider2D other) {
 
-		if (other.transform.name.Contains("Laser")) {
+		if (other.transform.name.Contains("Laser") || other.transform.name.Contains("Scatter Object")) {
 
 			this.GetComponent<Collider2D> ().enabled = false;
 			spriteRenderer.enabled = false;
