@@ -137,34 +137,42 @@ public class Laser : MonoBehaviour
 		Vector3 trickshotCanvasPosition = new Vector3(randomX, yPos, 0);
 		float travelDistance = Vector3.Distance(diamondPosition, shotStartPosition);
 		const float longShotDistance = 10f;
+		string canvasText = "";
 
 		// Combos
 		if(diamondCombo == 2) {
-
-			GameObject newTrickshotCanvas = Instantiate(trickshotCanvasPrefab, trickshotCanvasPosition, Quaternion.identity) as GameObject;
-			newTrickshotCanvas.GetComponent<TrickshotCanvas>().SetText("DOUBLE SHOT");
-			newTrickshotCanvas.GetComponentInChildren<Text>().color = this.GetComponentInChildren<SpriteRenderer>().color;
+			
+			canvasText += "DOUBLE ";
 		}
 		else if(diamondCombo == 3) {
 
-			GameObject newTrickshotCanvas = Instantiate(trickshotCanvasPrefab, trickshotCanvasPosition, Quaternion.identity) as GameObject;
-			newTrickshotCanvas.GetComponent<TrickshotCanvas>().SetText("TRIPLE SHOT");
-			newTrickshotCanvas.GetComponentInChildren<Text>().color = this.GetComponentInChildren<SpriteRenderer>().color;
+			canvasText += "TRIPLE ";
 		}
-		else if(travelDistance > longShotDistance) {
 
-			GameObject newTrickshotCanvas = Instantiate(trickshotCanvasPrefab, trickshotCanvasPosition, Quaternion.identity) as GameObject;
-			newTrickshotCanvas.GetComponent<TrickshotCanvas>().SetText("LONG SHOT");
-			newTrickshotCanvas.GetComponentInChildren<Text>().color = this.GetComponentInChildren<SpriteRenderer>().color;
+		if(travelDistance > longShotDistance) {
+
+			canvasText += "LONG ";
 		}
 
 		// Trickshots
 		if(bounceCombo > 0) {
 
+			canvasText += "TRICK ";
+		}
+			
+		if(canvasText != "") {
+
+			canvasText += "SHOT";
 			GameObject newTrickshotCanvas = Instantiate(trickshotCanvasPrefab, trickshotCanvasPosition, Quaternion.identity) as GameObject;
-			string canvasText = (Random.value < 0.5) ? "TRICK SHOT" : "TRICKSHOT?!";
 			newTrickshotCanvas.GetComponent<TrickshotCanvas>().SetText(canvasText);
 			newTrickshotCanvas.GetComponentInChildren<Text>().color = this.GetComponentInChildren<SpriteRenderer>().color;
+
+			// Clamp x position of canvas
+			float minX = -6;
+			float maxX = 6;
+			float newX = Mathf.Clamp(newTrickshotCanvas.GetComponent<RectTransform>().position.x, minX, maxX);
+			Vector3 canvasPosition = newTrickshotCanvas.GetComponent<RectTransform>().position;
+			newTrickshotCanvas.GetComponent<RectTransform>().position = new Vector3(newX, canvasPosition.y, canvasPosition.z);
 		}
 	}
 
