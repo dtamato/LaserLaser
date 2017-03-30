@@ -30,7 +30,7 @@ public class Scattershot : MonoBehaviour
 		for (int i = 0; i < 4; i++) {
 			scatterBall [i] = Instantiate(scatterObject, other.transform.position, other.transform.rotation);
 			scatterBall [i].GetComponent<SpriteRenderer> ().color = other.gameObject.GetComponent<SpriteRenderer> ().color;
-			scatterBall [i].transform.parent = other.gameObject.transform;
+            scatterBall [i].GetComponent<ScattershotObject>().setLaser(other.gameObject);
         }
 
 		// Change the rotation of each instantiated object. Making them launch in different directions (NE,NW, SE, SW).
