@@ -26,10 +26,10 @@ public class Bouncer : MonoBehaviour {
 
 			appearTimer += Time.deltaTime;
 		}
-		else {
+		else if(appearTimer >= appearTime && this.GetComponent<SpriteRenderer>().enabled == false) {
 
 			this.GetComponent<SpriteRenderer>().enabled = true;
-			this.GetComponent<Collider2D>().enabled = true;
+            this.GetComponent<Collider2D>().isTrigger = false;
 			this.GetComponent<Animator>().enabled = true;
 			StartCoroutine (StartShrinkAnimation ());
 		}
@@ -48,12 +48,10 @@ public class Bouncer : MonoBehaviour {
 
             if (other.transform.GetComponent<MenuLaser>())
             {
-
                 other.transform.GetComponent<MenuLaser>().StartCoroutine("Bump", 0.3f);
             }
             else if (other.transform.GetComponent<Laser>())
-            {
-
+            {         
                 other.transform.GetComponent<Laser>().StartCoroutine("Bump", 0.3f);
             }
         }
