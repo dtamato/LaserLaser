@@ -24,7 +24,7 @@ public class Laser : MonoBehaviour
 	private float pitchTracker = 1;
 	private Vector3 shotStartPosition = Vector3.zero;
 
-	[SerializeField] GameObject scoreCounterPrefab;
+	public GameObject scoreCounterPrefab;
 	[SerializeField] GameObject comboCounterPrefab;
 	[SerializeField] GameObject trickshotCanvasPrefab;
 	[SerializeField] Color comboTextColor;
