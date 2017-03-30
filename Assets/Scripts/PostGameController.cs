@@ -6,14 +6,17 @@ using Rewired;
 
 public class PostGameController : MonoBehaviour
 {
+    #region Variables
+
     private BaseGM gameManager;
     private string gameType;
 
+    //Player variables.
     private Player[] players;
     private bool[] readyPlayers = new bool[4];
     private int readyCount;
-    public int bonusScore;
 
+    //Scoring storage.
     private int[] totalScore = new int[4];
     private int[] diamondScore = new int[4];
     private int[] longshotScore = new int[4];
@@ -21,22 +24,26 @@ public class PostGameController : MonoBehaviour
     private int[] doubleshotScore = new int[4];
     private int[] tripleshotScore = new int[4];
 
-    //Arrays used in case of tie / multiple winners in each category.
+    //Variables used in score calculations.
     [SerializeField]
     private int[] diamondWinner, longshotWinner, trickshotWinner, doubleshotWinner, tripleshotWinner;
     private int finalWinner;
     private int highestScore;
     private int highestDiamondScore;
+    public int bonusScore;
 
-    //
-    private int backgroundHeight = 600;     //Maximum height of the bar.
-    private int pointHeight;                //Height per point.
-    private float briefPause = 0.1f;
-    private float midPause = 1.0f;
-    private float longPause = 2.0f;
+    //Coroutine variables.
+    private float backgroundHeight = 800;     //Maximum height of the bar.
+    private float pointHeight;                //Height per point.
     private float distFromCanvasEdge = 0.0f;
     private bool resultsDisplayed = false;
 
+    private float briefPause = 0.1f;
+    private float midPause = 0.5f;
+    private float longPause = 1.0f;
+    private float timeScalar = 50.0f;
+
+    //Text references.
     public Text winningText;
     public List<Text> diamondText;
     public List<Text> longshotText;
@@ -44,9 +51,11 @@ public class PostGameController : MonoBehaviour
     public List<Text> doubleshotText;
     public List<Text> tripleshotText;
 
+    //Object references.
     public List<Image> backgrounds;
     public List<GameObject> overlays;
-    public List<RectTransform> scorebars;
+
+    #endregion
 
     void Start ()
     {
@@ -226,21 +235,22 @@ public class PostGameController : MonoBehaviour
     IEnumerator barTick()
     {
         yield return new WaitForSeconds(longPause);
-
-        //Show diamond results.
-        for (int i = 0; i < highestDiamondScore; i++)
+        for (int i = 0; i < (highestDiamondScore * timeScalar); i++)
         {
             for (int j = 0; j < 4; j++)
-                if (diamondScore[j] > i)
+                if ((diamondScore[j] * timeScalar) > i)
                     backgrounds[j].rectTransform.SetInsetAndSizeFromParentEdge
-                        (RectTransform.Edge.Bottom, distFromCanvasEdge, ((i + 1)* pointHeight));
+                        (RectTransform.Edge.Bottom, distFromCanvasEdge, ((i + 1) * pointHeight / timeScalar));
 
-            yield return new WaitForSeconds(briefPause);
+            yield return new WaitForSeconds(briefPause / (50 * timeScalar));
         }
 
         for (int i = 0; i < 4; i++)
             diamondText[i].gameObject.SetActive(true);
         yield return new WaitForSeconds(longPause);
+        for (int i = 0; i < 4; i++)
+            diamondText[i].gameObject.SetActive(false);
+        yield return new WaitForSeconds(midPause);
 
         //Show longshot results.
         for (int i = 0; i < 4; i++)
@@ -250,11 +260,13 @@ public class PostGameController : MonoBehaviour
 
         for (int i = 0; i < 4; i++)
             longshotText[i].gameObject.SetActive(true);
-        yield return new WaitForSeconds(midPause);
         if (longshotWinner[0] != -1)
             for (int i = 0; i < longshotWinner.Length; i++)
                 backgrounds[longshotWinner[i]].rectTransform.SetInsetAndSizeFromParentEdge
                     (RectTransform.Edge.Bottom, distFromCanvasEdge, (totalScore[longshotWinner[i]] * pointHeight));
+        yield return new WaitForSeconds(longPause);
+        for (int i = 0; i < 4; i++)
+            longshotText[i].gameObject.SetActive(false);
         yield return new WaitForSeconds(midPause);
 
         //Show trickshot results.
@@ -265,11 +277,13 @@ public class PostGameController : MonoBehaviour
 
         for (int i = 0; i < 4; i++)
             trickshotText[i].gameObject.SetActive(true);
-        yield return new WaitForSeconds(midPause);
         if (trickshotWinner[0] != -1)
             for (int i = 0; i < trickshotWinner.Length; i++)
                 backgrounds[trickshotWinner[i]].rectTransform.SetInsetAndSizeFromParentEdge
                     (RectTransform.Edge.Bottom, distFromCanvasEdge, (totalScore[trickshotWinner[i]] * pointHeight));
+        yield return new WaitForSeconds(longPause);
+        for (int i = 0; i < 4; i++)
+            trickshotText[i].gameObject.SetActive(false);
         yield return new WaitForSeconds(midPause);
 
         //Show doubleshot results.
@@ -280,11 +294,13 @@ public class PostGameController : MonoBehaviour
 
         for (int i = 0; i < 4; i++)
             doubleshotText[i].gameObject.SetActive(true);
-        yield return new WaitForSeconds(midPause);
         if (doubleshotWinner[0] != -1)
             for (int i = 0; i < doubleshotWinner.Length; i++)
                 backgrounds[doubleshotWinner[i]].rectTransform.SetInsetAndSizeFromParentEdge
                     (RectTransform.Edge.Bottom, distFromCanvasEdge, (totalScore[doubleshotWinner[i]] * pointHeight));
+        yield return new WaitForSeconds(longPause);
+        for (int i = 0; i < 4; i++)
+            doubleshotText[i].gameObject.SetActive(false);
         yield return new WaitForSeconds(midPause);
 
         //Show tripleshot results.
@@ -295,14 +311,16 @@ public class PostGameController : MonoBehaviour
 
         for (int i = 0; i < 4; i++)
             tripleshotText[i].gameObject.SetActive(true);
-        yield return new WaitForSeconds(midPause);
         if (tripleshotWinner[0] != -1)
             for (int i = 0; i < tripleshotWinner.Length; i++)
                 backgrounds[tripleshotWinner[i]].rectTransform.SetInsetAndSizeFromParentEdge
                     (RectTransform.Edge.Bottom, distFromCanvasEdge, (totalScore[tripleshotWinner[i]] * pointHeight));
+        yield return new WaitForSeconds(longPause);
+        for (int i = 0; i < 4; i++)
+            tripleshotText[i].gameObject.SetActive(false);
+        yield return new WaitForSeconds(midPause);
 
         //Show the final winner
-        yield return new WaitForSeconds(midPause);
         winningText.gameObject.SetActive(true);
         resultsDisplayed = true;
     }
