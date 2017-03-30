@@ -12,6 +12,7 @@ public class PostGameController : MonoBehaviour
     private Player[] players;
     private bool[] readyPlayers = new bool[4];
     private int readyCount;
+    public int bonusScore;
 
     private int[] totalScore = new int[4];
     private int[] diamondScore = new int[4];
@@ -21,8 +22,22 @@ public class PostGameController : MonoBehaviour
     private int[] tripleshotScore = new int[4];
 
     //Arrays used in case of tie / multiple winners in each category.
+    [SerializeField]
     private int[] diamondWinner, longshotWinner, trickshotWinner, doubleshotWinner, tripleshotWinner;
+    private int finalWinner;
+    private int highestScore;
+    private int highestDiamondScore;
 
+    //
+    private int backgroundHeight = 600;     //Maximum height of the bar.
+    private int pointHeight;                //Height per point.
+    private float briefPause = 0.1f;
+    private float midPause = 1.0f;
+    private float longPause = 2.0f;
+    private float distFromCanvasEdge = 240.0f;
+    private bool resultsDisplayed = false;
+
+    public Text winningText;
     public List<Text> diamondText;
     public List<Text> longshotText;
     public List<Text> trickshotText;
@@ -69,25 +84,30 @@ public class PostGameController : MonoBehaviour
             tripleshotCount();
         }
 
+        finalScoring();
         displayResults();
 	}
 
     void Update()
     {
-        for (int i = 0; i < 4; i++)
+        //Only pressable once results have been displayed.
+        if (resultsDisplayed)
         {
-            if (players[i].GetButtonDown("StartGame") && readyPlayers[i] == false)
+            for (int i = 0; i < 4; i++)
             {
-                overlays[i].SetActive(true);
-                readyPlayers[i] = true;
-                readyCount++;
-            }
+                if (players[i].GetButtonDown("StartGame") && readyPlayers[i] == false)
+                {
+                    overlays[i].SetActive(true);
+                    readyPlayers[i] = true;
+                    readyCount++;
+                }
 
-            if (players[i].GetButtonDown("Back") && readyPlayers[i] == true)
-            {
-                overlays[i].SetActive(false);
-                readyPlayers[i] = false;
-                readyCount--;
+                if (players[i].GetButtonDown("Back") && readyPlayers[i] == true)
+                {
+                    overlays[i].SetActive(false);
+                    readyPlayers[i] = false;
+                    readyCount--;
+                }
             }
         }
 
@@ -106,6 +126,63 @@ public class PostGameController : MonoBehaviour
             doubleshotScore[i] = gameManager.doubleshots[i];
             tripleshotScore[i] = gameManager.tripleshots[i];
         }
+    }
+
+    void finalScoring()
+    {
+        //Add bonus points for winners of each category to determine highest total score.
+        for (int i = 0; i < 4; i++)
+        {
+            for (int j = 0; j < longshotWinner.Length; j++)
+                if (longshotWinner[j] == i)
+                    totalScore[i] += bonusScore;
+
+            for (int j = 0; j < trickshotWinner.Length; j++)
+                if (trickshotWinner[j] == i)
+                    totalScore[i] += bonusScore;
+
+            for (int j = 0; j < doubleshotWinner.Length; j++)
+                if (doubleshotWinner[j] == i)
+                    totalScore[i] += bonusScore;
+
+            for (int j = 0; j < tripleshotWinner.Length; j++)
+                if (tripleshotWinner[j] == i)
+                    totalScore[i] += bonusScore;
+        }
+
+        //What is the highest score value.
+        highestScore = 0;
+        highestDiamondScore = 0;
+        for (int i = 0; i < 4; i++)
+        {
+            if (totalScore[i] > highestScore)
+            {
+                highestScore = totalScore[i];
+                finalWinner = i;
+            }
+            if (diamondScore[i] > highestDiamondScore)
+                highestDiamondScore = diamondScore[i];
+
+            //Take the bonus points away, makes it easier to calculate the height of bars in barTick().
+            for (int j = 0; j < longshotWinner.Length; j++)
+                if (longshotWinner[j] == i)
+                    totalScore[i] -= bonusScore;
+
+            for (int j = 0; j < trickshotWinner.Length; j++)
+                if (trickshotWinner[j] == i)
+                    totalScore[i] -= bonusScore;
+
+            for (int j = 0; j < doubleshotWinner.Length; j++)
+                if (doubleshotWinner[j] == i)
+                    totalScore[i] -= bonusScore;
+
+            for (int j = 0; j < tripleshotWinner.Length; j++)
+                if (tripleshotWinner[j] == i)
+                    totalScore[i] -= bonusScore;
+        }
+
+        //Used to increment the bar height.
+        pointHeight = backgroundHeight / highestScore;
     }
 
     //Adjust all the text.
@@ -139,6 +216,95 @@ public class PostGameController : MonoBehaviour
         if (tripleshotWinner[0] != -1)
             for (int i = 0; i < tripleshotWinner.Length; i++)
                 tripleshotText[tripleshotWinner[i]].color = Color.yellow;
+
+        winningText.text = "Player " + (finalWinner + 1) + " Wins!";
+
+        //Raise the bars.
+        StartCoroutine("barTick");
+    }
+
+    IEnumerator barTick()
+    {
+        yield return new WaitForSeconds(longPause);
+
+        //Show diamond results.
+        for (int i = 0; i < highestDiamondScore; i++)
+        {
+            for (int j = 0; j < 4; j++)
+                if (diamondScore[j] > i)
+                    backgrounds[j].rectTransform.SetInsetAndSizeFromParentEdge
+                        (RectTransform.Edge.Bottom, distFromCanvasEdge, ((i + 1)* pointHeight));
+
+            yield return new WaitForSeconds(briefPause);
+        }
+
+        for (int i = 0; i < 4; i++)
+            diamondText[i].gameObject.SetActive(true);
+        yield return new WaitForSeconds(longPause);
+
+        //Show longshot results.
+        for (int i = 0; i < 4; i++)
+            for (int j = 0; j < longshotWinner.Length; j++)
+                if (longshotWinner[j] == i)
+                    totalScore[i] += bonusScore;
+
+        for (int i = 0; i < 4; i++)
+            longshotText[i].gameObject.SetActive(true);
+        yield return new WaitForSeconds(midPause);
+        if (longshotWinner[0] != -1)
+            for (int i = 0; i < longshotWinner.Length; i++)
+                backgrounds[longshotWinner[i]].rectTransform.SetInsetAndSizeFromParentEdge
+                    (RectTransform.Edge.Bottom, distFromCanvasEdge, (totalScore[longshotWinner[i]] * pointHeight));
+        yield return new WaitForSeconds(midPause);
+
+        //Show trickshot results.
+        for (int i = 0; i < 4; i++)
+            for (int j = 0; j < trickshotWinner.Length; j++)
+                if (trickshotWinner[j] == i)
+                    totalScore[i] += bonusScore;
+
+        for (int i = 0; i < 4; i++)
+            trickshotText[i].gameObject.SetActive(true);
+        yield return new WaitForSeconds(midPause);
+        if (trickshotWinner[0] != -1)
+            for (int i = 0; i < trickshotWinner.Length; i++)
+                backgrounds[trickshotWinner[i]].rectTransform.SetInsetAndSizeFromParentEdge
+                    (RectTransform.Edge.Bottom, distFromCanvasEdge, (totalScore[trickshotWinner[i]] * pointHeight));
+        yield return new WaitForSeconds(midPause);
+
+        //Show doubleshot results.
+        for (int i = 0; i < 4; i++)
+            for (int j = 0; j < doubleshotWinner.Length; j++)
+                if (doubleshotWinner[j] == i)
+                    totalScore[i] += bonusScore;
+
+        for (int i = 0; i < 4; i++)
+            doubleshotText[i].gameObject.SetActive(true);
+        yield return new WaitForSeconds(midPause);
+        if (doubleshotWinner[0] != -1)
+            for (int i = 0; i < doubleshotWinner.Length; i++)
+                backgrounds[doubleshotWinner[i]].rectTransform.SetInsetAndSizeFromParentEdge
+                    (RectTransform.Edge.Bottom, distFromCanvasEdge, (totalScore[doubleshotWinner[i]] * pointHeight));
+        yield return new WaitForSeconds(midPause);
+
+        //Show tripleshot results.
+        for (int i = 0; i < 4; i++)
+            for (int j = 0; j < tripleshotWinner.Length; j++)
+                if (tripleshotWinner[j] == i)
+                    totalScore[i] += bonusScore;
+
+        for (int i = 0; i < 4; i++)
+            tripleshotText[i].gameObject.SetActive(true);
+        yield return new WaitForSeconds(midPause);
+        if (tripleshotWinner[0] != -1)
+            for (int i = 0; i < tripleshotWinner.Length; i++)
+                backgrounds[tripleshotWinner[i]].rectTransform.SetInsetAndSizeFromParentEdge
+                    (RectTransform.Edge.Bottom, distFromCanvasEdge, (totalScore[tripleshotWinner[i]] * pointHeight));
+
+        //Show the final winner
+        yield return new WaitForSeconds(midPause);
+        winningText.gameObject.SetActive(true);
+        resultsDisplayed = true;
     }
 
     //Base score metric.
