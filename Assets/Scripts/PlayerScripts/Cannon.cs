@@ -38,12 +38,19 @@ public class Cannon : MonoBehaviour
     float minRotationSpeed = 1.5f;
     float maxRotationSpeed = 5.0f;
 
-    private Transform MPoint;
-    private Transform RPoint;
+    private Transform LTransform;
+    private Transform RTransform;
+    private Transform MTransform;
+    private Vector2 LPoint;
+    private Vector2 RPoint;
+    private Vector2 MPoint;
     private const float cornerOffset = 0.6f;
     private Vector2 MOrigin;
-    private Vector2 ROrigin;
     private int Layer_Mask;
+    private float axisMod;
+
+    [SerializeField] private bool collidingLeft;
+    [SerializeField] private bool collidingRight;
 
 
     //Angles
@@ -77,14 +84,16 @@ public class Cannon : MonoBehaviour
         inFlight = false;
         sensitivity = 5;
 
-        MPoint = transform.Find("LPoint").transform;
-        MOrigin = new Vector2(MPoint.transform.position.x,MPoint.transform.position.y);
+        LTransform = transform.Find("LPoint").transform;
+        RTransform = transform.Find("RPoint").transform;
+        MTransform = transform.Find("MPoint").transform;
+        LPoint = new Vector2(LTransform.position.x,LTransform.position.y);
+        RPoint = new Vector2(RTransform.position.x, RTransform.position.y);
+        MPoint = new Vector2(MTransform.position.x, MTransform.position.y);
+        //MOrigin = new Vector2(MPoint.transform.position.x,MPoint.transform.position.y);
 
-        RPoint = transform.Find("RPoint").transform;
-        ROrigin = new Vector2(RPoint.transform.position.x, RPoint.transform.position.y);
 
         Layer_Mask = LayerMask.GetMask("Boundary");
-
 
     	colorIdx = playerId;
         gameManager.UpdateColour(colorIdx, playerId);
@@ -163,28 +172,41 @@ public class Cannon : MonoBehaviour
     //
     void GetRotationInput()
     {
-        // Get controller joystick input
-        if (rewiredPlayer.GetAxisRaw("Horizontal") < 0)
-        {
-            if (!Physics2D.Linecast(MOrigin, new Vector2(MPoint.transform.position.x - cornerOffset, MPoint.transform.position.y), Layer_Mask))
-                {
-                    currentRotationSpeed = Mathf.Clamp(currentRotationSpeed, minRotationSpeed, maxRotationSpeed);
-                    this.transform.Rotate(currentRotationSpeed * rotationModifier * Vector3.forward);
-                }
+        axisMod = rewiredPlayer.GetAxis("Horizontal");
+        LPoint = new Vector2(LTransform.position.x, LTransform.position.y); //making a Vector2 out of the object's transforms
+        RPoint = new Vector2(RTransform.position.x, RTransform.position.y);
+        MPoint = new Vector2(MTransform.position.x, MTransform.position.y);
 
-        }
-         if (rewiredPlayer.GetAxisRaw("Horizontal") > 0)
+
+        collidingLeft = Physics2D.Linecast(MPoint, LPoint, Layer_Mask);
+        collidingRight = Physics2D.Linecast(MPoint ,RPoint, Layer_Mask);
+
+        if (collidingLeft)
         {
-            if (!Physics2D.Linecast(MOrigin, new Vector2(MPoint.transform.position.x + cornerOffset, MPoint.transform.position.y), Layer_Mask))
-                {
-                    currentRotationSpeed = Mathf.Clamp(currentRotationSpeed, minRotationSpeed, maxRotationSpeed);
-                    this.transform.Rotate(-currentRotationSpeed * rotationModifier * Vector3.forward);
+            if (rotationModifier == -1)
+            {
+                axisMod = Mathf.Clamp(axisMod, -1f, 0f);
+            }
+            else
+            {
+            axisMod = Mathf.Clamp(axisMod, 0f, 1f);
             }
         }
-        else if (rewiredPlayer.GetAxisRaw("Horizontal") == 0)
+
+        if (collidingRight)
         {
-            currentRotationSpeed = baseRotationSpeed;
+            if (rotationModifier == -1)
+            {
+                axisMod = Mathf.Clamp(axisMod, 0f, 1f);
+            }
+            else
+            {
+                axisMod = Mathf.Clamp(axisMod, -1f, 0f);
+            }
+            
         }
+        currentRotationSpeed = Mathf.Clamp(currentRotationSpeed, minRotationSpeed, maxRotationSpeed);
+        this.transform.Rotate(currentRotationSpeed * rotationModifier * Vector3.forward * -axisMod);
     }
 
     void CheckOpenPauseMenu()
@@ -206,7 +228,7 @@ public class Cannon : MonoBehaviour
     void GetMenuInput()
     {
 
-        if (rewiredPlayer.GetAxisRaw("Horizontal") == 1 && playerId == gameManager.GetPlayerPauseId())
+        if (rewiredPlayer.GetAxisRaw("Vertical") == 1 && playerId == gameManager.GetPlayerPauseId())
         {
             pauseMenu.GetComponent<PauseMenu>().NextButton();
             Debug.Log("Next");
