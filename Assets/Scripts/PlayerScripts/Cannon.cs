@@ -11,7 +11,7 @@ public class Cannon : MonoBehaviour
     private int colorIdx; //the player's position within the color array
     private float rotationSpeedIncrement = 1;
     public GameObject inputText;
-    private GameObject joinText;
+	public GameObject joinText;
     public Color myColor;
     public Color myTeamColor;
     public int team;
@@ -98,7 +98,7 @@ public class Cannon : MonoBehaviour
     	colorIdx = playerId;
         gameManager.UpdateColour(colorIdx, playerId);
         inputText.GetComponent<Text>().color = myColor; //to be changed when control is fixed
-        joinText.GetComponent<Text>().text = "";
+		joinText.GetComponent<Text>().text = "Press Start When Ready!";
 
 
         if (gameManager.gameMode == "FFA")
@@ -320,13 +320,13 @@ public class Cannon : MonoBehaviour
             {
                 playerReady = true;
                 gameManager.readyPlayers++;
-                joinText.GetComponent<Text>().text = "Ready";
+                joinText.GetComponent<Text>().text = "Ready!";
             }
             else
             {
                 playerReady = false;
                 gameManager.readyPlayers--;
-                joinText.GetComponent<Text>().text = " ";
+                joinText.GetComponent<Text>().text = "Press Start When Ready!";
             }
         }
 

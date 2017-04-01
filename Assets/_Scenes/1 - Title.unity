@@ -158,7 +158,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: SHIZZLE
+  m_Text: SHOTS
 --- !u!222 &12555911
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -414,7 +414,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: FIRIZZLE
+  m_Text: fired
 --- !u!222 &82451385
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -993,7 +993,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: SHIZZLE
+  m_Text: SHOTS
 --- !u!222 &366889925
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1451,7 +1451,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: FIRIZZLE
+  m_Text: fired
 --- !u!222 &909987069
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1740,7 +1740,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Press STIZZLE
+  m_Text: Press Start
 --- !u!222 &1240868408
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -2057,7 +2057,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: FIRIZZLE
+  m_Text: fired
 --- !u!222 &1630440265
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -2131,7 +2131,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: SHIZZLE
+  m_Text: SHOTS
 --- !u!222 &1761051453
 CanvasRenderer:
   m_ObjectHideFlags: 0

@@ -506,7 +506,8 @@ public class BaseGM : MonoBehaviour
 
         _colorlist[cIdx].isAvailable = false; //making sure other players cannot use the same colour
         players[pId].myColor = _colorlist[cIdx]._color;   //Update Color variable, to be passed to the GM.
-        //players[pId].GetComponent<Cannon>().inputText.GetComponent<Text>().color = _colorlist[cIdx]._color;
+        players[pId].GetComponent<Cannon>().inputText.GetComponent<Text>().color = _colorlist[cIdx]._color;
+		players[pId].GetComponent<Cannon>().joinText.GetComponent<Text>().color = _colorlist[cIdx]._color;
         players[pId].GetComponent<Cannon>().myColor = _colorlist[cIdx]._color; ;
     }
 

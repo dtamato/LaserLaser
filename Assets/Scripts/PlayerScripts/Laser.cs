@@ -162,7 +162,7 @@ public class Laser : MonoBehaviour
 			
 		if(canvasText != "") {
 
-			canvasText += "SHOT";
+			canvasText += (Random.value < 0.65f) ? "SHOT" : (Random.value < 0.5f ? "SHOT!?" : "SHOT!");
 			GameObject newTrickshotCanvas = Instantiate(trickshotCanvasPrefab, trickshotCanvasPosition, Quaternion.identity) as GameObject;
 			newTrickshotCanvas.GetComponent<TrickshotCanvas>().SetText(canvasText);
 			newTrickshotCanvas.GetComponentInChildren<Text>().color = this.GetComponentInChildren<SpriteRenderer>().color;

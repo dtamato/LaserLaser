@@ -22,18 +22,25 @@ public class MainMenuController : MonoBehaviour {
 	int gameModeIndex = 0;
 	bool loadingGame = false;
 
+	[Header("Audio")]
+	[SerializeField] AudioClip rotateAudio;
+	[SerializeField] AudioClip confirmAudio;
+	AudioSource audioSource;
+
 	[Header("References")]
 	[SerializeField] GameObject[] moviePlaneArray;
 	[SerializeField] GameObject gameModeParent;
 	[SerializeField] Image leftArrowImage;
 	[SerializeField] Image rightArrowImage;
 	[SerializeField] Image screenOverlay;
+	[SerializeField] GameObject gravityShifterPrefab;
 	Player rewiredPlayer;
 
 
 	void Awake () {
 
 		rewiredPlayer = ReInput.players.GetPlayer(0);
+		audioSource = this.GetComponent<AudioSource>();
 		rotationAngle = (360 / gameModeParent.transform.childCount);
 		currentAngle = gameModeParent.transform.rotation.y;
 		targetAngle = currentAngle;
@@ -62,6 +69,9 @@ public class MainMenuController : MonoBehaviour {
 				leftArrowImage.color = Color.white;
 				rightArrowImage.color = Color.yellow;
 				StartCoroutine(ArrowBackToWhite());
+
+				audioSource.clip = rotateAudio;
+				audioSource.Play();
 			}
 			else if(rewiredPlayer.GetAxisRaw("Horizontal") < 0) {
 
@@ -75,16 +85,24 @@ public class MainMenuController : MonoBehaviour {
 				leftArrowImage.color = Color.yellow;
 				rightArrowImage.color = Color.white;
 				StartCoroutine(ArrowBackToWhite());
+
+				audioSource.clip = rotateAudio;
+				audioSource.Play();
 			}
 			else if(rewiredPlayer.GetButtonDown("Fire") || rewiredPlayer.GetButtonDown("StartGame")) {
 
-				Debug.Log("Loading game mode: " + gameModeIndex);
-				for(int i = 0; i < moviePlaneArray.Length; i++) {
+				if(gameModeIndex != 0) {
 
-					moviePlaneArray[i].gameObject.SetActive(false);
+					Debug.Log("Loading game mode: " + gameModeIndex);
+					for(int i = 0; i < moviePlaneArray.Length; i++) {
+
+						moviePlaneArray[i].gameObject.SetActive(false);
+					}
+
+					audioSource.clip = confirmAudio;
+					audioSource.Play();
+					loadingGame = true;
 				}
-				this.GetComponent<AudioSource>().Play();
-				loadingGame = true;
 			}
 		}
 		else if(inputCooldownTimer > 0) {
@@ -104,6 +122,13 @@ public class MainMenuController : MonoBehaviour {
 				if(gameModePrefabs.Length > 0) {
 
 					Instantiate(gameModePrefabs[gameModeIndex], Vector3.zero, Quaternion.identity);
+
+					// Also instantiate gravity shifter prefab
+					if(gameModeIndex == 2) {
+
+						GameObject gravityShifter = Instantiate(gravityShifterPrefab, Vector3.zero, Quaternion.identity) as GameObject;
+						DontDestroyOnLoad(gravityShifter);
+					}
 				}
 			}
 		}

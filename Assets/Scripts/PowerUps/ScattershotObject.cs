@@ -23,7 +23,7 @@ public class ScattershotObject : MonoBehaviour
 
     void Update()
     {
-        transform.Translate(new Vector3(0, 0.50f, 0));
+        transform.Translate(new Vector3(0, 0.3f, 0));
     }
 
     public void setLaser(GameObject laserReference)

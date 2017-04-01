@@ -69,7 +69,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scatterTimer: 100
   scatterRB: {fileID: 50470387460127264, guid: ff2836ecfa490a84492e36653a1a2d3b, type: 2}
-  blastValue: 8000
+  blastValue: 0
   scatterObject: {fileID: 1031913294232212, guid: ff2836ecfa490a84492e36653a1a2d3b,
     type: 2}
 --- !u!212 &212152804438625604

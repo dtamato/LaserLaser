@@ -7,26 +7,31 @@ using UnityEngine.UI;
 public class ScoreCounterCanvas : MonoBehaviour {
 
 	Text scoreText;
+	float startTime;
 
 	void Awake () {
 
 		scoreText = this.GetComponentInChildren<Text>();
+		startTime = Time.time;
 	}
 
 	void Update () {
 
-		if(scoreText.color.a > 0) {
+		if(Time.time - startTime > 1) {
 
-			float newAlpha = scoreText.color.a - Time.deltaTime;
+			if(scoreText.color.a > 0) {
 
-			if(newAlpha <= 0) {
+				float newAlpha = scoreText.color.a - Time.deltaTime;
 
-				Destroy(this.gameObject);
-			}
-			else {
+				if(newAlpha <= 0) {
 
-				this.transform.Translate(Vector3.up * Time.deltaTime);
-				scoreText.color = new Color(scoreText.color.r, scoreText.color.g, scoreText.color.b, newAlpha);
+					Destroy(this.gameObject);
+				}
+				else {
+
+					this.transform.Translate(Vector3.up * Time.deltaTime);
+					scoreText.color = new Color(scoreText.color.r, scoreText.color.g, scoreText.color.b, newAlpha);
+				}
 			}
 		}
 	}
