@@ -35,6 +35,7 @@ public class SpawnListener : MonoBehaviour
                 obj.GetComponentInChildren<Laser>().setGameMode(gameManager.gameMode);
                 obj.GetComponent<Cannon>().SetPauseMenu(gameManager.GetPauseMenu());
                 gameManager.playerCount++;
+                gameManager.activePlayers[playerID] = true;
                 taken = true;
             }
         }

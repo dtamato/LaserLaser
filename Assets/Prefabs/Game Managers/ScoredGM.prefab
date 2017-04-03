@@ -55,8 +55,11 @@ MonoBehaviour:
   menuSceneIndex: 2
   mainGameSceneIndex: 3
   gameOverSceneIndex: 4
+  creditsSceneIndex: 5
   players: []
+  playerColors: []
   gameMode: FFA
+  gameType: 
   _colorlist:
   - isAvailable: 0
     _color: {r: 0.8235295, g: 0.54509807, b: 1, a: 1}
@@ -84,7 +87,12 @@ MonoBehaviour:
   startGameDelay: 3
   playerCount: 0
   readyPlayers: 0
+  activePlayers: 
   playerScores: 
+  longshots: 
+  trickshots: 
+  doubleshots: 
+  tripleshots: 
   team1Score: 0
   team2Score: 0
   objectiveScore: 0

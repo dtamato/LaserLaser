@@ -28,6 +28,7 @@ public class BaseGM : MonoBehaviour
     public int menuSceneIndex;
     public int mainGameSceneIndex;
     public int gameOverSceneIndex;
+    public int creditsSceneIndex;
    
     //External References.
     public static BaseGM instance = null;
@@ -59,6 +60,7 @@ public class BaseGM : MonoBehaviour
     public float startGameDelay;
     public int playerCount = 0;
     public int readyPlayers = 0;
+    public bool[] activePlayers;
 
     //Scoring Metrics.
     public List<int> playerScores;
@@ -237,6 +239,7 @@ public class BaseGM : MonoBehaviour
         inputText = new List<Text>(4);
         spawns = new List<GameObject>(4);
 
+        activePlayers = new bool[4];
         playerColors = new List<Color>(4);
         playerScores = new List<int>(4);
         longshots = new List<int>(4);
@@ -252,6 +255,7 @@ public class BaseGM : MonoBehaviour
             inputText.Add(null);
             spawns.Add(null);
             players.Add(null);
+            activePlayers[i] = false;
             playerColors.Add(Color.grey);
             playerScores.Add(0);
             longshots.Add(0);

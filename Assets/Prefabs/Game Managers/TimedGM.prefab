@@ -55,9 +55,10 @@ MonoBehaviour:
   menuSceneIndex: 2
   mainGameSceneIndex: 3
   gameOverSceneIndex: 4
+  creditsSceneIndex: 5
   players: []
   playerColors: []
-  gameMode: 
+  gameMode: FFA
   gameType: 
   _colorlist:
   - isAvailable: 0
@@ -86,6 +87,7 @@ MonoBehaviour:
   startGameDelay: 3
   playerCount: 0
   readyPlayers: 0
+  activePlayers: 
   playerScores: 
   longshots: 
   trickshots: 
