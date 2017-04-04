@@ -295,6 +295,7 @@ public class Cannon : MonoBehaviour
                 gameManager._colorlist[colorIdx].isAvailable = true;
                 joinText.GetComponent<Text>().text = "Press 'A' to Join";
                 gameManager.playerCount--;
+                gameManager.activePlayers[playerId] = false;
                 Destroy(this.gameObject);
             }
         }

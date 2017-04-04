@@ -21,6 +21,7 @@ public class ScoredGM : BaseGM
     new void Awake ()
     {
         base.Awake();
+        gameType = "SCORED";
     }
 
         

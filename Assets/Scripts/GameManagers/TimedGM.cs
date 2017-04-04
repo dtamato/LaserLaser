@@ -13,6 +13,7 @@ public class TimedGM : BaseGM
     new void Awake()
     {
         base.Awake();
+        gameType = "TIMED";
 		initialTime = gameTimer;
         initJoinDelay = joinGameDelay;
     }
