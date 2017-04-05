@@ -319,15 +319,18 @@ public class BaseGM : MonoBehaviour
 
 		for (int i = 0; i < 4; i++)
         {
-			if (playerScores[i] > winningScore)
-            {
-                winningScore = playerScores[i];
-                winningPlayerIndex = i;
-                whiteBorder.GetComponent<Image>().color = players[i].GetColor();
-			}
-			else if (playerScores[i] == winningScore)
-            {
-				whiteBorder.GetComponent<Image> ().color = Color.black;
+			if(activePlayers[i] == true) {
+				
+				if (playerScores[i] > winningScore)
+	            {
+	                winningScore = playerScores[i];
+	                winningPlayerIndex = i;
+	                whiteBorder.GetComponent<Image>().color = players[i].GetColor();
+				}
+				else if (playerScores[i] == winningScore)
+	            {
+					whiteBorder.GetComponent<Image> ().color = Color.black;
+				}
 			}
 		}
 	}

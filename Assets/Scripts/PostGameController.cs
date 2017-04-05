@@ -69,9 +69,10 @@ public class PostGameController : MonoBehaviour
             backgrounds[i].color = gameManager.playerColors[i];
             overlays[i].GetComponent<Image>().color = gameManager.playerColors[i];
 
-            if (backgrounds[i].color == Color.grey)
+			if (gameManager.activePlayers[i] == false)
             {
-                overlays[i].SetActive(true);
+				overlays[i].GetComponent<Image>().color = Color.gray;
+				overlays[i].SetActive(true);
                 readyPlayers[i] = true;
                 readyCount++;
             }
