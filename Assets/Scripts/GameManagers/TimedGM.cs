@@ -13,6 +13,7 @@ public class TimedGM : BaseGM
     new void Awake()
     {
         base.Awake();
+        gameType = "TIMED";
 		initialTime = gameTimer;
         initJoinDelay = joinGameDelay;
     }
@@ -28,13 +29,13 @@ public class TimedGM : BaseGM
                 {
                     initializeGame();
                     timeBar = GameObject.Find("White Border").GetComponent<Image>();
-                    timeBar.fillAmount = gameTimer / initialTime;
+                    timeBar.GetComponent<Image>().fillAmount = gameTimer / initialTime;
                     SetState(GAMESTATE.PREGAME);
                 }
 
                 break;
 
-            //Pregame runs from the time the game is initialized, until the end of the "Get Ready" countdown.
+            //Pre-game runs from the time the game is initialized, until the end of the "Get Ready" countdown.
             case (GAMESTATE.PREGAME):
                 if (playerCount < 1)
                 {
@@ -43,22 +44,22 @@ public class TimedGM : BaseGM
                 else
                 {
                     joinGameDelay -= Time.deltaTime;
-                    joinCountdownImage.fillAmount = joinGameDelay / initJoinDelay;
+                    whiteBorder.GetComponent<Image>().fillAmount = joinGameDelay / initJoinDelay;
 
-					if(joinCountdownImage.fillAmount < 0.25f) {
+					if(whiteBorder.GetComponent<Image>().fillAmount < 0.25f) {
 
-						joinCountdownImage.color = Color.red;
+						whiteBorder.GetComponent<Image>().color = Color.red;
 					}
-					else if(joinCountdownImage.fillAmount < 0.5f) {
+					else if(whiteBorder.GetComponent<Image>().fillAmount < 0.5f) {
 
-						joinCountdownImage.color = Color.yellow;
-					}
+						whiteBorder.GetComponent<Image>().color = new Color(229, 83, 0);
+                    }
+					else
+					{
+                        whiteBorder.GetComponent<Image>().color = Color.yellow;
+                    }
                 }
 
-				if(playerCount == 4 && joinUI.activeSelf) {
-
-					joinUI.SetActive(false);
-				}
 
                 if ((joinGameDelay <= 0 || readyPlayers == playerCount) && playerCount > 0)
                 {
@@ -67,20 +68,19 @@ public class TimedGM : BaseGM
                         joinText[i].gameObject.SetActive(false);
                         inputText[i].gameObject.SetActive(false);
                     }
-                    joinCountdownImage.gameObject.SetActive(false);
-					joinUI.SetActive(false);
+                    timeBar.color = Color.white;
                     
 					readyText.SetActive(true);
 					readyText.GetComponent<Text>().text = (Random.value < 0.5) ? "Fire Away, Player" : "Aim True, Player";
 
                     SetState(GAMESTATE.COUNTDOWN);
                     //Debug.Log(state);
-                    StartCoroutine(CountDown()); //pregame countdown. only activates after 'lobby countdown' has been executed.
+                    StartCoroutine(CountDown()); //pre-game countdown. only activates after 'lobby countdown' has been executed.
                 }
 
                 break;
 
-            //Ingame runs from the time the "Get Ready" countdown ends, and the win condition is met.
+            //In-game runs from the time the "Get Ready" countdown ends, and the win condition is met.
             case (GAMESTATE.INGAME):
                 if (GetPaused() == false)
                 {
@@ -107,7 +107,7 @@ public class TimedGM : BaseGM
 				}
                 break;
 
-            //Postgame runs from the time the win condition is met, and the required players press return to menu.
+            //Post-game runs from the time the win condition is met, and the required players press return to menu.
             case (GAMESTATE.POSTGAME):
 
                 break;

@@ -40,7 +40,7 @@ public class ScattershotObject : MonoBehaviour
            Laser.GetComponent<Laser>().scoreCounter();
 
            // Create score canvas
-           GameObject newScoreCounter = Instantiate(Laser.GetComponent<Laser>().scoreCounterPrefab, other.transform.position, Quaternion.identity) as GameObject;
+           GameObject newScoreCounter = Instantiate(Laser.GetComponent<Laser>().GetScoreCounter(), other.transform.position, Quaternion.identity) as GameObject;
             newScoreCounter.GetComponent<ScoreCounterCanvas>().SetText(Laser.GetComponent<Laser>().score);
            newScoreCounter.GetComponentInChildren<Text>().color = Laser.GetComponent<SpriteRenderer>().color;
         }

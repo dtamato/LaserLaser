@@ -9,7 +9,6 @@ public class GravityShifter : MonoBehaviour {
 	[SerializeField] float gravityStrength = 80;
 	[SerializeField] float minSwitchTime = 5;
 	[SerializeField] float maxSwitchTime = 10;
-	Vector2 currentGravityDirection;
 	bool switchingStarted = false;
 
 	[Header("Gravity Image")]
@@ -27,7 +26,7 @@ public class GravityShifter : MonoBehaviour {
 
 	void Update () {
 
-		if(gameManager.getState() == BaseGM.GAMESTATE.INGAME && !switchingStarted) {
+		if(gameManager.getState() == BaseGM.GAMESTATE.PREGAME && !switchingStarted) {
 
 			switchingStarted = true;
 			InitializeGravityShifter();
@@ -40,8 +39,6 @@ public class GravityShifter : MonoBehaviour {
 	}
 
 	void InitializeGravityShifter () {
-
-		currentGravityDirection = Physics2D.gravity;
 
 		gravityImageObject = Instantiate(gravityImagePrefab, GameObject.Find("Canvas").transform) as GameObject;
 		gravityImageObject.GetComponent<RectTransform>().localScale = Vector3.one;
@@ -80,11 +77,10 @@ public class GravityShifter : MonoBehaviour {
 					gravityImageObject.transform.rotation = Quaternion.Euler(0, 0, 90);
 				}
 
-			} while(newGravityDirection == gravityStrength * currentGravityDirection);
+			} while(gravityStrength * newGravityDirection == Physics2D.gravity);
 
 			// Set new gravity direction
-			newGravityDirection *= gravityStrength;
-			Physics2D.gravity = newGravityDirection;
+			Physics2D.gravity = gravityStrength * newGravityDirection;
 			//Debug.Log("new direction: " + newGravityDirection);
 
 			// Trigger animation for it

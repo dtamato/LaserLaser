@@ -26,13 +26,14 @@ public class BaseGM : MonoBehaviour
     //Scene build index integers.
     public int titleSceneIndex;
     public int menuSceneIndex;
-    //public int LobbySceneIndex;
     public int mainGameSceneIndex;
     public int gameOverSceneIndex;
+    public int creditsSceneIndex;
    
     //External References.
     public static BaseGM instance = null;
     public List<Cannon> players;
+    public List<Color> playerColors;
     protected List<GameObject> spawns;
     protected GameObject[] activePlayersArray;
 
@@ -41,28 +42,34 @@ public class BaseGM : MonoBehaviour
     protected List<Text> joinText;
     protected List<Text> inputText;
     protected GameObject readyText;
-	protected Image joinCountdownImage;
-    protected Text joinCountdownText;
-    protected GameObject gameOverPanel;
+    //protected Text joinCountdownText;
     protected GameObject whiteBorder;
     protected GameObject pauseMenu;
-	protected GameObject joinUI;
-	protected Text endCountdownText;
-	
+    //protected GameObject joinUI;
+    protected Text endCountdownText;
+
     //State management.
     public enum GAMESTATE {SETUP, PREGAME, COUNTDOWN, INGAME, POSTGAME };
     protected GAMESTATE state;  
-    public string gameMode;
+    public string gameMode;     //FFA or TB.
+    public string gameType;     //Timed, Scored, etc. Set in child GM.
 
     //Color management.
 	public ColorList[] _colorlist;
     
-    //Timer and score metrics.
+    //Timer and game flow metrics.
     public float joinGameDelay;
     public float startGameDelay;
     public int playerCount = 0;
     public int readyPlayers = 0;
+    public bool[] activePlayers;
+
+    //Scoring Metrics.
     public List<int> playerScores;
+    public List<int> longshots;
+    public List<int> trickshots;
+    public List<int> doubleshots;
+    public List<int> tripleshots;
     public int team1Score, team2Score;  //Only used in TB mode.
 
     bool isPaused = false;
@@ -168,57 +175,6 @@ public class BaseGM : MonoBehaviour
 
     #endregion
 
-    #region Player Preferences (Public Accessors)
-
-    /*
-    //Called from Cannon.cs when a player enters the lobby.
-    public void playerJoin(int pID, int teamNo, Color color, Color teamColor)
-    {
-        playerList[pID].setID(pID);
-        playerList[pID].setTeam(teamNo);
-        playerList[pID].setColor(color);
-        playerList[pID].setTeamColor(teamColor);
-        playerList[pID].setActive(true);
-    }
-    
-    //The following getters are called from Cannon.cs to access the protected PlayerDefs class.
-    public void playerLeave(int pID) {
-        playerList[pID].reset();
-    }
-    public void setColor(int pID, Color color) {
-        playerList[pID].setColor(color);
-    }
-    public void setSensitivity(int pID, int sens) {
-        playerList[pID].setSensitivity(sens);
-    }
-    public void setInvert(int pID, bool state) {
-        playerList[pID].setInverted(state);
-    }
-    public void setTeam(int pID, int team) {
-        playerList[pID].setTeam(team);
-    }
-    public void setID(int pID) {
-        playerList[pID].setID(pID);
-    }
-    public void setTeamColour(int pId, Color color) {
-        playerList[pId].setTeamColor(color);
-    }
-    */
-
-    #endregion
-
-    /*
-    public void IncrementReadyPlayers()
-    {
-        readyPlayers++;
-    }
-
-    public void DecrementReadyPlayers()
-    {
-        readyPlayers--;
-    }
-    */
-
     //Called immediately when game manager is instantiated in Menu.
     protected void Awake()
     {
@@ -233,7 +189,14 @@ public class BaseGM : MonoBehaviour
         joinText = new List<Text>(4);
         inputText = new List<Text>(4);
         spawns = new List<GameObject>(4);
+
+        activePlayers = new bool[4];
+        playerColors = new List<Color>(4);
         playerScores = new List<int>(4);
+        longshots = new List<int>(4);
+        trickshots = new List<int>(4);
+        doubleshots = new List<int>(4);
+        tripleshots = new List<int>(4);
 
         //Initialize HUD, Spawns, Scores, and Colourlist.
         for (int i = 0; i <= 3; i++)
@@ -243,7 +206,13 @@ public class BaseGM : MonoBehaviour
             inputText.Add(null);
             spawns.Add(null);
             players.Add(null);
+            activePlayers[i] = false;
+            playerColors.Add(Color.grey);
             playerScores.Add(0);
+            longshots.Add(0);
+            trickshots.Add(0);
+            doubleshots.Add(0);
+            tripleshots.Add(0);
         }
 
         //This will need to be changed when the GM is instantiated properly in the menu and carried into the game scene.
@@ -255,6 +224,7 @@ public class BaseGM : MonoBehaviour
     //Called when entering game scene, initializes players, HUD and timer.
     protected void initializeGame()
     {
+        Debug.Log("REGULAR INITIALIZE");
         //Reference members of HUD and Spawns.
         for (int i = 0; i <= 3; i++)
         {
@@ -266,22 +236,20 @@ public class BaseGM : MonoBehaviour
 
         //Reference all UI elements, and the 1st player object.
         readyText = GameObject.Find("ReadyText");
+        endCountdownText = GameObject.Find("End Countdown Text").GetComponent<Text>();
         readyText.SetActive(false);
-        joinCountdownImage = GameObject.Find("JoinCountdownImage").GetComponent<Image>(); // THIS
+        //joinCountdownText = GameObject.Find("JoinCountdownText").GetComponent<Text>();
         whiteBorder = GameObject.Find ("White Border");
-        gameOverPanel = GameObject.Find("GameOverPanel");
-        gameOverPanel.SetActive(false);
         pauseMenu = GameObject.Find("Pause Menu");
         pauseMenu.SetActive(false);
-		joinUI = GameObject.Find("Join UI");
-		endCountdownText = GameObject.Find("End Countdown Text").GetComponent<Text>();
-		endCountdownText.gameObject.SetActive(false);
         //Debug.Log("initialize ran.");
         //FillActivePlayersArray ();
+        endCountdownText.enabled = false;
     }
 
-    protected void controlInitializeGame() //used for the conrol game mode. as the players will not have input text and such for now. will be altered in the future
+    protected void controlInitializeGame() //used for the control game mode. as the players will not have input text and such for now. will be altered in the future
     {
+        Debug.Log("CONTROL INITIALIZE");
         //Reference members of HUD and Spawns.
         for (int i = 0; i <= 3; i++)
         {
@@ -296,8 +264,6 @@ public class BaseGM : MonoBehaviour
         //readyText.SetActive(false);
         //joinCountdownText = GameObject.Find("JoinCountdownText").GetComponent<Text>();
         whiteBorder = GameObject.Find("White Border");
-        gameOverPanel = GameObject.Find("GameOverPanel");
-        gameOverPanel.SetActive(false);
         pauseMenu = GameObject.Find("Pause Menu");
         pauseMenu.SetActive(false);
         //Debug.Log("initialize ran.");
@@ -316,55 +282,8 @@ public class BaseGM : MonoBehaviour
     //Called from each subclass GM.
     public void GameOver()
     {
+        changeScene(gameOverSceneIndex);
         state = GAMESTATE.POSTGAME;
-        //Debug.Log(state);
-        //Determine who was the winner.
-        int highScore = 0;
-        int winner = 0;
-
-        //Display the results.
-        gameOverPanel.SetActive(true);
-
-        //Scoring for FFA.
-        if (gameMode == "FFA")
-        {
-            for (int i = 0; i < 4; i++)
-            {
-                int score = playerScores[i];
-                if (score > highScore)
-                {
-                    highScore = score;
-                    winner = i;
-                }
-            }
-
-            //Set the Winner Text.
-            GameObject.Find("WinnerText").GetComponent<Text>().text = ("Player " + (winner + 1) + " Wins!");
-            GameObject.Find("FinalScoreText").GetComponent<Text>().text += highScore;
-
-            //Set the panel color to that of the winner.
-            GameObject.Find("GameOverPanel").GetComponent<Image>().color = players[winner].GetColor();
-			
-			GameObject.Find("Camera Overlay").GetComponent<FadeCameraOverlay>().FadeToBlack();
-        }
-
-        //Scoring for TB.
-        else
-        {
-            //Determine winning team.
-            winner = team1Score > team2Score ? 1 : 2;
-            highScore = team1Score > team2Score ? team1Score : team2Score;
-
-            //Set the Winner Text.
-            GameObject.Find("WinnerText").GetComponent<Text>().text = ("Team " + (winner) + " Wins!");
-            GameObject.Find("FinalScoreText").GetComponent<Text>().text = highScore.ToString();
-
-            //Set the panel color to that of the winner.
-            Color winColor = winner == 1 ? Color.blue : Color.red;
-            GameObject.Find("GameOverPanel").GetComponent<Image>().color = winColor;
-        }
-
-        Debug.Log("Game Over, Results Displayed.");
     }
 
     #endregion
@@ -378,8 +297,8 @@ public class BaseGM : MonoBehaviour
     //Returns to menu and destroys GM and rewired manager.
     public void returnToMenu()
     {
+		Destroy(GameObject.Find("Rewired Input Manager"));
         SceneManager.LoadScene(titleSceneIndex);
-        Destroy(GameObject.Find("Rewired Input Manager"));
         Debug.Log("Goodbye cruel world.");
         Destroy(gameObject);
     }
@@ -400,15 +319,18 @@ public class BaseGM : MonoBehaviour
 
 		for (int i = 0; i < 4; i++)
         {
-			if (playerScores[i] > winningScore)
-            {
-                winningScore = playerScores[i];
-                winningPlayerIndex = i;
-				whiteBorder.GetComponent<Image>().color = players[i].GetColor();
-			}
-			else if (playerScores[i] == winningScore)
-            {
-				whiteBorder.GetComponent<Image> ().color = Color.white;
+			if(activePlayers[i] == true) {
+				
+				if (playerScores[i] > winningScore)
+	            {
+	                winningScore = playerScores[i];
+	                winningPlayerIndex = i;
+	                whiteBorder.GetComponent<Image>().color = players[i].GetColor();
+				}
+				else if (playerScores[i] == winningScore)
+	            {
+					whiteBorder.GetComponent<Image> ().color = Color.black;
+				}
 			}
 		}
 	}
@@ -418,15 +340,15 @@ public class BaseGM : MonoBehaviour
     {
         if (team1Score > team2Score)
         {
-			whiteBorder.GetComponent<Image>().color = Color.blue;
+            whiteBorder.GetComponent<Image>().color = Color.blue;
         }
         else if (team2Score > team1Score)
         {
-			whiteBorder.GetComponent<Image>().color = Color.red;
+            whiteBorder.GetComponent<Image>().color = Color.red;
         }
         else
         {
-			whiteBorder.GetComponent<Image>().color = Color.white;
+            whiteBorder.GetComponent<Image>().color = Color.white;
         }
     }
 
@@ -506,10 +428,11 @@ public class BaseGM : MonoBehaviour
 
         _colorlist[cIdx].isAvailable = false; //making sure other players cannot use the same colour
         players[pId].myColor = _colorlist[cIdx]._color;   //Update Color variable, to be passed to the GM.
-        players[pId].GetComponent<Cannon>().inputText.GetComponent<Text>().color = _colorlist[cIdx]._color;
-		players[pId].GetComponent<Cannon>().joinText.GetComponent<Text>().color = _colorlist[cIdx]._color;
-        players[pId].GetComponent<Cannon>().myColor = _colorlist[cIdx]._color; ;
+        //players[pId].GetComponent<Cannon>().inputText.GetComponent<Text>().color = _colorlist[cIdx]._color;
+        players[pId].GetComponent<Cannon>().myColor = _colorlist[cIdx]._color;
+        playerColors[pId] = _colorlist[cIdx]._color;
     }
+
 
     public void DisablePlayerControllers(int exception)
     {
@@ -532,6 +455,8 @@ public class BaseGM : MonoBehaviour
             //Debug.Log("Re-enabled: " + i);
         }
     }
+
+
 
     #region Getters
     #region StateGetters
@@ -558,6 +483,10 @@ public class BaseGM : MonoBehaviour
     }
     #endregion
 
+    public Text GetJoinText(int id)
+    {
+        return joinText[id];
+    }
 
     #endregion
     #region Setters
@@ -573,11 +502,15 @@ public class BaseGM : MonoBehaviour
         isPaused = input;
     }
 
+
+
     public void SetPlayerPauseId(int newId)
     {
         playerPauseId = newId;
     }
     #endregion
 
+
     #endregion
+
 }

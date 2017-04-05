@@ -19,7 +19,14 @@ public class MoviePlayer : MonoBehaviour {
 
 		yield return new WaitForSeconds(playDelay);
 		MovieTexture movie = (MovieTexture)movieRenderer.material.mainTexture;
-		movie.Play();
-		movie.loop = true;
+	    if (movie != null)
+	    {
+		    movie.Play();
+            movie.loop = true;
+        }
+	    else
+	    {
+	        Debug.Log("There is no movie to play!");
+	    }
 	}
 }

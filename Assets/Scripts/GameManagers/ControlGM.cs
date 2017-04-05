@@ -82,10 +82,10 @@ public class ControlGM : BaseGM {
                     string winningTeam = redWon ? "Red Team" : "Blue Team";
 
                     // Display results
-                    gameOverPanel.transform.Find("Border").GetComponent<Image>().color = winningColor;
+                    /*gameOverPanel.transform.Find("Border").GetComponent<Image>().color = winningColor;
                     gameOverPanel.transform.Find("WinnerText").GetComponent<Text>().color = winningColor;
                     gameOverPanel.transform.Find("WinnerText").GetComponent<Text>().text = winningTeam + " Wins!";
-                    gameOverPanel.SetActive(true);
+                    gameOverPanel.SetActive(true);*/
                 }
 
                 break;
