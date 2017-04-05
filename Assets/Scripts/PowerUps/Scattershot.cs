@@ -30,6 +30,10 @@ public class Scattershot : MonoBehaviour
         scatterBall[2].transform.rotation = Quaternion.Euler(new Vector3(0, 0, 225));
         scatterBall[3].transform.rotation = Quaternion.Euler(new Vector3(0, 0, 315));
 
-		Destroy(this.gameObject);
+		// Hide and disable object while audio plays
+		this.GetComponent<AudioSource>().Play();
+		this.GetComponent<SpriteRenderer>().enabled = false;
+		this.GetComponent<CircleCollider2D>().enabled = false;
+		Destroy(this.gameObject, 1f);
     }
 }

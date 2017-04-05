@@ -39,7 +39,7 @@ public class SpawnListener : MonoBehaviour
 				obj.GetComponent<AudioSource>().clip = playerShootAudioClip;
                 gameManager.playerCount++;
                 gameManager.activePlayers[playerID] = true;
-                gameManager.GetJoinText(playerID).enabled = false;
+                //gameManager.GetJoinText(playerID).enabled = false;
                 taken = true;
 				this.GetComponent<AudioSource>().Play(); //what is this?
             }

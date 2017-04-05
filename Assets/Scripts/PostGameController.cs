@@ -59,6 +59,10 @@ public class PostGameController : MonoBehaviour
 
     void Start ()
     {
+		GameObject cameraOverlay = GameObject.Find("Camera Overlay").gameObject;
+		cameraOverlay.GetComponent<Image>().color = Color.black;
+		cameraOverlay.GetComponent<FadeCameraOverlay>().FadeOut();
+
         gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<BaseGM>();
         gameType = gameManager.gameType;
 

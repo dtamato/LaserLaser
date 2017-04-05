@@ -21,7 +21,7 @@ public class StealTrigger : MonoBehaviour {
 
 		if(other.CompareTag("Player") && other.GetComponentInChildren<SpriteRenderer>().color != textColor) {
 
-			GameObject newTrickshotCanvas = Instantiate(trickshotCanvasPrefab, this.transform.position, Quaternion.identity) as GameObject;
+			GameObject newTrickshotCanvas = Instantiate(trickshotCanvasPrefab, this.transform.position + Vector3.down, Quaternion.identity) as GameObject;
 			newTrickshotCanvas.GetComponentInChildren<Text>().color = textColor;
 			newTrickshotCanvas.GetComponentInChildren<Text>().fontSize = 80;
 			newTrickshotCanvas.GetComponentInChildren<Text>().text = "MINE!";

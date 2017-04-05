@@ -29,7 +29,7 @@ public class Bouncer : MonoBehaviour {
 		}
 		else if(appearTimer >= appearTime && this.GetComponent<SpriteRenderer>().enabled == false) {
 
-			this.transform.GetChild(0).gameObject.SetActive(false);
+			this.transform.GetChild(0).gameObject.GetComponent<ParticleSystem>().Stop();
 			this.GetComponent<SpriteRenderer>().enabled = true;
             this.GetComponent<Collider2D>().isTrigger = false;
 			this.GetComponent<Animator>().enabled = true;

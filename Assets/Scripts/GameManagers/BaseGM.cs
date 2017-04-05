@@ -244,7 +244,7 @@ public class BaseGM : MonoBehaviour
         pauseMenu.SetActive(false);
         //Debug.Log("initialize ran.");
         //FillActivePlayersArray ();
-        endCountdownText.enabled = false;
+		endCountdownText.gameObject.SetActive(false);
     }
 
     protected void controlInitializeGame() //used for the control game mode. as the players will not have input text and such for now. will be altered in the future
@@ -282,9 +282,17 @@ public class BaseGM : MonoBehaviour
     //Called from each subclass GM.
     public void GameOver()
     {
-        changeScene(gameOverSceneIndex);
+		GameObject.Find("Camera Overlay").GetComponent<FadeCameraOverlay>().FadeToBlack();
         state = GAMESTATE.POSTGAME;
+
+		StartCoroutine(DelayLoadGameOverScene());
     }
+
+	IEnumerator DelayLoadGameOverScene () {
+
+		yield return new WaitForSeconds(1.5f);
+		changeScene(gameOverSceneIndex);
+	}
 
     #endregion
 
@@ -428,7 +436,8 @@ public class BaseGM : MonoBehaviour
 
         _colorlist[cIdx].isAvailable = false; //making sure other players cannot use the same colour
         players[pId].myColor = _colorlist[cIdx]._color;   //Update Color variable, to be passed to the GM.
-        //players[pId].GetComponent<Cannon>().inputText.GetComponent<Text>().color = _colorlist[cIdx]._color;
+		players[pId].GetComponent<Cannon>().joinText.GetComponent<Text>().color = _colorlist[cIdx]._color;
+        players[pId].GetComponent<Cannon>().inputText.GetComponent<Text>().color = _colorlist[cIdx]._color;
         players[pId].GetComponent<Cannon>().myColor = _colorlist[cIdx]._color;
         playerColors[pId] = _colorlist[cIdx]._color;
     }
@@ -455,8 +464,6 @@ public class BaseGM : MonoBehaviour
             //Debug.Log("Re-enabled: " + i);
         }
     }
-
-
 
     #region Getters
     #region StateGetters

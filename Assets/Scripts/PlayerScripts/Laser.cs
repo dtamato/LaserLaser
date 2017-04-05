@@ -77,12 +77,22 @@ public class Laser : MonoBehaviour
 		}
 		else if (other.transform.CompareTag ("Player")) {
 
-			float randomX = other.transform.position.x + Random.Range(0, 2) * 2 - 1;
-			float randomY = other.transform.position.y + Random.Range(0, 2) * 2 - 1;
-			Vector3 randomPosition = new Vector3(randomX, randomY, 0);
-			GameObject newCanvasObject = Instantiate(trickshotCanvasPrefab, randomPosition, Quaternion.identity) as GameObject;
-			newCanvasObject.GetComponent<TrickshotCanvas>().SetText("#$%@");
-			newCanvasObject.GetComponentInChildren<Text>().color = this.GetComponent<SpriteRenderer>().color;
+			if(Random.value < 0.75f) {
+
+				float randomX = other.transform.position.x + Random.Range(0, 2) * 2 - 1;
+				float randomY = other.transform.position.y + Random.Range(0, 2) * 2 - 1;
+				Vector3 randomPosition = new Vector3(randomX, randomY, 0);
+				GameObject newCanvasObject = Instantiate(trickshotCanvasPrefab, randomPosition, Quaternion.identity) as GameObject;
+				newCanvasObject.GetComponentInChildren<Text>().fontSize = 80;
+				string textToShow = Random.value < 0.5f ? "*@$&" : "#$%@";
+				newCanvasObject.GetComponent<TrickshotCanvas>().SetText(textToShow);
+
+				Color textColor = this.GetComponent<SpriteRenderer>().color;
+				textColor = new Color(textColor.r, textColor.g, textColor.b, 0.7f);
+				newCanvasObject.GetComponentInChildren<Text>().color = textColor;
+			}
+
+			this.GetComponent<AudioSource>().Play();
 			Camera.main.GetComponent<CameraEffects> ().ShakeCamera ();
 		}
 		else if(other.transform.CompareTag("Bouncer")) {
@@ -135,38 +145,47 @@ public class Laser : MonoBehaviour
 		Vector3 trickshotCanvasPosition = new Vector3(randomX, yPos, 0);
 		float travelDistance = Vector3.Distance(diamondPosition, shotStartPosition);
 		const float longShotDistance = 10f;
+		string canvasText = "";
 
 		// Combos
 		if(diamondCombo == 2) {
 
-			GameObject newTrickshotCanvas = Instantiate(trickshotCanvasPrefab, trickshotCanvasPosition, Quaternion.identity) as GameObject;
-			newTrickshotCanvas.GetComponent<TrickshotCanvas>().SetText("DOUBLE SHOT");
-			newTrickshotCanvas.GetComponentInChildren<Text>().color = this.GetComponentInChildren<SpriteRenderer>().color;
-            gameManager.doubleshots[cannon.GetComponent<Cannon>().playerId]++;  //Record the shot.
+			canvasText += "DOUBLE ";
+			gameManager.doubleshots[cannon.GetComponent<Cannon>().playerId]++;
 		}
 		else if(diamondCombo == 3) {
 
-			GameObject newTrickshotCanvas = Instantiate(trickshotCanvasPrefab, trickshotCanvasPosition, Quaternion.identity) as GameObject;
-			newTrickshotCanvas.GetComponent<TrickshotCanvas>().SetText("TRIPLE SHOT");
-			newTrickshotCanvas.GetComponentInChildren<Text>().color = this.GetComponentInChildren<SpriteRenderer>().color;
-            gameManager.tripleshots[cannon.GetComponent<Cannon>().playerId]++;  //Record the shot.
-        }
-		else if(travelDistance > longShotDistance) {
+			canvasText += "TRIPLE ";
+			gameManager.tripleshots[cannon.GetComponent<Cannon>().playerId]++;
+		}
 
-			GameObject newTrickshotCanvas = Instantiate(trickshotCanvasPrefab, trickshotCanvasPosition, Quaternion.identity) as GameObject;
-			newTrickshotCanvas.GetComponent<TrickshotCanvas>().SetText("LONG SHOT");
-			newTrickshotCanvas.GetComponentInChildren<Text>().color = this.GetComponentInChildren<SpriteRenderer>().color;
-            gameManager.longshots[cannon.GetComponent<Cannon>().playerId]++;  //Record the shot.
-        }
+		if(travelDistance > longShotDistance) {
+
+			canvasText += "LONG ";
+			gameManager.longshots[cannon.GetComponent<Cannon>().playerId]++;
+		}
 
 		// Trickshots
 		if(bounceCombo > 0) {
 
+			canvasText += "TRICK ";
+			gameManager.trickshots[cannon.GetComponent<Cannon>().playerId]++;
+		}
+
+		if(canvasText != "") {
+
+			canvasText += (Random.value < 0.65f) ? "SHOT" : (Random.value < 0.5f ? "SHOT!?" : "SHOT!");
 			GameObject newTrickshotCanvas = Instantiate(trickshotCanvasPrefab, trickshotCanvasPosition, Quaternion.identity) as GameObject;
-			newTrickshotCanvas.GetComponent<TrickshotCanvas>().SetText("TRICK SHOT");
+			newTrickshotCanvas.GetComponent<TrickshotCanvas>().SetText(canvasText);
 			newTrickshotCanvas.GetComponentInChildren<Text>().color = this.GetComponentInChildren<SpriteRenderer>().color;
-            gameManager.trickshots[cannon.GetComponent<Cannon>().playerId]++;  //Record the shot.
-        }
+
+			// Clamp x position of canvas
+			float minX = -6;
+			float maxX = 6;
+			float newX = Mathf.Clamp(newTrickshotCanvas.GetComponent<RectTransform>().position.x, minX, maxX);
+			Vector3 canvasPosition = newTrickshotCanvas.GetComponent<RectTransform>().position;
+			newTrickshotCanvas.GetComponent<RectTransform>().position = new Vector3(newX, canvasPosition.y, canvasPosition.z);
+		}
 	}
 
 	public void scoreCounter()

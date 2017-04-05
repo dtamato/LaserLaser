@@ -41,7 +41,11 @@ public class GravityShifter : MonoBehaviour {
 	void InitializeGravityShifter () {
 
 		gravityImageObject = Instantiate(gravityImagePrefab, GameObject.Find("Canvas").transform) as GameObject;
+		gravityImageObject.transform.SetSiblingIndex(0);
 		gravityImageObject.GetComponent<RectTransform>().localScale = Vector3.one;
+		gravityImageObject.GetComponent<Canvas>().overrideSorting = true;
+		gravityImageObject.GetComponent<Canvas>().sortingLayerName = "Background";
+		gravityImageObject.GetComponent<Canvas>().sortingOrder = 3;
 		gravityImageAnimator = gravityImageObject.GetComponent<Animator>();
 	}
 
@@ -59,22 +63,22 @@ public class GravityShifter : MonoBehaviour {
 				if(randomValue < 0.25f) {
 
 					newGravityDirection = Vector2.left;
-					gravityImageObject.transform.rotation = Quaternion.identity;
+					gravityImageObject.transform.rotation = Quaternion.Euler(0, 0, 90);
 				}
 				else if(randomValue < 0.5f) {
 
 					newGravityDirection = Vector2.right;
-					gravityImageObject.transform.rotation = Quaternion.Euler(0, 0, 180);
+					gravityImageObject.transform.rotation = Quaternion.Euler(0, 0, 270);
 				}
 				else if(randomValue < 0.75f) {
 
 					newGravityDirection = Vector2.up;
-					gravityImageObject.transform.rotation = Quaternion.Euler(0, 0, 270);
+					gravityImageObject.transform.rotation = Quaternion.identity;
 				}
 				else {
 
 					newGravityDirection = Vector2.down;
-					gravityImageObject.transform.rotation = Quaternion.Euler(0, 0, 90);
+					gravityImageObject.transform.rotation = Quaternion.Euler(0, 0, 180);
 				}
 
 			} while(gravityStrength * newGravityDirection == Physics2D.gravity);
