@@ -42,9 +42,11 @@ public class BaseGM : MonoBehaviour
     protected List<Text> joinText;
     protected List<Text> inputText;
     protected GameObject readyText;
-    protected Text joinCountdownText;
+    //protected Text joinCountdownText;
     protected GameObject whiteBorder;
     protected GameObject pauseMenu;
+    //protected GameObject joinUI;
+    protected Text endCountdownText;
 
     //State management.
     public enum GAMESTATE {SETUP, PREGAME, COUNTDOWN, INGAME, POSTGAME };
@@ -273,6 +275,7 @@ public class BaseGM : MonoBehaviour
     //Called when entering game scene, initializes players, HUD and timer.
     protected void initializeGame()
     {
+        Debug.Log("REGULAR INITIALIZE");
         //Reference members of HUD and Spawns.
         for (int i = 0; i <= 3; i++)
         {
@@ -285,8 +288,31 @@ public class BaseGM : MonoBehaviour
         //Reference all UI elements, and the 1st player object.
         readyText = GameObject.Find("ReadyText");
         readyText.SetActive(false);
-        joinCountdownText = GameObject.Find("JoinCountdownText").GetComponent<Text>();
+        //joinCountdownText = GameObject.Find("JoinCountdownText").GetComponent<Text>();
         whiteBorder = GameObject.Find ("White Border");
+        pauseMenu = GameObject.Find("Pause Menu");
+        pauseMenu.SetActive(false);
+        //Debug.Log("initialize ran.");
+        //FillActivePlayersArray ();
+    }
+
+    protected void controlInitializeGame() //used for the conrol game mode. as the players will not have input text and such for now. will be altered in the future
+    {
+        Debug.Log("CONTROL INITIALIZE");
+        //Reference members of HUD and Spawns.
+        for (int i = 0; i <= 3; i++)
+        {
+            //HUDText[i] = GameObject.Find("PlayerScore" + i).GetComponent<Text>(); //to be removed when refactoring code
+            /*joinText[i] = GameObject.Find("JoinText" + i).GetComponent<Text>();
+            inputText[i] = GameObject.Find("InputText" + i).GetComponent<Text>();
+            spawns[i] = GameObject.Find("SP" + i);*/
+        }
+
+        //Reference all UI elements, and the 1st player object.
+        //readyText = GameObject.Find("ReadyText");
+        //readyText.SetActive(false);
+        //joinCountdownText = GameObject.Find("JoinCountdownText").GetComponent<Text>();
+        whiteBorder = GameObject.Find("White Border");
         pauseMenu = GameObject.Find("Pause Menu");
         pauseMenu.SetActive(false);
         //Debug.Log("initialize ran.");
@@ -346,11 +372,11 @@ public class BaseGM : MonoBehaviour
             {
                 winningScore = playerScores[i];
                 winningPlayerIndex = i;
-                whiteBorder.GetComponent<SpriteRenderer>().color = players[i].GetColor();
+                whiteBorder.GetComponent<Image>().color = players[i].GetColor();
 			}
 			else if (playerScores[i] == winningScore)
             {
-				whiteBorder.GetComponent<SpriteRenderer> ().color = Color.white;
+				whiteBorder.GetComponent<Image> ().color = Color.white;
 			}
 		}
 	}
@@ -360,15 +386,15 @@ public class BaseGM : MonoBehaviour
     {
         if (team1Score > team2Score)
         {
-            whiteBorder.GetComponent<SpriteRenderer>().color = Color.blue;
+            whiteBorder.GetComponent<Image>().color = Color.blue;
         }
         else if (team2Score > team1Score)
         {
-            whiteBorder.GetComponent<SpriteRenderer>().color = Color.red;
+            whiteBorder.GetComponent<Image>().color = Color.red;
         }
         else
         {
-            whiteBorder.GetComponent<SpriteRenderer>().color = Color.white;
+            whiteBorder.GetComponent<Image>().color = Color.white;
         }
     }
 

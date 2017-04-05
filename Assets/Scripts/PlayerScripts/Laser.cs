@@ -263,5 +263,10 @@ public class Laser : MonoBehaviour
 	{
 		return this.GetComponent<SpriteRenderer> ().color;
 	}
+
+    public GameObject GetScoreCounter()
+    {
+        return scoreCounterPrefab;
+    }
     #endregion
 }
