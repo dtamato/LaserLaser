@@ -36,8 +36,9 @@ public class SpawnListener : MonoBehaviour
                 obj.GetComponent<Cannon>().SetPauseMenu(gameManager.GetPauseMenu());
                 gameManager.playerCount++;
                 gameManager.activePlayers[playerID] = true;
+                gameManager.GetJoinText(playerID).enabled = false;
                 taken = true;
-				this.GetComponent<AudioSource>().Play();
+				this.GetComponent<AudioSource>().Play(); //what is this?
             }
         }
         

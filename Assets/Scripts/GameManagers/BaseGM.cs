@@ -287,6 +287,7 @@ public class BaseGM : MonoBehaviour
 
         //Reference all UI elements, and the 1st player object.
         readyText = GameObject.Find("ReadyText");
+        endCountdownText = GameObject.Find("End Countdown Text").GetComponent<Text>();
         readyText.SetActive(false);
         //joinCountdownText = GameObject.Find("JoinCountdownText").GetComponent<Text>();
         whiteBorder = GameObject.Find ("White Border");
@@ -294,9 +295,10 @@ public class BaseGM : MonoBehaviour
         pauseMenu.SetActive(false);
         //Debug.Log("initialize ran.");
         //FillActivePlayersArray ();
+        endCountdownText.enabled = false;
     }
 
-    protected void controlInitializeGame() //used for the conrol game mode. as the players will not have input text and such for now. will be altered in the future
+    protected void controlInitializeGame() //used for the control game mode. as the players will not have input text and such for now. will be altered in the future
     {
         Debug.Log("CONTROL INITIALIZE");
         //Reference members of HUD and Spawns.
@@ -529,6 +531,10 @@ public class BaseGM : MonoBehaviour
     }
     #endregion
 
+    public Text GetJoinText(int id)
+    {
+        return joinText[id];
+    }
 
     #endregion
     #region Setters
