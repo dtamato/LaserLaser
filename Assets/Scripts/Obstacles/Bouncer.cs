@@ -21,13 +21,15 @@ public class Bouncer : MonoBehaviour {
 	}
 
 	void Update () {
-
+		
 		if(appearTimer < appearTime) {
 
 			appearTimer += Time.deltaTime;
+			this.transform.GetChild(0).Rotate(Vector3.right * 5);
 		}
 		else if(appearTimer >= appearTime && this.GetComponent<SpriteRenderer>().enabled == false) {
 
+			this.transform.GetChild(0).gameObject.SetActive(false);
 			this.GetComponent<SpriteRenderer>().enabled = true;
             this.GetComponent<Collider2D>().isTrigger = false;
 			this.GetComponent<Animator>().enabled = true;

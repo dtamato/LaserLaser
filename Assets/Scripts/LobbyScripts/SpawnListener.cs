@@ -14,6 +14,8 @@ public class SpawnListener : MonoBehaviour
     public int playerID;
     public bool taken;
 
+	[SerializeField] AudioClip playerShootAudioClip;
+
     private BaseGM gameManager;
     private Player rewiredPlayer;
     
@@ -34,6 +36,7 @@ public class SpawnListener : MonoBehaviour
                 obj.GetComponent<Cannon>().spawnPoint = this.gameObject;
                 obj.GetComponentInChildren<Laser>().setGameMode(gameManager.gameMode);
                 obj.GetComponent<Cannon>().SetPauseMenu(gameManager.GetPauseMenu());
+				obj.GetComponent<AudioSource>().clip = playerShootAudioClip;
                 gameManager.playerCount++;
                 gameManager.activePlayers[playerID] = true;
                 gameManager.GetJoinText(playerID).enabled = false;

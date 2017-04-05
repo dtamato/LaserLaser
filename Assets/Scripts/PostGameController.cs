@@ -120,8 +120,10 @@ public class PostGameController : MonoBehaviour
             }
         }
 
-        if (readyCount == 4)
+		if (readyCount == 4) {
+			
             gameManager.changeScene(gameManager.creditsSceneIndex);
+		}
     }
 
     void importScores()

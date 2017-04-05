@@ -175,57 +175,6 @@ public class BaseGM : MonoBehaviour
 
     #endregion
 
-    #region Player Preferences (Public Accessors)
-
-    /*
-    //Called from Cannon.cs when a player enters the lobby.
-    public void playerJoin(int pID, int teamNo, Color color, Color teamColor)
-    {
-        playerList[pID].setID(pID);
-        playerList[pID].setTeam(teamNo);
-        playerList[pID].setColor(color);
-        playerList[pID].setTeamColor(teamColor);
-        playerList[pID].setActive(true);
-    }
-    
-    //The following getters are called from Cannon.cs to access the protected PlayerDefs class.
-    public void playerLeave(int pID) {
-        playerList[pID].reset();
-    }
-    public void setColor(int pID, Color color) {
-        playerList[pID].setColor(color);
-    }
-    public void setSensitivity(int pID, int sens) {
-        playerList[pID].setSensitivity(sens);
-    }
-    public void setInvert(int pID, bool state) {
-        playerList[pID].setInverted(state);
-    }
-    public void setTeam(int pID, int team) {
-        playerList[pID].setTeam(team);
-    }
-    public void setID(int pID) {
-        playerList[pID].setID(pID);
-    }
-    public void setTeamColour(int pId, Color color) {
-        playerList[pId].setTeamColor(color);
-    }
-    */
-
-    #endregion
-
-    /*
-    public void IncrementReadyPlayers()
-    {
-        readyPlayers++;
-    }
-
-    public void DecrementReadyPlayers()
-    {
-        readyPlayers--;
-    }
-    */
-
     //Called immediately when game manager is instantiated in Menu.
     protected void Awake()
     {
@@ -348,8 +297,8 @@ public class BaseGM : MonoBehaviour
     //Returns to menu and destroys GM and rewired manager.
     public void returnToMenu()
     {
+		Destroy(GameObject.Find("Rewired Input Manager"));
         SceneManager.LoadScene(titleSceneIndex);
-        Destroy(GameObject.Find("Rewired Input Manager"));
         Debug.Log("Goodbye cruel world.");
         Destroy(gameObject);
     }
@@ -378,7 +327,7 @@ public class BaseGM : MonoBehaviour
 			}
 			else if (playerScores[i] == winningScore)
             {
-				whiteBorder.GetComponent<Image> ().color = Color.white;
+				whiteBorder.GetComponent<Image> ().color = Color.black;
 			}
 		}
 	}

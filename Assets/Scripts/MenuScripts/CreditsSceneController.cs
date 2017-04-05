@@ -10,7 +10,7 @@ public class CreditsSceneController : MonoBehaviour {
 	[SerializeField] Transform namesParent;
 	[SerializeField] Image cameraOverlay;
 	GameObject[] namesArray;
-
+	bool finished = false;
 
 	void Awake () {
 
@@ -76,6 +76,10 @@ public class CreditsSceneController : MonoBehaviour {
 			yield return null;
 		}
 
-		SceneManager.LoadScene(0);
+		if(!finished) {
+
+			finished = true;
+			GameObject.FindGameObjectWithTag("GameManager").GetComponent<BaseGM>().returnToMenu();
+		}
 	}
 }

@@ -95,7 +95,16 @@ public class Cannon : MonoBehaviour
 
         Layer_Mask = LayerMask.GetMask("Boundary");
 
-    	colorIdx = playerId;
+		int nextAvailableColorIndex = playerId;
+
+		while(gameManager._colorlist[nextAvailableColorIndex].isAvailable == false) {
+
+			nextAvailableColorIndex++;
+			nextAvailableColorIndex %= gameManager._colorlist.Length;
+		}
+
+		colorIdx = nextAvailableColorIndex;
+
         gameManager.UpdateColour(colorIdx, playerId);
         inputText.GetComponent<Text>().color = myColor; //to be changed when control is fixed
 		joinText.GetComponent<Text>().text = "Press Start When Ready!";
