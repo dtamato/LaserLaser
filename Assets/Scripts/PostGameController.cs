@@ -41,7 +41,7 @@ public class PostGameController : MonoBehaviour
     private float barScalarLong = 300.0f;
     private float briefPause = 0.1f;
     private float midPause = 1.5f;
-    private float longPause = 3.0f;
+    private float longPause = 2f;
 
     //Text references.
     public List<Text> winningText;
@@ -54,6 +54,8 @@ public class PostGameController : MonoBehaviour
     //Object references.
     public List<Image> backgrounds;
     public List<GameObject> overlays;
+
+	[SerializeField] AudioClip applauseAudioClip;
 
     #endregion
 
@@ -75,7 +77,8 @@ public class PostGameController : MonoBehaviour
 
 			if (gameManager.activePlayers[i] == false)
             {
-				overlays[i].GetComponent<Image>().color = Color.gray;
+				overlays[i].GetComponent<Image>().color = Color.black;
+				overlays[i].GetComponentInChildren<Text>().color = Color.black;
 				overlays[i].SetActive(true);
                 readyPlayers[i] = true;
                 readyCount++;
@@ -242,12 +245,13 @@ public class PostGameController : MonoBehaviour
             backgrounds[i].fillAmount = 0.0f;
 
         yield return new WaitForSeconds(longPause);
+
         for (int i = 0; i < barScalarLong; i++)
         {
             for (int j = 0; j < 4; j++)
                 if (backgrounds[j].fillAmount < fillPerDiamond * diamondScore[j])
                     backgrounds[j].fillAmount += (fillPerDiamond * diamondScore[j] / barScalarLong);
-
+			this.GetComponent<AudioSource>().Play();
             yield return new WaitForSeconds(midPause / barScalarLong);
         }
 
@@ -270,7 +274,7 @@ public class PostGameController : MonoBehaviour
 
             for (int i = 0; i < winningText.Count; i++)
             {
-                winningText[i].text = "The Sniper Award Goes To";
+                winningText[i].text = "Longshot Master";
                 winningText[i].gameObject.SetActive(true);
             }
 
@@ -280,6 +284,7 @@ public class PostGameController : MonoBehaviour
                     for (int i = 0; i < longshotWinner.Length; i++)
                         backgrounds[longshotWinner[i]].fillAmount += (fillPerBonus / barScalarShort);
 
+					this.GetComponent<AudioSource>().Play();
                     yield return new WaitForSeconds(midPause / barScalarShort);
                 }
             yield return new WaitForSeconds(midPause);
@@ -302,7 +307,7 @@ public class PostGameController : MonoBehaviour
 
             for (int i = 0; i < winningText.Count; i++)
             {
-                winningText[i].text = "The Showboat Award Goes To";
+                winningText[i].text = "Showboat Overlord";
                 winningText[i].gameObject.SetActive(true);
             }
 
@@ -312,6 +317,7 @@ public class PostGameController : MonoBehaviour
                     for (int i = 0; i < trickshotWinner.Length; i++)
                         backgrounds[trickshotWinner[i]].fillAmount += (fillPerBonus / barScalarShort);
 
+					this.GetComponent<AudioSource>().Play();
                     yield return new WaitForSeconds(midPause / barScalarShort);
                 }
             yield return new WaitForSeconds(midPause);
@@ -334,7 +340,7 @@ public class PostGameController : MonoBehaviour
 
             for (int i = 0; i < winningText.Count; i++)
             {
-                winningText[i].text = "The Dubshot Award Goes To";
+                winningText[i].text = "Double Shot Pro";
                 winningText[i].gameObject.SetActive(true);
             }
 
@@ -344,6 +350,7 @@ public class PostGameController : MonoBehaviour
                     for (int i = 0; i < doubleshotWinner.Length; i++)
                         backgrounds[doubleshotWinner[i]].fillAmount += (fillPerBonus / barScalarShort);
 
+					this.GetComponent<AudioSource>().Play();
                     yield return new WaitForSeconds(midPause / barScalarShort);
                 }
             yield return new WaitForSeconds(midPause);
@@ -366,7 +373,7 @@ public class PostGameController : MonoBehaviour
 
             for (int i = 0; i < winningText.Count; i++)
             {
-                winningText[i].text = "The Trifecta Award Goes To";
+                winningText[i].text = "The Trifecta Captain";
                 winningText[i].gameObject.SetActive(true);
             }
 
@@ -376,6 +383,7 @@ public class PostGameController : MonoBehaviour
                     for (int i = 0; i < tripleshotWinner.Length; i++)
                         backgrounds[tripleshotWinner[i]].fillAmount += (fillPerBonus / barScalarShort);
 
+					this.GetComponent<AudioSource>().Play();
                     yield return new WaitForSeconds(midPause / barScalarShort);
                 }
             yield return new WaitForSeconds(midPause);
@@ -399,11 +407,13 @@ public class PostGameController : MonoBehaviour
         else
             for (int i = 0; i < winningText.Count; i++)
             {
-                winningText[i].text = "Player " + (finalWinner + 1) + " Is The Ultimate Winner!";
+                winningText[i].text = "Player " + (finalWinner + 1) + " Wins!";
                 winningText[i].gameObject.SetActive(true);
             }
 
         resultsDisplayed = true;
+		this.GetComponent<AudioSource>().clip = applauseAudioClip;
+		this.GetComponent<AudioSource>().Play();
     }
 
     //Base score metric.

@@ -5,6 +5,7 @@ Temp/
 Obj/
 UnityGenerated/
 Library/
+Movies/
 Assets/AssetStoreTools*
 Assets/Rewired/Documentation
 !*.dll

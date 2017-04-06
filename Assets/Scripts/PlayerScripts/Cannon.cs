@@ -142,7 +142,7 @@ public class Cannon : MonoBehaviour
                 if (gameManager.GetPaused() == false && !pauseMenu.activeSelf)
                 {
                     StandardInputs();
-                    CheckOpenPauseMenu();
+                    //CheckOpenPauseMenu();
                 }
                 else if (gameManager.GetPaused())
                 {
