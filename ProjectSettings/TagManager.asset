@@ -20,6 +20,7 @@ TagManager:
   - Grid
   - BackGround
   - YBoundary
+  - Spike
   layers:
   - Default
   - TransparentFX
