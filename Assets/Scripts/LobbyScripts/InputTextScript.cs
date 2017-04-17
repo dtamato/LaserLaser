@@ -16,7 +16,7 @@ public class InputTextScript : MonoBehaviour
 
     void Update()
     {
-        gameObject.GetComponent<Text>().color = GameObject.Find("Player" + (ID + 1) + " Overlay").GetComponent<SpriteRenderer>().color;
+        //gameObject.GetComponent<Text>().color = GameObject.Find("Player" + (ID + 1) + " Overlay").GetComponent<SpriteRenderer>().color;
     }
    
     //Adds time to the coroutine if the player is adjusting their settings many times in quick succession.
@@ -33,7 +33,6 @@ public class InputTextScript : MonoBehaviour
 
     IEnumerator showText()
     {
-        Debug.Log("ran");
         this.GetComponent<Text>().enabled = true;
         while (check2)
         {

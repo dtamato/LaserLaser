@@ -6,7 +6,7 @@ using UnityEngine.SceneManagement;
 [DisallowMultipleComponent]
 public class OpeningMusicController : MonoBehaviour {
 
-	[SerializeField] int lobbyBuildIndex = 3;
+	[SerializeField] int gameBuildIndex = 3;
 
 	static OpeningMusicController instance;
 
@@ -39,7 +39,7 @@ public class OpeningMusicController : MonoBehaviour {
 	void OnLevelFinishedLoading(Scene scene, LoadSceneMode mode) {
 		
 		//Debug.Log ("Level Loaded: " + SceneManager.GetActiveScene ().buildIndex);
-		if (SceneManager.GetActiveScene ().buildIndex > lobbyBuildIndex) {
+		if (SceneManager.GetActiveScene ().buildIndex == gameBuildIndex) {
 
 			Destroy (this.gameObject);
 		}

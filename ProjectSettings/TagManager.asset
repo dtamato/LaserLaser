@@ -15,6 +15,11 @@ TagManager:
   - BigBall
   - Scattershot
   - PowerupBoundary
+  - Bouncer
+  - ControlBouncer
+  - Grid
+  - BackGround
+  - YBoundary
   layers:
   - Default
   - TransparentFX
@@ -32,7 +37,7 @@ TagManager:
   - Diamond
   - Overlay
   - Obstacle
-  - 
+  - YBoundary
   - 
   - 
   - 
