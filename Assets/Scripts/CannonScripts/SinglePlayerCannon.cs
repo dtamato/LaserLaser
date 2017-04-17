@@ -115,7 +115,7 @@ public class SinglePlayerCannon : MonoBehaviour {
 			storedLaser.transform.GetComponent<SpriteRenderer>().enabled = true;
 			pairedLaser.transform.GetComponent<TrailRenderer>().enabled = true;
 			storedLaser = null;
-			this.GetComponent<AudioSource>().pitch = Random.Range(0.5f, 1.5f);
+			this.GetComponent<AudioSource>().pitch = Random.Range(0.9f, 1.1f);
 			this.GetComponent<AudioSource>().Play();
 		}
 	}

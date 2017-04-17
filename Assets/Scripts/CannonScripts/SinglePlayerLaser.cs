@@ -29,6 +29,10 @@ public class SinglePlayerLaser : MonoBehaviour {
 			cannon.GetComponentInChildren<SinglePlayerCannon>().SetNewBaseAngle();
 			cannon.GetComponentInChildren<SinglePlayerCannon> ().SetStoredLaser (this);
 		}
+		else if(other.transform.name == "Enemy Shooter") {
+
+			this.GetComponent<AudioSource>().Play();
+		}
 	}
 
 	public GameObject GetCannon () {
