@@ -28,7 +28,11 @@ public class Laser : MonoBehaviour
 	[SerializeField] GameObject comboCounterPrefab;
 	[SerializeField] GameObject trickshotCanvasPrefab;
 	[SerializeField] Color comboTextColor;
+
+	[Header("Steal Trigger")]
 	[SerializeField] GameObject stealTriggerPrefab;
+	float playerCollisionCooldown = 2;
+	float playerCollisionTimer = 0;
 
     void Awake()
     {
@@ -41,6 +45,16 @@ public class Laser : MonoBehaviour
         //Record the game mode, for scoring purposes.
         gameMode = gameManager.gameMode;
     }
+
+	void Update () {
+
+		UpdateTimers();
+	}
+
+	void UpdateTimers () {
+
+		if(playerCollisionTimer > 0) { playerCollisionTimer -= Time.deltaTime; }
+	}
 
     void OnCollisionEnter2D(Collision2D other)
     {
@@ -75,25 +89,24 @@ public class Laser : MonoBehaviour
 			controlCombo = 0;
 			pitchTracker = 1;
 		}
-		else if (other.transform.CompareTag ("Player")) {
+		else if (other.transform.CompareTag ("Player") && playerCollisionTimer <= 0) {
 
-			if(Random.value < 0.75f) {
+			float randomX = other.transform.position.x + Random.Range(0, 2) * 2 - 1;
+			float randomY = other.transform.position.y + Random.Range(0, 2) * 2 - 1;
+			Vector3 randomPosition = new Vector3(randomX, randomY, 0);
+			GameObject newCanvasObject = Instantiate(trickshotCanvasPrefab, randomPosition, Quaternion.identity) as GameObject;
+			newCanvasObject.GetComponentInChildren<Text>().fontSize = 80;
+			string textToShow = Random.value < 0.5f ? "*@$&" : "#$%@";
+			newCanvasObject.GetComponent<TrickshotCanvas>().SetText(textToShow);
 
-				float randomX = other.transform.position.x + Random.Range(0, 2) * 2 - 1;
-				float randomY = other.transform.position.y + Random.Range(0, 2) * 2 - 1;
-				Vector3 randomPosition = new Vector3(randomX, randomY, 0);
-				GameObject newCanvasObject = Instantiate(trickshotCanvasPrefab, randomPosition, Quaternion.identity) as GameObject;
-				newCanvasObject.GetComponentInChildren<Text>().fontSize = 80;
-				string textToShow = Random.value < 0.5f ? "*@$&" : "#$%@";
-				newCanvasObject.GetComponent<TrickshotCanvas>().SetText(textToShow);
-
-				Color textColor = this.GetComponent<SpriteRenderer>().color;
-				textColor = new Color(textColor.r, textColor.g, textColor.b, 0.7f);
-				newCanvasObject.GetComponentInChildren<Text>().color = textColor;
-			}
+			Color textColor = this.GetComponent<SpriteRenderer>().color;
+			textColor = new Color(textColor.r, textColor.g, textColor.b, 0.7f);
+			newCanvasObject.GetComponentInChildren<Text>().color = textColor;
 
 			this.GetComponent<AudioSource>().Play();
 			Camera.main.GetComponent<CameraEffects> ().ShakeCamera ();
+
+			playerCollisionTimer = playerCollisionCooldown;
 		}
 		else if(other.transform.CompareTag("Bouncer")) {
 
@@ -127,10 +140,6 @@ public class Laser : MonoBehaviour
 			GameObject newScoreCounter = Instantiate(scoreCounterPrefab, other.transform.position, Quaternion.identity) as GameObject;
 			newScoreCounter.GetComponent<ScoreCounterCanvas>().SetText(score);
 			newScoreCounter.GetComponentInChildren<Text>().color = this.GetComponentInChildren<SpriteRenderer>().color;
-
-			// Create steal trigger
-			GameObject newStealTrigger = Instantiate(stealTriggerPrefab, other.transform.position, Quaternion.identity) as GameObject;
-			newStealTrigger.GetComponent<StealTrigger>().SetColor(this.transform.GetComponent<SpriteRenderer>().color);
 
 			// Trickshots
 			diamondCombo++;
@@ -185,6 +194,12 @@ public class Laser : MonoBehaviour
 			float newX = Mathf.Clamp(newTrickshotCanvas.GetComponent<RectTransform>().position.x, minX, maxX);
 			Vector3 canvasPosition = newTrickshotCanvas.GetComponent<RectTransform>().position;
 			newTrickshotCanvas.GetComponent<RectTransform>().position = new Vector3(newX, canvasPosition.y, canvasPosition.z);
+		}
+		else {
+
+			// Only create steal trigger if there was no bonus shot
+			GameObject newStealTrigger = Instantiate(stealTriggerPrefab, diamondPosition, Quaternion.identity) as GameObject;
+			newStealTrigger.GetComponent<StealTrigger>().SetColor(this.transform.GetComponent<SpriteRenderer>().color);
 		}
 	}
 
