@@ -8,6 +8,9 @@ public class TitleSceneController : MonoBehaviour {
 
 	[SerializeField] GameObject pressStartObject;
 	[SerializeField] float pressStartFlickerTime = 1;
+
+	[Header("Demo")]
+	[SerializeField] bool canShowDemo = true;
 	[SerializeField] float secondsUntilDemoPlays = 3;
 	[SerializeField] Renderer movieRenderer;
 	[SerializeField] FadeCameraOverlay cameraOverlay;
@@ -18,7 +21,7 @@ public class TitleSceneController : MonoBehaviour {
 
 		flickerTimer = pressStartFlickerTime;
 		movieRenderer.gameObject.SetActive(false);
-		StartCoroutine(LoadDemo());
+		if(canShowDemo) { StartCoroutine(LoadDemo()); }
 	}
 
 	IEnumerator LoadDemo () {

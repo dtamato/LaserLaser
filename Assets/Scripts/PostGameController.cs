@@ -40,8 +40,8 @@ public class PostGameController : MonoBehaviour
     private float barScalarShort = 150.0f;
     private float barScalarLong = 300.0f;
     private float briefPause = 0.1f;
-    private float midPause = 1.5f;
-    private float longPause = 2f;
+    private float midPause = 0.5f;
+    private float longPause = 1f;
 
     //Text references.
     public List<Text> winningText;
@@ -251,7 +251,7 @@ public class PostGameController : MonoBehaviour
             for (int j = 0; j < 4; j++)
                 if (backgrounds[j].fillAmount < fillPerDiamond * diamondScore[j])
                     backgrounds[j].fillAmount += (fillPerDiamond * diamondScore[j] / barScalarLong);
-			this.GetComponent<AudioSource>().Play();
+			if(this.GetComponent<AudioSource>().isPlaying == false) { this.GetComponent<AudioSource>().Play(); }
             yield return new WaitForSeconds(midPause / barScalarLong);
         }
 
@@ -284,7 +284,7 @@ public class PostGameController : MonoBehaviour
                     for (int i = 0; i < longshotWinner.Length; i++)
                         backgrounds[longshotWinner[i]].fillAmount += (fillPerBonus / barScalarShort);
 
-					this.GetComponent<AudioSource>().Play();
+					if(this.GetComponent<AudioSource>().isPlaying == false) { this.GetComponent<AudioSource>().Play(); }
                     yield return new WaitForSeconds(midPause / barScalarShort);
                 }
             yield return new WaitForSeconds(midPause);
@@ -317,7 +317,7 @@ public class PostGameController : MonoBehaviour
                     for (int i = 0; i < trickshotWinner.Length; i++)
                         backgrounds[trickshotWinner[i]].fillAmount += (fillPerBonus / barScalarShort);
 
-					this.GetComponent<AudioSource>().Play();
+					if(this.GetComponent<AudioSource>().isPlaying == false) { this.GetComponent<AudioSource>().Play(); }
                     yield return new WaitForSeconds(midPause / barScalarShort);
                 }
             yield return new WaitForSeconds(midPause);
@@ -350,7 +350,7 @@ public class PostGameController : MonoBehaviour
                     for (int i = 0; i < doubleshotWinner.Length; i++)
                         backgrounds[doubleshotWinner[i]].fillAmount += (fillPerBonus / barScalarShort);
 
-					this.GetComponent<AudioSource>().Play();
+					if(this.GetComponent<AudioSource>().isPlaying == false) { this.GetComponent<AudioSource>().Play(); }
                     yield return new WaitForSeconds(midPause / barScalarShort);
                 }
             yield return new WaitForSeconds(midPause);
@@ -383,7 +383,7 @@ public class PostGameController : MonoBehaviour
                     for (int i = 0; i < tripleshotWinner.Length; i++)
                         backgrounds[tripleshotWinner[i]].fillAmount += (fillPerBonus / barScalarShort);
 
-					this.GetComponent<AudioSource>().Play();
+					if(this.GetComponent<AudioSource>().isPlaying == false) { this.GetComponent<AudioSource>().Play(); }
                     yield return new WaitForSeconds(midPause / barScalarShort);
                 }
             yield return new WaitForSeconds(midPause);

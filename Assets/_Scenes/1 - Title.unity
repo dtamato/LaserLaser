@@ -414,7 +414,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: fired
+  m_Text: fired!
 --- !u!222 &82451385
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1451,7 +1451,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: fired
+  m_Text: fired!
 --- !u!222 &909987069
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -2057,7 +2057,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: fired
+  m_Text: fired!
 --- !u!222 &1630440265
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -2617,6 +2617,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pressStartObject: {fileID: 1240868405}
   pressStartFlickerTime: 1
+  canShowDemo: 0
   secondsUntilDemoPlays: 10
   movieRenderer: {fileID: 1767905635}
   cameraOverlay: {fileID: 2064995972}

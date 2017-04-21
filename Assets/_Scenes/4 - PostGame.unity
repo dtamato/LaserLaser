@@ -1064,7 +1064,7 @@ MonoBehaviour:
   - {fileID: 884821142}
   - {fileID: 1978851790}
   - {fileID: 2111030552}
-  applauseAudioClip: {fileID: 0}
+  applauseAudioClip: {fileID: 8300000, guid: 1c9e7d08856817446b29be8f11a449ff, type: 3}
 --- !u!4 &633881480
 Transform:
   m_ObjectHideFlags: 0
@@ -1087,7 +1087,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: c037e72dc8ee7924696ee0c7ab0a9430, type: 3}
+  m_audioClip: {fileID: 8300000, guid: b0db48b593f0ed84db9b19e396845439, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1

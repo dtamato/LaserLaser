@@ -140,7 +140,7 @@ public class MainMenuController : MonoBehaviour {
 		float deltaAngle = (targetAngle - currentAngle) % 360;
 		if(deltaAngle < 0) { deltaAngle += 360; }
 
-		if(Mathf.Abs(deltaAngle) < 5f) {
+		if(Mathf.Abs(deltaAngle) < 5f || Mathf.Abs(deltaAngle) > 350f) {
 
 			gameModeParent.transform.rotation = Quaternion.Euler(0, targetAngle, 0);
 			currentAngle = targetAngle;
