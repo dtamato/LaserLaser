@@ -13,7 +13,7 @@ public class MenuStrobeText : MonoBehaviour {
 	[SerializeField] Text[] textToBlink;
 	[SerializeField] Color[] colors;
 
-	void Awake () {
+	void OnEnable () {
 
 		StartCoroutine(ToggleColors());
 	}

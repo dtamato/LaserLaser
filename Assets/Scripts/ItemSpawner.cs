@@ -19,35 +19,24 @@ public class ItemSpawner : MonoBehaviour
         int playerCount = gameManager.playerCount;
         //spawnCooldown = 2f - (0.5f * playerCount);
         spawnCooldown = -0.5f * playerCount + 1.5f;
-        
+
         // Start spawning diamonds
         StartCoroutine("RecursiveSpawner");
     }
+
+	void Update () {
+
+		if(gameManager.getState() == BaseGM.GAMESTATE.INGAME && this.transform.childCount == 0) {
+
+			CreateDiamond();
+		}
+	}
 
     IEnumerator RecursiveSpawner()
     {
 		if (gameManager.getState() == BaseGM.GAMESTATE.INGAME) {
 
-            Bounds spawnerBounds = this.GetComponentInChildren<BoxCollider2D> ().bounds;
-            int diamondLayerMask = 1 << diamondLayer;
-            int obstacleLayerMask = 1 << obstacleLayer;
-            int combinedLayerMask = diamondLayerMask | obstacleLayerMask;
-            Collider2D[] foundColliders;
-            Vector3 itemLocation;
-
-            do {
-
-                float newX = Random.Range(spawnerBounds.min.x, spawnerBounds.max.x);
-                float newY = Random.Range(spawnerBounds.min.y, spawnerBounds.max.y);
-                itemLocation = new Vector3(newX, newY, 0);
-
-
-                foundColliders = Physics2D.OverlapCircleAll(itemLocation, 1, combinedLayerMask);
-
-            } while (foundColliders.Length > 0);
-
-			Instantiate (itemPrefab, itemLocation, Quaternion.identity);
-
+			CreateDiamond();
 			//yield return new WaitForSeconds (Random.Range (spawnCooldown * 0.5f, spawnCooldown * 1.5f));
 			yield return new WaitForSeconds (spawnCooldown);
 		}
@@ -58,5 +47,29 @@ public class ItemSpawner : MonoBehaviour
         
 		StartCoroutine("RecursiveSpawner");
     }
+
+	void CreateDiamond () {
+
+		Bounds spawnerBounds = this.GetComponentInChildren<BoxCollider2D> ().bounds;
+		int diamondLayerMask = 1 << diamondLayer;
+		int obstacleLayerMask = 1 << obstacleLayer;
+		int combinedLayerMask = diamondLayerMask | obstacleLayerMask;
+		Collider2D[] foundColliders;
+		Vector3 itemLocation;
+
+		do {
+
+			float newX = Random.Range(spawnerBounds.min.x, spawnerBounds.max.x);
+			float newY = Random.Range(spawnerBounds.min.y, spawnerBounds.max.y);
+			itemLocation = new Vector3(newX, newY, 0);
+
+
+			foundColliders = Physics2D.OverlapCircleAll(itemLocation, 1, combinedLayerMask);
+
+		} while (foundColliders.Length > 0);
+
+		GameObject newDiamond = Instantiate (itemPrefab, itemLocation, Quaternion.identity) as GameObject;
+		newDiamond.transform.SetParent(this.transform);
+	}
 }
 

@@ -218,7 +218,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 1191, y: 92}
+  m_SizeDelta: {x: 1322, y: 92}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &412222191
 MonoBehaviour:
@@ -360,7 +360,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 1191, y: 92}
+  m_SizeDelta: {x: 1322, y: 92}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &809123812
 MonoBehaviour:
@@ -434,7 +434,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 1191, y: 92}
+  m_SizeDelta: {x: 1322, y: 92}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1063804449
 MonoBehaviour:
@@ -486,7 +486,7 @@ GameObject:
   - component: {fileID: 1430836167}
   - component: {fileID: 1430836166}
   m_Layer: 5
-  m_Name: Art Director Text
+  m_Name: Game Designer Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -508,7 +508,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 1191, y: 92}
+  m_SizeDelta: {x: 1322, y: 92}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1430836166
 MonoBehaviour:
@@ -542,7 +542,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'Art Director: Rebecca Mitchell'
+  m_Text: 'Game Designer: Rebecca Mitchell'
 --- !u!222 &1430836167
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -624,7 +624,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 1191, y: 92}
+  m_SizeDelta: {x: 1322, y: 92}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1674824485
 MonoBehaviour:
@@ -698,7 +698,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 1191, y: 92}
+  m_SizeDelta: {x: 1322, y: 92}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1907832592
 MonoBehaviour:
@@ -772,7 +772,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 1191, y: 92}
+  m_SizeDelta: {x: 1322, y: 92}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1934015064
 MonoBehaviour:
@@ -846,7 +846,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 1191, y: 92}
+  m_SizeDelta: {x: 1322, y: 92}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1989093970
 MonoBehaviour:
@@ -982,7 +982,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 1191, y: 92}
+  m_SizeDelta: {x: 1322, y: 92}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2033895344
 MonoBehaviour:

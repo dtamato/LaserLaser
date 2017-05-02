@@ -48,15 +48,8 @@ public class TitleSceneController : MonoBehaviour {
 
 		if (Input.anyKeyDown) {
 
-			if(movieRenderer.gameObject.activeSelf) {
-
-				movieRenderer.gameObject.SetActive(false);
-			}
-			else {
-
-				cameraOverlay.FadeToBlack();
-				this.GetComponent<AudioSource>().Play();
-			}
+			cameraOverlay.FadeToBlack();
+			this.GetComponent<AudioSource>().Play();
 		}
 
 		if(cameraOverlay.GetComponent<Image>().color.a >= 1) {

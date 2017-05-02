@@ -53,7 +53,7 @@ public class PostGameController : MonoBehaviour
 
     //Object references.
     public List<Image> backgrounds;
-    public List<GameObject> overlays;
+    public List<GameObject> readyTexts;
 
 	[SerializeField] AudioClip applauseAudioClip;
 
@@ -73,20 +73,16 @@ public class PostGameController : MonoBehaviour
         {
             players[i] = ReInput.players.GetPlayer(i);
             backgrounds[i].color = gameManager.playerColors[i];
-            overlays[i].GetComponent<Image>().color = gameManager.playerColors[i];
 
 			if (gameManager.activePlayers[i] == false)
             {
-				overlays[i].GetComponent<Image>().color = Color.black;
-				overlays[i].GetComponentInChildren<Text>().color = Color.black;
-				overlays[i].SetActive(true);
                 readyPlayers[i] = true;
                 readyCount++;
             }
             else
             {
                 readyPlayers[i] = false;
-                overlays[i].SetActive(false);
+                readyTexts[i].SetActive(false);
             }
         }
 
@@ -114,24 +110,20 @@ public class PostGameController : MonoBehaviour
             {
                 if (players[i].GetButtonDown("StartGame") && readyPlayers[i] == false)
                 {
-                    overlays[i].SetActive(true);
+					readyTexts[i].GetComponent<Text>().text = "READY!";
                     readyPlayers[i] = true;
                     readyCount++;
+					if (readyCount == 4) { gameManager.changeScene(gameManager.creditsSceneIndex); }
                 }
 
                 if (players[i].GetButtonDown("Back") && readyPlayers[i] == true)
                 {
-                    overlays[i].SetActive(false);
+					readyTexts[i].GetComponent<Text>().text = "PRESS START";
                     readyPlayers[i] = false;
                     readyCount--;
                 }
             }
         }
-
-		if (readyCount == 4) {
-			
-            gameManager.changeScene(gameManager.creditsSceneIndex);
-		}
     }
 
     void importScores()
@@ -307,7 +299,7 @@ public class PostGameController : MonoBehaviour
 
             for (int i = 0; i < winningText.Count; i++)
             {
-                winningText[i].text = "Showboat Overlord";
+                winningText[i].text = "Trickshot Titan";
                 winningText[i].gameObject.SetActive(true);
             }
 
@@ -340,7 +332,7 @@ public class PostGameController : MonoBehaviour
 
             for (int i = 0; i < winningText.Count; i++)
             {
-                winningText[i].text = "Double Shot Pro";
+                winningText[i].text = "Doubleshot Pro";
                 winningText[i].gameObject.SetActive(true);
             }
 
@@ -398,18 +390,31 @@ public class PostGameController : MonoBehaviour
         }
 
         //Show the final winner
-        if (gameTied)
+		if (gameTied) {
+			
             for (int i = 0; i < winningText.Count; i++)
             {
                 winningText[i].text = "A Tie Of Epic Proportions!";
                 winningText[i].gameObject.SetActive(true);
             }
-        else
+		}
+		else {
+			
             for (int i = 0; i < winningText.Count; i++)
             {
                 winningText[i].text = "Player " + (finalWinner + 1) + " Wins!";
                 winningText[i].gameObject.SetActive(true);
             }
+		}
+
+		// Show "Press Start" text for active players
+		for(int i = 0; i < players.Length; i++) {
+
+			if(gameManager.activePlayers[i] == true) {
+
+				readyTexts[i].SetActive(true);
+			}
+		}
 
         resultsDisplayed = true;
 		this.GetComponent<AudioSource>().clip = applauseAudioClip;
