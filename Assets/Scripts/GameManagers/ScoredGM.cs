@@ -9,8 +9,6 @@ public class ScoredGM : BaseGM
     #region Variables
 
     //References for initialization process.
-    private bool initialized = false;
-    private bool enteredLobby = false;
     private Text timeText;
 
     //Score to win the game.

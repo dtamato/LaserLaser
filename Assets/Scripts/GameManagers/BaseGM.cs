@@ -44,6 +44,7 @@ public class BaseGM : MonoBehaviour
     protected GameObject readyText;
     //protected Text joinCountdownText;
     protected GameObject whiteBorder;
+	protected GameObject controllerUI;
     protected GameObject pauseMenu;
     //protected GameObject joinUI;
     protected Text endCountdownText;
@@ -235,13 +236,14 @@ public class BaseGM : MonoBehaviour
         }
 
         //Reference all UI elements, and the 1st player object.
+		controllerUI = GameObject.Find("Controller UI");
         readyText = GameObject.Find("ReadyText");
         endCountdownText = GameObject.Find("End Countdown Text").GetComponent<Text>();
         readyText.SetActive(false);
         //joinCountdownText = GameObject.Find("JoinCountdownText").GetComponent<Text>();
         whiteBorder = GameObject.Find ("White Border");
-        pauseMenu = GameObject.Find("Pause Menu");
-        pauseMenu.SetActive(false);
+        //pauseMenu = GameObject.Find("Pause Menu");
+        //pauseMenu.SetActive(false);
         //Debug.Log("initialize ran.");
         //FillActivePlayersArray ();
 		endCountdownText.gameObject.SetActive(false);
@@ -323,7 +325,6 @@ public class BaseGM : MonoBehaviour
 	void UpdateWhiteBorderFFA ()
     {
 		int winningScore = -1;
-		int winningPlayerIndex = -1;
 
 		for (int i = 0; i < 4; i++)
         {
@@ -332,7 +333,6 @@ public class BaseGM : MonoBehaviour
 				if (playerScores[i] > winningScore)
 	            {
 	                winningScore = playerScores[i];
-	                winningPlayerIndex = i;
 	                whiteBorder.GetComponent<Image>().color = players[i].GetColor();
 				}
 				else if (playerScores[i] == winningScore)

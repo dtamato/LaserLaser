@@ -68,11 +68,12 @@ public class Laser : MonoBehaviour
 			this.transform.GetComponent<SpriteRenderer> ().enabled = false;
 			this.transform.GetComponent<TrailRenderer> ().enabled = false;
 			cannon.GetComponentInChildren<Cannon> ().SetNewBaseAngle ();
+			cannon.GetComponentInChildren<Cannon> ().ChangeRotationDirection();
 			//cannon.GetComponentInChildren<Cannon>().SetStoredLaser(this);
 			cannon.GetComponent<Cannon> ().inFlight = false;
 			shotStartPosition = this.transform.position;
 
-			// Show final combo count
+			// Show final combo count (only for Control GM)
 			if(controlCombo > 1) {
 
 				//float randomX = this.transform.position.x + Random.Range(0, 2) * 2 - 1;

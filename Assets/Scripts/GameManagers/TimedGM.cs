@@ -70,6 +70,7 @@ public class TimedGM : BaseGM
                     }
                     timeBar.color = Color.white;
                     
+					controllerUI.SetActive (false);
 					readyText.SetActive(true);
 					readyText.GetComponent<Text>().text = (Random.value < 0.5) ? "Fire Away, Player" : "Aim True, Player";
 

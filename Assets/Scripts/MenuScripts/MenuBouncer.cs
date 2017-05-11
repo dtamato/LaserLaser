@@ -7,12 +7,7 @@ using UnityEngine.UI;
 public class MenuBouncer : MonoBehaviour {
 
 	[SerializeField] Image canvasTimer;
-	[SerializeField] Animator menuBouncerAnimator;
 
-	void Awake () {
-
-		menuBouncerAnimator = this.GetComponentInChildren<Animator>();
-	}
 
 	void OnCollisionEnter2D(Collision2D other) {
 

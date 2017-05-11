@@ -35,7 +35,6 @@ public class SpawnListener : MonoBehaviour
                 obj.GetComponent<Cannon>().SetID(playerID);
                 obj.GetComponent<Cannon>().spawnPoint = this.gameObject;
                 obj.GetComponentInChildren<Laser>().setGameMode(gameManager.gameMode);
-                obj.GetComponent<Cannon>().SetPauseMenu(gameManager.GetPauseMenu());
 				obj.GetComponent<AudioSource>().clip = playerShootAudioClip;
                 gameManager.playerCount++;
                 gameManager.activePlayers[playerID] = true;

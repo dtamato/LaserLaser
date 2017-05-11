@@ -4,6 +4,8 @@ using System.Collections;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
+enum Direction { Up, Down, Left, Right };
+
 [DisallowMultipleComponent]
 public class Cannon : MonoBehaviour
 {
@@ -19,7 +21,7 @@ public class Cannon : MonoBehaviour
     private bool playerReady = false;
     public GameObject spawnPoint;   //set from spawnpoint script.
 
-    //References.
+    //References
     BaseGM gameManager;
     public Player rewiredPlayer;
     [SerializeField] Laser pairedLaser;     // Permanent reference to ball, manually assigned in Lobby scene and in player prefab.
@@ -27,15 +29,15 @@ public class Cannon : MonoBehaviour
     public bool inFlight;                   // True if laser/ball is in flight, false if stored in cannon.
     public int playerId;
 
-    //Control values.
-    [SerializeField] float baseRotationSpeed;
+    //Control values
     [SerializeField] float maxBlastForce;
     [SerializeField] float maxAngleOffset;
     
     //Rotation
-    [SerializeField] float currentRotationSpeed;
-    int rotationModifier = 1;
-    float minRotationSpeed = 1.5f;
+	[SerializeField] float rotationSpeed;
+	Direction direction;
+	int rotationModifier = 1;
+    float minRotationSpeed = 1.0f;
     float maxRotationSpeed = 5.0f;
 
     private Transform LTransform;
@@ -44,14 +46,11 @@ public class Cannon : MonoBehaviour
     private Vector2 LPoint;
     private Vector2 RPoint;
     private Vector2 MPoint;
-    private const float cornerOffset = 0.6f;
     private Vector2 MOrigin;
     private int Layer_Mask;
     private float axisMod;
-
-    [SerializeField] private bool collidingLeft;
-    [SerializeField] private bool collidingRight;
-
+	private bool collidingLeft;
+	private bool collidingRight;
 
     //Angles
     float currentAngle;
@@ -59,41 +58,50 @@ public class Cannon : MonoBehaviour
     float minAngle;
     float maxAngle;
 
-    //Pause
-    GameObject pauseMenu;
-    
-
-    void Awake()
-    {
-        if (GameObject.Find("Pause Menu") != null)
-        {
-            pauseMenu = GameObject.Find("Pause Menu").gameObject;
-        }
-    }
-
+	#region Initialization
     void Start()
     {
-        gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<BaseGM>();
-        gameManager.players[playerId] = this;
+		InitializeReferences ();
+		InitializeParameters ();
+		GetNextAvailableColor ();
+    }
 
-        joinText = GameObject.Find("JoinText" + playerId);
-        inputText = GameObject.Find("InputText" + playerId);
-        laserRB = pairedLaser.GetComponent<Rigidbody2D>();
-        rewiredPlayer = ReInput.players.GetPlayer(playerId);
+	void InitializeReferences () {
 
-        inFlight = false;
-        sensitivity = 5;
+		gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<BaseGM>();
+		gameManager.players[playerId] = this;
 
-        LTransform = transform.Find("LPoint").transform;
-        RTransform = transform.Find("RPoint").transform;
-        MTransform = transform.Find("MPoint").transform;
-        LPoint = new Vector2(LTransform.position.x,LTransform.position.y);
-        RPoint = new Vector2(RTransform.position.x, RTransform.position.y);
-        MPoint = new Vector2(MTransform.position.x, MTransform.position.y);
-        //MOrigin = new Vector2(MPoint.transform.position.x,MPoint.transform.position.y);
+		rewiredPlayer = ReInput.players.GetPlayer(playerId);
+		laserRB = pairedLaser.GetComponent<Rigidbody2D>();
 
+		joinText = GameObject.Find("JoinText" + playerId);
+		joinText.GetComponent<Text>().text = "Press Start When Ready!";
 
-        Layer_Mask = LayerMask.GetMask("Boundary");
+		inputText = GameObject.Find("InputText" + playerId);
+
+		Layer_Mask = LayerMask.GetMask("Boundary");
+
+		LTransform = transform.Find("LPoint").transform;
+		RTransform = transform.Find("RPoint").transform;
+		MTransform = transform.Find("MPoint").transform;
+		LPoint = new Vector2(LTransform.position.x,LTransform.position.y);
+		RPoint = new Vector2(RTransform.position.x, RTransform.position.y);
+		MPoint = new Vector2(MTransform.position.x, MTransform.position.y);
+	}
+
+	void InitializeParameters () {
+
+		inFlight = false;
+
+		team = (gameManager.gameMode == "FFA") ? playerId + 1 : 0;
+		if (maxAngleOffset < 0) { maxAngleOffset *= -1; }
+		SetNewBaseAngle();
+
+		sensitivity = 5;
+		SetRotationSpeed (5f);
+	}
+
+	void GetNextAvailableColor () {
 
 		int nextAvailableColorIndex = playerId;
 
@@ -105,24 +113,11 @@ public class Cannon : MonoBehaviour
 
 		colorIdx = nextAvailableColorIndex;
 
-        gameManager.UpdateColour(colorIdx, playerId);
-        inputText.GetComponent<Text>().color = myColor; //to be changed when control is fixed
-		joinText.GetComponent<Text>().text = "Press Start When Ready!";
+		gameManager.UpdateColour(colorIdx, playerId);
+		inputText.GetComponent<Text>().color = myColor;
+	}
 
-
-        if (gameManager.gameMode == "FFA")
-            team = playerId + 1;
-        else
-            team = 0;
-
-       
-
-        //Setup for rotation.
-        if (maxAngleOffset < 0)
-            maxAngleOffset *= -1;
-        currentRotationSpeed = baseRotationSpeed;
-        SetNewBaseAngle();
-    }
+	#endregion
 
     void Update()
     {
@@ -139,20 +134,7 @@ public class Cannon : MonoBehaviour
                 break;
 
             case (BaseGM.GAMESTATE.INGAME):
-                if (gameManager.GetPaused() == false && !pauseMenu.activeSelf)
-                {
-                    StandardInputs();
-                    //CheckOpenPauseMenu();
-                }
-                else if (gameManager.GetPaused())
-                {
-                    GetMenuInput();
-                }
-
-                else
-                {
-                    StandardInputs();
-                }
+				StandardInputs();
                 break;
 
             case (BaseGM.GAMESTATE.POSTGAME):
@@ -163,7 +145,6 @@ public class Cannon : MonoBehaviour
                     gameManager.returnToMenu();
                 }
                 break;
-                
         }
     }
 
@@ -171,7 +152,7 @@ public class Cannon : MonoBehaviour
     {
         if (!inFlight)
         {
-            GetRotationInput();
+            ProcessRotation();
             RestrictAngle();
             GetFireInput();
         }
@@ -179,96 +160,90 @@ public class Cannon : MonoBehaviour
 
     #region Inputs
     //
-    void GetRotationInput()
-    {
-        axisMod = rewiredPlayer.GetAxis("Horizontal");
-        LPoint = new Vector2(LTransform.position.x, LTransform.position.y); //making a Vector2 out of the object's transforms
-        RPoint = new Vector2(RTransform.position.x, RTransform.position.y);
-        MPoint = new Vector2(MTransform.position.x, MTransform.position.y);
+    void ProcessRotation() {
+	
+		GetControllerInput ();
+		CheckForWallCollision ();
 
-
-        collidingLeft = Physics2D.Linecast(MPoint, LPoint, Layer_Mask);
-        collidingRight = Physics2D.Linecast(MPoint ,RPoint, Layer_Mask);
-
-        if (collidingLeft)
-        {
-            if (rotationModifier == -1)
-            {
-                axisMod = Mathf.Clamp(axisMod, -1f, 0f);
-            }
-            else
-            {
-            axisMod = Mathf.Clamp(axisMod, 0f, 1f);
-            }
-        }
-
-        if (collidingRight)
-        {
-            if (rotationModifier == -1)
-            {
-                axisMod = Mathf.Clamp(axisMod, 0f, 1f);
-            }
-            else
-            {
-                axisMod = Mathf.Clamp(axisMod, -1f, 0f);
-            }
-            
-        }
-        currentRotationSpeed = Mathf.Clamp(currentRotationSpeed, minRotationSpeed, maxRotationSpeed);
-        this.transform.Rotate(currentRotationSpeed * rotationModifier * Vector3.forward * -axisMod);
+        rotationSpeed = Mathf.Clamp(rotationSpeed, minRotationSpeed, maxRotationSpeed);
+        this.transform.Rotate(rotationSpeed * rotationModifier * Vector3.forward * -axisMod);
     }
 
-    void CheckOpenPauseMenu()
-    {
+	void GetControllerInput () {
 
-        if (rewiredPlayer.GetButtonDown("StartGame") && gameManager.getState() != BaseGM.GAMESTATE.POSTGAME)
-        {
-            
-            pauseMenu.SetActive(true);
-            pauseMenu.GetComponent<PauseMenu>().PauseGame(this.gameObject);
-            gameManager.SetPaused(true);
-            gameManager.SetPlayerPauseId(this.playerId);
-            gameManager.DisablePlayerControllers(playerId);
-        }
-    }
+		switch (direction) {
+			case Direction.Up:
 
+				axisMod = rewiredPlayer.GetAxis("Horizontal");
+				break;
+			case Direction.Down:
 
+				axisMod = rewiredPlayer.GetAxis("Horizontal");
+				break;
+			case Direction.Left:
 
-    void GetMenuInput()
-    {
+				axisMod = rewiredPlayer.GetAxis("Vertical");
+				break;
+			case Direction.Right:
 
-        if (rewiredPlayer.GetAxisRaw("Vertical") == 1 && playerId == gameManager.GetPlayerPauseId())
-        {
-            pauseMenu.GetComponent<PauseMenu>().NextButton();
-            Debug.Log("Next");
-        }
+				axisMod = rewiredPlayer.GetAxis ("Vertical");
+				break;
+		}
 
-        if (rewiredPlayer.GetButtonDown("StartGame"))
-        {
+		const float inputThreshold = 0.1f;
+		if (Mathf.Abs(axisMod) < inputThreshold) { axisMod = 0; }
+	}
 
-            gameManager.EnablePlayerControllers();
-            gameManager.SetPaused(false);
-            gameManager.SetPlayerPauseId(-1);
-            pauseMenu.SetActive(false);
-        }
-    }
+	void CheckForWallCollision () {
 
-    //
+		LPoint = new Vector2(LTransform.position.x, LTransform.position.y); //making a Vector2 out of the object's transforms
+		RPoint = new Vector2(RTransform.position.x, RTransform.position.y);
+		MPoint = new Vector2(MTransform.position.x, MTransform.position.y);
+
+		collidingLeft = Physics2D.Linecast(MPoint, LPoint, Layer_Mask);
+		collidingRight = Physics2D.Linecast(MPoint ,RPoint, Layer_Mask);
+
+		if (collidingLeft)
+		{
+			if (rotationModifier == -1)
+			{
+				axisMod = Mathf.Clamp(axisMod, -1f, 0f);
+			}
+			else
+			{
+				axisMod = Mathf.Clamp(axisMod, 0f, 1f);
+			}
+		}
+
+		if (collidingRight)
+		{
+			if (rotationModifier == -1)
+			{
+				axisMod = Mathf.Clamp(axisMod, 0f, 1f);
+			}
+			else
+			{
+				axisMod = Mathf.Clamp(axisMod, -1f, 0f);
+			}
+
+		}
+	}
+		
     void RestrictAngle()
     {
         currentAngle = this.transform.rotation.eulerAngles.z;
         if (currentAngle < 0) { currentAngle += 360; }
-        if (currentAngle >= maxAngle && currentAngle <= maxAngle + 5)
+
+        if (currentAngle >= maxAngle && currentAngle <= maxAngle + 10)
         {
             this.transform.rotation = Quaternion.Euler(0, 0, maxAngle);
         }
-        else if (currentAngle <= minAngle && currentAngle >= minAngle - 5)
+        else if (currentAngle <= minAngle && currentAngle >= minAngle - 10)
         {
             this.transform.rotation = Quaternion.Euler(0, 0, minAngle);
         }
     }
-
-    //
+		
     void GetFireInput()
     {
          if (rewiredPlayer.GetButtonDown("Fire"))
@@ -287,31 +262,6 @@ public class Cannon : MonoBehaviour
     //customization inputs
     void PregameInputs()
     {
-
-        //*********************************HERE******************************
-
-
-        if (rewiredPlayer.GetButtonDown("Back"))        //Player presses B.
-        {
-            if (playerReady)
-            {
-                playerReady = false;
-                gameManager.readyPlayers--;
-            }
-            else
-            {
-                spawnPoint.GetComponent<SpawnListener>().taken = false;
-                gameManager._colorlist[colorIdx].isAvailable = true;
-                joinText.GetComponent<Text>().text = "Press 'A' to Join";
-                gameManager.playerCount--;
-                gameManager.activePlayers[playerId] = false;
-                Destroy(this.gameObject);
-            }
-        }
-
-
-        //*********************************HERE******************************
-
         if (rewiredPlayer.GetButtonDown("RButt"))       //Player presses RB.
         { 
             colorIdx = gameManager.IncrementIndex(colorIdx);
@@ -344,9 +294,9 @@ public class Cannon : MonoBehaviour
         {
             
             //Sensitivity is on a scale of 1-8. Corresponds to minRotSpeed of 2.0f, and maxRotSpeed of 10.0f.
-            if (sensitivity >= 8)
+            if (sensitivity >= 5)
             {
-                inputText.GetComponent<Text>().text = "Sensitivity: MAX";
+                inputText.GetComponent<Text>().text = "Sensitivity: 5";
             }
             else
             {
@@ -355,24 +305,18 @@ public class Cannon : MonoBehaviour
             }
               
             inputText.GetComponent<Text>().text = "Sensitivity: " + sensitivity;
-
             inputText.GetComponent<InputTextScript>().checkText();
         }
 
         if (rewiredPlayer.GetButtonDown("DecreaseRotationSpeed"))         //Player presses DownD.
         {
-            if (sensitivity >= 1)
+            if (sensitivity > 1)
             {
                 sensitivity--;
                 ChangeRotationSpeed(-rotationSpeedIncrement);
             }
-            else
-            {
-                inputText.GetComponent<Text>().text = "Sensitivity: MIN";
-            }
 
             inputText.GetComponent<Text>().text = "Sensitivity: " + sensitivity;
-
             inputText.GetComponent<InputTextScript>().checkText();
         }
     }
@@ -385,50 +329,55 @@ public class Cannon : MonoBehaviour
     public void SetNewBaseAngle()
     {
         baseAngle = this.transform.rotation.eulerAngles.z;
+
         if (baseAngle < 0) { baseAngle %= 360; }
-        minAngle = baseAngle - maxAngleOffset;
-        if (minAngle < 0) { minAngle += 360; }
-        maxAngle = baseAngle + maxAngleOffset;
-        if (maxAngle < 0) { maxAngle += 360; }
-        // Change rotation modifier if upside down
-        rotationModifier = (this.transform.up == Vector3.down) ? -1 : 1;
+        
+		minAngle = baseAngle - maxAngleOffset;  
+		if (minAngle < 0) { minAngle += 360; }
+
+        maxAngle = baseAngle + maxAngleOffset;        
+		if (maxAngle < 0) { maxAngle += 360; }
     }
+
+	public void ChangeRotationDirection () {
+
+		if (this.transform.up == Vector3.up) {
+			
+			direction = Direction.Up;
+			rotationModifier = 1;
+		}
+		else if (this.transform.up == Vector3.down) {
+
+			direction = Direction.Down;
+			rotationModifier = -1;
+		}
+		else if (this.transform.up == Vector3.left) {
+
+			direction = Direction.Left;
+			rotationModifier = 1;
+		}
+		else if (this.transform.up == Vector3.right) {
+
+			direction = Direction.Right;
+			rotationModifier = -1;
+		}
+	}
 
     //Called from CannonCustomization.cs in lobby when sensitivity is changed.
     public void ChangeRotationSpeed(float increment)
     {
-        baseRotationSpeed += increment;
-        baseRotationSpeed = Mathf.Clamp(baseRotationSpeed, minRotationSpeed, maxRotationSpeed);
-    }
-
-    //Called from BaseGM.cs in main game when player is instantiated.
-    public void ApplyRotationSpeed(int sensitivity)
-    {
-        baseRotationSpeed = 1.0f + (sensitivity * 0.5f);
-        currentRotationSpeed = baseRotationSpeed;
+        rotationSpeed += increment;
+		rotationSpeed = Mathf.Clamp(rotationSpeed, minRotationSpeed, maxRotationSpeed);
     }
     
-    //Called from Slow.cs.
-    public void ModifyRotationSpeed(float newSpeed)
+    public void SetRotationSpeed(float newSpeed)
     {
-        baseRotationSpeed = newSpeed;
+		rotationSpeed = newSpeed;
     }
 
     public void SetID(int newId)
     {
         playerId = newId;
-    }
-
-    public void SetIsPaused(bool isPaused)
-    {
-
-        gameManager.SetPaused(isPaused);
-    }
-
-    public void SetPauseMenu(GameObject menu)
-    {
-
-        pauseMenu = menu;
     }
 
     #endregion
@@ -440,9 +389,9 @@ public class Cannon : MonoBehaviour
         return playerId;
     }
 
-    public float GetBaseSpeed()
+    public float GetRotationSpeed()
     {
-        return baseRotationSpeed;
+		return rotationSpeed;
     }
 
 	public GameObject GetLaser ()
@@ -459,8 +408,5 @@ public class Cannon : MonoBehaviour
     {
         return rewiredPlayer;
     }
-
-
-
     #endregion
 }

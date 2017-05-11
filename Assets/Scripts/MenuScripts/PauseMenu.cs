@@ -34,7 +34,7 @@ public class PauseMenu : MonoBehaviour {
 
 	public void ResumeGame () {
 
-		playerPausing.GetComponentInChildren<Cannon>().SetIsPaused(false);
+		//playerPausing.GetComponentInChildren<Cannon>().SetIsPaused(false);
 		this.gameObject.SetActive(false);
         gameManager.EnablePlayerControllers();
     }

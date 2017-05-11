@@ -20,21 +20,21 @@ public class Slow : MonoBehaviour
 	{
 		for (int i = 0; i < players.Length; i++) {
 			
-			rotSpeed[i] = players [i].GetComponentInParent<Cannon> ().GetBaseSpeed ();
+			rotSpeed[i] = players [i].GetComponentInParent<Cannon> ().GetRotationSpeed ();
 		}
 
 		gameObject.GetComponent<SpriteRenderer> ().enabled = false;
 		gameObject.GetComponent<Collider2D> ().enabled = false;
 
-		collidingPlayerRotSpeed = other.GetComponentInParent<Cannon> ().GetBaseSpeed ();
+		collidingPlayerRotSpeed = other.GetComponentInParent<Cannon> ().GetRotationSpeed ();
 
 		for (int i = 0; i < players.Length; i++) {
 
-			float newSpeed = slowPercentage * players [i].GetComponentInParent<Cannon> ().GetBaseSpeed ();
-			players [i].GetComponentInParent<Cannon> ().ModifyRotationSpeed(newSpeed);
+			float newSpeed = slowPercentage * players [i].GetComponentInParent<Cannon> ().GetRotationSpeed ();
+			players [i].GetComponentInParent<Cannon> ().SetRotationSpeed(newSpeed);
 		}
 
-		other.GetComponentInParent<Cannon> ().ModifyRotationSpeed(collidingPlayerRotSpeed);
+		other.GetComponentInParent<Cannon> ().SetRotationSpeed(collidingPlayerRotSpeed);
 		StartCoroutine (ReturnBaseSpeed ());
 	}
 
@@ -44,7 +44,7 @@ public class Slow : MonoBehaviour
 
 		for (int i = 0; i < players.Length; i++) {
 			
-			players [i].GetComponentInParent<Cannon> ().ModifyRotationSpeed(rotSpeed[i]);
+			players [i].GetComponentInParent<Cannon> ().SetRotationSpeed(rotSpeed[i]);
 		}
 
 		Destroy (this.gameObject);

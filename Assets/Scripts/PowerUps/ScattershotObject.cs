@@ -5,13 +5,11 @@ using UnityEngine.UI;
 
 public class ScattershotObject : MonoBehaviour
 {
-    BaseGM gameManager;
     [SerializeField] GameObject Laser;
     
 
     void Awake()
     {
-        gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<BaseGM>();
         this.GetComponent<TrailRenderer>().sortingLayerName = this.GetComponent<SpriteRenderer>().sortingLayerName;
         this.GetComponent<TrailRenderer>().sortingOrder = this.GetComponent<SpriteRenderer>().sortingOrder - 1;
     }
