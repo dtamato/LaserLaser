@@ -726,15 +726,23 @@ MonoBehaviour:
   _userData:
     configVars:
       updateLoop: 3
-      windowsStandalonePrimaryInputSource: 0
-      useXInput: 1
       alwaysUseUnityInput: 0
+      windowsStandalonePrimaryInputSource: 0
+      osx_primaryInputSource: 0
+      linux_primaryInputSource: 0
+      xboxOne_primaryInputSource: 0
+      useXInput: 1
       useNativeMouse: 1
+      useEnhancedDeviceSupport: 1
+      windowsStandalone_useSteamRawInputControllerWorkaround: 1
+      android_supportUnknownGamepads: 0
+      useSteamControllerSupport: 1
       maxJoysticksPerPlayer: 1
       autoAssignJoysticks: 1
       assignJoysticksToPlayingPlayersOnly: 0
       distributeJoysticksEvenly: 1
       reassignJoystickToPreviousOwnerOnReconnect: 1
+      defaultJoystickAxis2DDeadZoneType: 1
     players:
     - _id: 9999999
       _name: System
@@ -746,6 +754,7 @@ MonoBehaviour:
       _defaultCustomControllerMaps: []
       _startingCustomControllers: []
       _assignMouseOnStart: 1
+      _excludeFromControllerAutoAssignment: 1
     - _id: 1
       _name: Player1
       _descriptiveName: Player 1
@@ -761,6 +770,7 @@ MonoBehaviour:
       - _sourceId: 0
         _tag: main
       _assignMouseOnStart: 0
+      _excludeFromControllerAutoAssignment: 0
     - _id: 2
       _name: Player2
       _descriptiveName: Player 2
@@ -776,6 +786,7 @@ MonoBehaviour:
       - _sourceId: 0
         _tag: main
       _assignMouseOnStart: 0
+      _excludeFromControllerAutoAssignment: 0
     actions:
     - _id: 0
       _name: Move Horizontal
@@ -826,6 +837,7 @@ MonoBehaviour:
     inputBehaviors:
     - _id: 0
       _name: Default
+      _joystickAxisSensitivity: 1
       _digitalAxisSnap: 1
       _digitalAxisInstantReverse: 0
       _digitalAxisGravity: 3
@@ -835,6 +847,7 @@ MonoBehaviour:
       _mouseXYAxisSensitivity: 1
       _mouseXYAxisDeltaCalc: 0
       _mouseOtherAxisSensitivity: 1
+      _customControllerAxisSensitivity: 1
       _buttonDoublePressSpeed: .300000012
       _buttonDeadZone: .5
       _buttonDownBuffer: 0
@@ -925,15 +938,19 @@ MonoBehaviour:
       - _id: 0
         _name: Stick X
         _elementType: 0
+        _compoundElementType: 0
       - _id: 1
         _name: Stick Y
         _elementType: 0
+        _compoundElementType: 0
       - _id: 2
         _name: Button0
         _elementType: 1
+        _compoundElementType: 0
       - _id: 3
         _name: Button1
         _elementType: 1
+        _compoundElementType: 0
       _axes:
       - elementIdentifierId: 0
         name: Stick X
@@ -943,6 +960,7 @@ MonoBehaviour:
         zero: 0
         min: -1
         max: 1
+        doNotCalibrateRange: 0
       - elementIdentifierId: 1
         name: Stick Y
         range: 0
@@ -951,6 +969,7 @@ MonoBehaviour:
         zero: 0
         min: -1
         max: 1
+        doNotCalibrateRange: 0
       _buttons:
       - elementIdentifierId: 2
         name: Button0

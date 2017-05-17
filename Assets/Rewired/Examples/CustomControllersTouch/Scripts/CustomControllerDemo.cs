@@ -7,7 +7,10 @@ namespace Rewired.Demos {
     using System.Collections.Generic;
     using Rewired;
 
-    /* Demonstrates using a CustomController to drive input. A custom controller allows you to set your own sources for axis
+    /* IMPORTANT NOTE: Touch control is now available through using the Touch Controller components. Please see
+     * the documentation on Touch Controls for more information: http://guavaman.com/rewired/docs/TouchControls.html
+     * 
+     * Demonstrates using a CustomController to drive input. A custom controller allows you to set your own sources for axis
      * and button input. This could be any type of controller or virtual controller. Anything that can return a float or a
      * bool value can be used as an element source.
      * 

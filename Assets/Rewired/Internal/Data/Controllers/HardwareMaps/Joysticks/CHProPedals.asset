@@ -15,18 +15,24 @@ MonoBehaviour:
   editorControllerName: 
   description: 
   controllerGuid: 3049c96e-9ffd-4088-a136-e92a4d92e2b1
-  templateGuids: []
+  templateGuids:
+  - f6fe76f8-be2a-4db2-b853-9e3652075913
+  hideInLists: 0
   elementIdentifiers:
   - _id: 0
     _name: Left Pedal
     _elementType: 0
+    _compoundElementType: 0
   - _id: 1
     _name: Right Pedal
     _elementType: 0
+    _compoundElementType: 0
   - _id: 2
     _name: Slide
     _elementType: 0
+    _compoundElementType: 0
   directInput:
+    description: 
     matchingCriteria:
       axisCount: 3
       buttonCount: 0
@@ -88,7 +94,9 @@ MonoBehaviour:
         sourceHatDirection: 0
         sourceHatRange: 0
       buttons: []
+    variants: []
   rawInput:
+    description: 
     matchingCriteria:
       axisCount: 0
       buttonCount: 0
@@ -103,7 +111,9 @@ MonoBehaviour:
       compoundElements: []
       axes: []
       buttons: []
+    variants: []
   xInput:
+    description: 
     matchingCriteria:
       axisCount: 0
       buttonCount: 0
@@ -113,7 +123,9 @@ MonoBehaviour:
       compoundElements: []
       axes: []
       buttons: []
+    variants: []
   osx:
+    description: 
     matchingCriteria:
       axisCount: 3
       buttonCount: 0
@@ -181,7 +193,139 @@ MonoBehaviour:
         sourceHatDirection: 0
         sourceHatRange: 0
       buttons: []
+    variants: []
+  linux:
+    description: 
+    matchingCriteria:
+      axisCount: 3
+      buttonCount: 0
+      disabled: 0
+      hatCount: 0
+      manufacturer_useRegex: 0
+      productName_useRegex: 0
+      systemName_useRegex: 0
+      manufacturer: []
+      productName:
+      - 'CH PRO PEDALS USB '
+      systemName: []
+      productGUID:
+      - 00f2068e-0000-0000-0000-504944564944
+    elements:
+      compoundElements: []
+      axes:
+      - elementIdentifier: 0
+        sourceType: 1
+        sourceAxis: 0
+        sourceAxisRange: 0
+        invert: 0
+        axisDeadZone: .0500000007
+        calibrateAxis: 1
+        axisZero: -1
+        axisMin: -1
+        axisMax: 1
+        sourceButton: 0
+        buttonAxisContribution: 0
+        sourceHat: 0
+        sourceHatDirection: 0
+        sourceHatRange: 0
+      - elementIdentifier: 1
+        sourceType: 1
+        sourceAxis: 1
+        sourceAxisRange: 0
+        invert: 0
+        axisDeadZone: .0500000007
+        calibrateAxis: 1
+        axisZero: -1
+        axisMin: -1
+        axisMax: 1
+        sourceButton: 0
+        buttonAxisContribution: 0
+        sourceHat: 0
+        sourceHatDirection: 0
+        sourceHatRange: 0
+      - elementIdentifier: 2
+        sourceType: 1
+        sourceAxis: 2
+        sourceAxisRange: 0
+        invert: 0
+        axisDeadZone: .0500000007
+        calibrateAxis: 0
+        axisZero: 0
+        axisMin: 0
+        axisMax: 0
+        sourceButton: 0
+        buttonAxisContribution: 0
+        sourceHat: 0
+        sourceHatDirection: 0
+        sourceHatRange: 0
+      buttons: []
+    variants: []
+  windowsUWP:
+    description: 
+    matchingCriteria:
+      axisCount: 3
+      buttonCount: 0
+      disabled: 0
+      hatCount: 0
+      manufacturer_useRegex: 0
+      productName_useRegex: 0
+      manufacturer: []
+      productName:
+      - 'CH PRO PEDALS USB '
+      productGUID:
+      - 00f2068e-0000-0000-0000-504944564944
+    elements:
+      compoundElements: []
+      axes:
+      - elementIdentifier: 0
+        sourceType: 1
+        sourceAxis: 0
+        sourceAxisRange: 0
+        invert: 0
+        axisDeadZone: .0500000007
+        calibrateAxis: 1
+        axisZero: -1
+        axisMin: -1
+        axisMax: 1
+        sourceButton: 0
+        buttonAxisContribution: 0
+        sourceHat: 0
+        sourceHatDirection: 0
+        sourceHatRange: 0
+      - elementIdentifier: 1
+        sourceType: 1
+        sourceAxis: 1
+        sourceAxisRange: 0
+        invert: 0
+        axisDeadZone: .0500000007
+        calibrateAxis: 1
+        axisZero: -1
+        axisMin: -1
+        axisMax: 1
+        sourceButton: 0
+        buttonAxisContribution: 0
+        sourceHat: 0
+        sourceHatDirection: 0
+        sourceHatRange: 0
+      - elementIdentifier: 2
+        sourceType: 1
+        sourceAxis: 2
+        sourceAxisRange: 0
+        invert: 0
+        axisDeadZone: .0500000007
+        calibrateAxis: 0
+        axisZero: 0
+        axisMin: 0
+        axisMax: 0
+        sourceButton: 0
+        buttonAxisContribution: 0
+        sourceHat: 0
+        sourceHatDirection: 0
+        sourceHatRange: 0
+      buttons: []
+    variants: []
   fallback_Windows:
+    description: 
     matchingCriteria:
       axisCount: 0
       buttonCount: 0
@@ -190,6 +334,9 @@ MonoBehaviour:
       productName_useRegex: 0
       productName:
       - 'CH PRO PEDALS USB '
+      matchUnityVersion: 0
+      matchUnityVersion_min: 
+      matchUnityVersion_max: 
     elements:
       compoundElements: []
       axes:
@@ -199,6 +346,8 @@ MonoBehaviour:
         axisDeadZone: .0500000007
         sourceButton: 0
         sourceKeyCode: 0
+        customCalculation: {fileID: 0}
+        customCalculationSourceData: []
         invert: 0
         sourceAxisRange: 0
         buttonAxisContribution: 0
@@ -212,6 +361,8 @@ MonoBehaviour:
         axisDeadZone: .0500000007
         sourceButton: 0
         sourceKeyCode: 0
+        customCalculation: {fileID: 0}
+        customCalculationSourceData: []
         invert: 0
         sourceAxisRange: 0
         buttonAxisContribution: 0
@@ -225,6 +376,8 @@ MonoBehaviour:
         axisDeadZone: .0500000007
         sourceButton: 0
         sourceKeyCode: 0
+        customCalculation: {fileID: 0}
+        customCalculationSourceData: []
         invert: 0
         sourceAxisRange: 0
         buttonAxisContribution: 0
@@ -233,7 +386,26 @@ MonoBehaviour:
         axisMin: 0
         axisMax: 0
       buttons: []
+    variants: []
+  fallback_WindowsUWP:
+    description: 
+    matchingCriteria:
+      axisCount: 0
+      buttonCount: 0
+      disabled: 0
+      alwaysMatch: 0
+      productName_useRegex: 0
+      productName: []
+      matchUnityVersion: 0
+      matchUnityVersion_min: 
+      matchUnityVersion_max: 
+    elements:
+      compoundElements: []
+      axes: []
+      buttons: []
+    variants: []
   fallback_OSX:
+    description: 
     matchingCriteria:
       axisCount: 0
       buttonCount: 0
@@ -242,6 +414,9 @@ MonoBehaviour:
       productName_useRegex: 0
       productName:
       - 'CH PRODUCTS CH PRO PEDALS USB '
+      matchUnityVersion: 0
+      matchUnityVersion_min: 
+      matchUnityVersion_max: 
     elements:
       compoundElements: []
       axes:
@@ -251,6 +426,8 @@ MonoBehaviour:
         axisDeadZone: .0500000007
         sourceButton: 0
         sourceKeyCode: 0
+        customCalculation: {fileID: 0}
+        customCalculationSourceData: []
         invert: 0
         sourceAxisRange: 0
         buttonAxisContribution: 0
@@ -264,6 +441,8 @@ MonoBehaviour:
         axisDeadZone: .0500000007
         sourceButton: 0
         sourceKeyCode: 0
+        customCalculation: {fileID: 0}
+        customCalculationSourceData: []
         invert: 0
         sourceAxisRange: 0
         buttonAxisContribution: 0
@@ -277,6 +456,8 @@ MonoBehaviour:
         axisDeadZone: .0500000007
         sourceButton: 0
         sourceKeyCode: 0
+        customCalculation: {fileID: 0}
+        customCalculationSourceData: []
         invert: 0
         sourceAxisRange: 0
         buttonAxisContribution: 0
@@ -285,7 +466,9 @@ MonoBehaviour:
         axisMin: 0
         axisMax: 0
       buttons: []
+    variants: []
   fallback_Linux:
+    description: 
     matchingCriteria:
       axisCount: 0
       buttonCount: 0
@@ -293,11 +476,33 @@ MonoBehaviour:
       alwaysMatch: 0
       productName_useRegex: 0
       productName: []
+      matchUnityVersion: 0
+      matchUnityVersion_min: 
+      matchUnityVersion_max: 
     elements:
       compoundElements: []
       axes: []
       buttons: []
+    variants: []
+  fallback_Linux_PreConfigured:
+    description: 
+    matchingCriteria:
+      axisCount: 0
+      buttonCount: 0
+      disabled: 0
+      alwaysMatch: 0
+      productName_useRegex: 0
+      productName: []
+      matchUnityVersion: 0
+      matchUnityVersion_min: 
+      matchUnityVersion_max: 
+    elements:
+      compoundElements: []
+      axes: []
+      buttons: []
+    variants: []
   fallback_Android:
+    description: 
     matchingCriteria:
       axisCount: 0
       buttonCount: 0
@@ -305,11 +510,16 @@ MonoBehaviour:
       alwaysMatch: 0
       productName_useRegex: 0
       productName: []
+      matchUnityVersion: 0
+      matchUnityVersion_min: 
+      matchUnityVersion_max: 
     elements:
       compoundElements: []
       axes: []
       buttons: []
+    variants: []
   fallback_iOS:
+    description: 
     matchingCriteria:
       axisCount: 0
       buttonCount: 0
@@ -317,11 +527,16 @@ MonoBehaviour:
       alwaysMatch: 0
       productName_useRegex: 0
       productName: []
+      matchUnityVersion: 0
+      matchUnityVersion_min: 
+      matchUnityVersion_max: 
     elements:
       compoundElements: []
       axes: []
       buttons: []
+    variants: []
   fallback_Blackberry:
+    description: 
     matchingCriteria:
       axisCount: 0
       buttonCount: 0
@@ -329,11 +544,16 @@ MonoBehaviour:
       alwaysMatch: 0
       productName_useRegex: 0
       productName: []
+      matchUnityVersion: 0
+      matchUnityVersion_min: 
+      matchUnityVersion_max: 
     elements:
       compoundElements: []
       axes: []
       buttons: []
+    variants: []
   fallback_WindowsPhone8:
+    description: 
     matchingCriteria:
       axisCount: 0
       buttonCount: 0
@@ -341,11 +561,16 @@ MonoBehaviour:
       alwaysMatch: 0
       productName_useRegex: 0
       productName: []
+      matchUnityVersion: 0
+      matchUnityVersion_min: 
+      matchUnityVersion_max: 
     elements:
       compoundElements: []
       axes: []
       buttons: []
+    variants: []
   fallback_XBox360:
+    description: 
     matchingCriteria:
       axisCount: 0
       buttonCount: 0
@@ -353,11 +578,16 @@ MonoBehaviour:
       alwaysMatch: 0
       productName_useRegex: 0
       productName: []
+      matchUnityVersion: 0
+      matchUnityVersion_min: 
+      matchUnityVersion_max: 
     elements:
       compoundElements: []
       axes: []
       buttons: []
+    variants: []
   fallback_XBoxOne:
+    description: 
     matchingCriteria:
       axisCount: 0
       buttonCount: 0
@@ -365,11 +595,16 @@ MonoBehaviour:
       alwaysMatch: 0
       productName_useRegex: 0
       productName: []
+      matchUnityVersion: 0
+      matchUnityVersion_min: 
+      matchUnityVersion_max: 
     elements:
       compoundElements: []
       axes: []
       buttons: []
+    variants: []
   fallback_PS3:
+    description: 
     matchingCriteria:
       axisCount: 0
       buttonCount: 0
@@ -377,11 +612,16 @@ MonoBehaviour:
       alwaysMatch: 0
       productName_useRegex: 0
       productName: []
+      matchUnityVersion: 0
+      matchUnityVersion_min: 
+      matchUnityVersion_max: 
     elements:
       compoundElements: []
       axes: []
       buttons: []
+    variants: []
   fallback_PS4:
+    description: 
     matchingCriteria:
       axisCount: 0
       buttonCount: 0
@@ -389,11 +629,16 @@ MonoBehaviour:
       alwaysMatch: 0
       productName_useRegex: 0
       productName: []
+      matchUnityVersion: 0
+      matchUnityVersion_min: 
+      matchUnityVersion_max: 
     elements:
       compoundElements: []
       axes: []
       buttons: []
+    variants: []
   fallback_PSM:
+    description: 
     matchingCriteria:
       axisCount: 0
       buttonCount: 0
@@ -401,11 +646,16 @@ MonoBehaviour:
       alwaysMatch: 0
       productName_useRegex: 0
       productName: []
+      matchUnityVersion: 0
+      matchUnityVersion_min: 
+      matchUnityVersion_max: 
     elements:
       compoundElements: []
       axes: []
       buttons: []
+    variants: []
   fallback_PSVita:
+    description: 
     matchingCriteria:
       axisCount: 0
       buttonCount: 0
@@ -413,11 +663,16 @@ MonoBehaviour:
       alwaysMatch: 0
       productName_useRegex: 0
       productName: []
+      matchUnityVersion: 0
+      matchUnityVersion_min: 
+      matchUnityVersion_max: 
     elements:
       compoundElements: []
       axes: []
       buttons: []
+    variants: []
   fallback_Wii:
+    description: 
     matchingCriteria:
       axisCount: 0
       buttonCount: 0
@@ -425,11 +680,16 @@ MonoBehaviour:
       alwaysMatch: 0
       productName_useRegex: 0
       productName: []
+      matchUnityVersion: 0
+      matchUnityVersion_min: 
+      matchUnityVersion_max: 
     elements:
       compoundElements: []
       axes: []
       buttons: []
+    variants: []
   fallback_WiiU:
+    description: 
     matchingCriteria:
       axisCount: 0
       buttonCount: 0
@@ -437,11 +697,16 @@ MonoBehaviour:
       alwaysMatch: 0
       productName_useRegex: 0
       productName: []
+      matchUnityVersion: 0
+      matchUnityVersion_min: 
+      matchUnityVersion_max: 
     elements:
       compoundElements: []
       axes: []
       buttons: []
+    variants: []
   fallback_AmazonFireTV:
+    description: 
     matchingCriteria:
       axisCount: 0
       buttonCount: 0
@@ -449,11 +714,33 @@ MonoBehaviour:
       alwaysMatch: 0
       productName_useRegex: 0
       productName: []
+      matchUnityVersion: 0
+      matchUnityVersion_min: 
+      matchUnityVersion_max: 
     elements:
       compoundElements: []
       axes: []
       buttons: []
+    variants: []
+  fallback_RazerForgeTV:
+    description: 
+    matchingCriteria:
+      axisCount: 0
+      buttonCount: 0
+      disabled: 0
+      alwaysMatch: 0
+      productName_useRegex: 0
+      productName: []
+      matchUnityVersion: 0
+      matchUnityVersion_min: 
+      matchUnityVersion_max: 
+    elements:
+      compoundElements: []
+      axes: []
+      buttons: []
+    variants: []
   ouya:
+    description: 
     matchingCriteria:
       axisCount: 0
       buttonCount: 0
@@ -463,7 +750,9 @@ MonoBehaviour:
       compoundElements: []
       axes: []
       buttons: []
+    variants: []
   xboxOne:
+    description: 
     matchingCriteria:
       axisCount: 0
       buttonCount: 0
@@ -475,4 +764,78 @@ MonoBehaviour:
       compoundElements: []
       axes: []
       buttons: []
+    variants: []
+  internalDriver:
+    description: 
+    matchingCriteria:
+      axisCount: 0
+      buttonCount: 0
+      disabled: 0
+      alwaysMatch: 0
+      productName_useRegex: 0
+      productName: []
+      vidPid: []
+      hatCount: 0
+    elements:
+      compoundElements: []
+      axes: []
+      buttons: []
+    variants: []
+  sdl2_Linux:
+    description: 
+    matchingCriteria:
+      axisCount: 0
+      buttonCount: 0
+      disabled: 0
+      hatCount: 0
+      manufacturer_useRegex: 0
+      productName_useRegex: 0
+      systemName_useRegex: 0
+      manufacturer: []
+      productName: []
+      systemName: []
+      productGUID: []
+    elements:
+      compoundElements: []
+      axes: []
+      buttons: []
+    variants: []
+  sdl2_Windows:
+    description: 
+    matchingCriteria:
+      axisCount: 0
+      buttonCount: 0
+      disabled: 0
+      hatCount: 0
+      manufacturer_useRegex: 0
+      productName_useRegex: 0
+      systemName_useRegex: 0
+      manufacturer: []
+      productName: []
+      systemName: []
+      productGUID: []
+    elements:
+      compoundElements: []
+      axes: []
+      buttons: []
+    variants: []
+  sdl2_OSX:
+    description: 
+    matchingCriteria:
+      axisCount: 0
+      buttonCount: 0
+      disabled: 0
+      hatCount: 0
+      manufacturer_useRegex: 0
+      productName_useRegex: 0
+      systemName_useRegex: 0
+      manufacturer: []
+      productName: []
+      systemName: []
+      productGUID: []
+    elements:
+      compoundElements: []
+      axes: []
+      buttons: []
+    variants: []
   elementIdentifierIdCounter: 3

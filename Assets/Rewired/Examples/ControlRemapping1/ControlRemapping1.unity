@@ -83,6 +83,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 220370785}
   - 114: {fileID: 220370784}
+  - 114: {fileID: 220370786}
   m_Layer: 0
   m_Name: Rewired Input Manager
   m_TagString: Untagged
@@ -105,15 +106,97 @@ MonoBehaviour:
   _userData:
     configVars:
       updateLoop: 7
-      windowsStandalonePrimaryInputSource: 0
-      useXInput: 1
       alwaysUseUnityInput: 0
+      windowsStandalonePrimaryInputSource: 0
+      osx_primaryInputSource: 0
+      linux_primaryInputSource: 0
+      windowsUWP_primaryInputSource: 0
+      xboxOne_primaryInputSource: 0
+      ps4_primaryInputSource: 0
+      useXInput: 1
       useNativeMouse: 1
+      useEnhancedDeviceSupport: 1
+      windowsStandalone_useSteamRawInputControllerWorkaround: 1
+      osxStandalone_useEnhancedDeviceSupport: 1
+      android_supportUnknownGamepads: 0
+      ps4_assignJoysticksByPS4JoyId: 1
+      useSteamControllerSupport: 1
+      platformVars_allPlatforms:
+        disableKeyboard: 0
+        ignoreInputWhenAppNotInFocus: 1
+      platformVars_windowsStandalone:
+        disableKeyboard: 0
+        ignoreInputWhenAppNotInFocus: 1
+      platformVars_linuxStandalone:
+        disableKeyboard: 0
+        ignoreInputWhenAppNotInFocus: 1
+      platformVars_osxStandalone:
+        disableKeyboard: 0
+        ignoreInputWhenAppNotInFocus: 1
+      platformVars_windows8Store:
+        disableKeyboard: 0
+        ignoreInputWhenAppNotInFocus: 1
+      platformVars_windowsUWP:
+        disableKeyboard: 0
+        ignoreInputWhenAppNotInFocus: 1
+      platformVars_iOS:
+        disableKeyboard: 0
+        ignoreInputWhenAppNotInFocus: 1
+      platformVars_tvOS:
+        disableKeyboard: 0
+        ignoreInputWhenAppNotInFocus: 1
+      platformVars_android:
+        disableKeyboard: 0
+        ignoreInputWhenAppNotInFocus: 1
+      platformVars_ps3:
+        disableKeyboard: 0
+        ignoreInputWhenAppNotInFocus: 1
+      platformVars_ps4:
+        disableKeyboard: 0
+        ignoreInputWhenAppNotInFocus: 1
+      platformVars_psVita:
+        disableKeyboard: 0
+        ignoreInputWhenAppNotInFocus: 1
+      platformVars_xbox360:
+        disableKeyboard: 0
+        ignoreInputWhenAppNotInFocus: 1
+      platformVars_xboxOne:
+        disableKeyboard: 0
+        ignoreInputWhenAppNotInFocus: 1
+      platformVars_wii:
+        disableKeyboard: 0
+        ignoreInputWhenAppNotInFocus: 1
+      platformVars_wiiu:
+        disableKeyboard: 0
+        ignoreInputWhenAppNotInFocus: 1
+      platformVars_webGL:
+        disableKeyboard: 0
+        ignoreInputWhenAppNotInFocus: 1
       maxJoysticksPerPlayer: 1
       autoAssignJoysticks: 1
       assignJoysticksToPlayingPlayersOnly: 0
       distributeJoysticksEvenly: 1
       reassignJoystickToPreviousOwnerOnReconnect: 1
+      defaultJoystickAxis2DDeadZoneType: 1
+      force4WayHats: 0
+      editorSettings:
+        exportConsts_useParentClass: 0
+        exportConsts_parentClassName: RewiredConsts
+        exportConsts_useNamespace: 1
+        exportConsts_namespace: RewiredConsts
+        exportConsts_actions: 1
+        exportConsts_actionsClassName: Action
+        exportConsts_actionsIncludeActionCategory: 0
+        exportConsts_mapCategories: 1
+        exportConsts_mapCategoriesClassName: Category
+        exportConsts_layouts: 1
+        exportConsts_layoutsClassName: Layout
+        exportConsts_players: 1
+        exportConsts_playersClassName: Player
+        exportConsts_customControllers: 1
+        exportConsts_customControllersClassName: CustomController
+        exportConsts_customControllersAxesClassName: Axis
+        exportConsts_customControllersButtonsClassName: Button
     players:
     - _id: 0
       _name: System
@@ -137,6 +220,8 @@ MonoBehaviour:
       _defaultCustomControllerMaps: []
       _startingCustomControllers: []
       _assignMouseOnStart: 0
+      _assignKeyboardOnStart: 1
+      _excludeFromControllerAutoAssignment: 0
     - _id: 5
       _name: Player0
       _descriptiveName: Player 1
@@ -186,6 +271,8 @@ MonoBehaviour:
       _defaultCustomControllerMaps: []
       _startingCustomControllers: []
       _assignMouseOnStart: 1
+      _assignKeyboardOnStart: 1
+      _excludeFromControllerAutoAssignment: 0
     - _id: 10
       _name: Player1
       _descriptiveName: Player 2
@@ -226,6 +313,8 @@ MonoBehaviour:
       _defaultCustomControllerMaps: []
       _startingCustomControllers: []
       _assignMouseOnStart: 0
+      _assignKeyboardOnStart: 1
+      _excludeFromControllerAutoAssignment: 0
     - _id: 17
       _name: Player2
       _descriptiveName: Player 3
@@ -266,6 +355,8 @@ MonoBehaviour:
       _defaultCustomControllerMaps: []
       _startingCustomControllers: []
       _assignMouseOnStart: 0
+      _assignKeyboardOnStart: 1
+      _excludeFromControllerAutoAssignment: 0
     - _id: 18
       _name: Player3
       _descriptiveName: Player 4
@@ -306,6 +397,8 @@ MonoBehaviour:
       _defaultCustomControllerMaps: []
       _startingCustomControllers: []
       _assignMouseOnStart: 0
+      _assignKeyboardOnStart: 1
+      _excludeFromControllerAutoAssignment: 0
     - _id: 19
       _name: Player4
       _descriptiveName: Player 5
@@ -346,6 +439,8 @@ MonoBehaviour:
       _defaultCustomControllerMaps: []
       _startingCustomControllers: []
       _assignMouseOnStart: 0
+      _assignKeyboardOnStart: 1
+      _excludeFromControllerAutoAssignment: 0
     - _id: 20
       _name: Player5
       _descriptiveName: Player 6
@@ -386,6 +481,8 @@ MonoBehaviour:
       _defaultCustomControllerMaps: []
       _startingCustomControllers: []
       _assignMouseOnStart: 0
+      _assignKeyboardOnStart: 1
+      _excludeFromControllerAutoAssignment: 0
     - _id: 21
       _name: Player6
       _descriptiveName: Player 7
@@ -426,6 +523,8 @@ MonoBehaviour:
       _defaultCustomControllerMaps: []
       _startingCustomControllers: []
       _assignMouseOnStart: 0
+      _assignKeyboardOnStart: 1
+      _excludeFromControllerAutoAssignment: 0
     actions:
     - _id: 3
       _name: Vertical
@@ -816,6 +915,7 @@ MonoBehaviour:
     - _id: 0
       _name: Default
       _joystickAxisSensitivity: 1
+      _digitalAxisSimulation: 1
       _digitalAxisSnap: 1
       _digitalAxisInstantReverse: 0
       _digitalAxisGravity: 3
@@ -827,6 +927,10 @@ MonoBehaviour:
       _mouseOtherAxisSensitivity: 1
       _customControllerAxisSensitivity: 1
       _buttonDoublePressSpeed: .300000012
+      _buttonShortPressTime: .25
+      _buttonShortPressExpiresIn: 0
+      _buttonLongPressTime: 1
+      _buttonLongPressExpiresIn: 0
       _buttonDeadZone: .5
       _buttonDownBuffer: 0
     mapCategories:
@@ -922,7 +1026,7 @@ MonoBehaviour:
         _actionId: 17
         _elementType: 0
         _elementIdentifierId: 0
-        _axisRange: 0
+        _axisRange: 1
         _invert: 0
         _axisContribution: 0
         _keyboardKeyCode: 0
@@ -933,7 +1037,7 @@ MonoBehaviour:
         _actionId: 18
         _elementType: 0
         _elementIdentifierId: 1
-        _axisRange: 0
+        _axisRange: 2
         _invert: 0
         _axisContribution: 0
         _keyboardKeyCode: 0
@@ -1882,15 +1986,29 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
---- !u!1 &945346459
+--- !u!114 &220370786
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 220370783}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 307e2fe016d34e8438488ad3bf56abd2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isEnabled: 1
+  loadDataOnStart: 1
+  playerPrefsKeyPrefix: ControlRemappingDemo1
+--- !u!1 &1572088612
 GameObject:
   m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 100000, guid: 2f95f5044a26ac84c8aaccb0ad3d6a06, type: 2}
-  m_PrefabInternal: {fileID: 2057291031}
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
   serializedVersion: 4
   m_Component:
-  - 4: {fileID: 945346461}
-  - 114: {fileID: 945346460}
+  - 4: {fileID: 1572088614}
+  - 114: {fileID: 1572088613}
   m_Layer: 0
   m_Name: ControlRemappingDemo1
   m_TagString: Untagged
@@ -1898,77 +2016,28 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &945346460
+--- !u!114 &1572088613
 MonoBehaviour:
   m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 11400000, guid: 2f95f5044a26ac84c8aaccb0ad3d6a06,
-    type: 2}
-  m_PrefabInternal: {fileID: 2057291031}
-  m_GameObject: {fileID: 945346459}
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1572088612}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d46c5e39d37919f489db349f4e4ebccc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!4 &945346461
+--- !u!4 &1572088614
 Transform:
   m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 400000, guid: 2f95f5044a26ac84c8aaccb0ad3d6a06, type: 2}
-  m_PrefabInternal: {fileID: 2057291031}
-  m_GameObject: {fileID: 945346459}
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1572088612}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
---- !u!1001 &2057291031
-Prefab:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 400000, guid: 2f95f5044a26ac84c8aaccb0ad3d6a06, type: 2}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 400000, guid: 2f95f5044a26ac84c8aaccb0ad3d6a06, type: 2}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 400000, guid: 2f95f5044a26ac84c8aaccb0ad3d6a06, type: 2}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 400000, guid: 2f95f5044a26ac84c8aaccb0ad3d6a06, type: 2}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 400000, guid: 2f95f5044a26ac84c8aaccb0ad3d6a06, type: 2}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 400000, guid: 2f95f5044a26ac84c8aaccb0ad3d6a06, type: 2}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 400000, guid: 2f95f5044a26ac84c8aaccb0ad3d6a06, type: 2}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 400000, guid: 2f95f5044a26ac84c8aaccb0ad3d6a06, type: 2}
-      propertyPath: m_RootMapOrder
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 400000, guid: 2f95f5044a26ac84c8aaccb0ad3d6a06, type: 2}
-      propertyPath: m_RootOrder
-      value: 1
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_ParentPrefab: {fileID: 100100000, guid: 2f95f5044a26ac84c8aaccb0ad3d6a06, type: 2}
-  m_RootGameObject: {fileID: 945346459}
-  m_IsPrefabParent: 0
-  m_IsExploded: 1
 --- !u!1 &2100927955
 GameObject:
   m_ObjectHideFlags: 0

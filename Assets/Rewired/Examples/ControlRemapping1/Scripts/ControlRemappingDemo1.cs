@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2014 Augie R. Maddox, Guavaman Enterprises. All rights reserved.
+﻿// Copyright (c) 2017 Augie R. Maddox, Guavaman Enterprises. All rights reserved.
 
 #pragma warning disable 0649 // disable warnings about unused variables
 
@@ -12,13 +12,16 @@ namespace Rewired.Demos {
     [AddComponentMenu("")]
     public class ControlRemappingDemo1 : MonoBehaviour {
 
-        private const string playerPrefsBaseKey = "UserRemappingDemo";
         private const float defaultModalWidth = 250.0f;
         private const float defaultModalHeight = 200.0f;
         private const float assignmentTimeout = 5.0f;
 
         // Helper objects
         private DialogHelper dialog;
+
+        // Listener
+        private InputMapper inputMapper = new InputMapper();
+        private InputMapper.ConflictFoundEventData conflictFoundEventData;
 
         // GUI state management
         private bool guiState;
@@ -33,6 +36,7 @@ namespace Rewired.Demos {
 
         // Other flags
         private bool showMenu;
+        private bool startListening;
 
         // Scroll view positions
         private Vector2 actionScrollPos;
@@ -56,7 +60,18 @@ namespace Rewired.Demos {
         #region Initialization
 
         private void Awake() {
+            inputMapper.options.timeout = assignmentTimeout;
+            inputMapper.options.ignoreMouseXAxis = true;
+            inputMapper.options.ignoreMouseYAxis = true;
             Initialize();
+        }
+
+        private void OnEnable() {
+            Subscribe();
+        }
+
+        private void OnDisable() {
+            Unsubscribe();
         }
 
         private void Initialize() {
@@ -66,9 +81,9 @@ namespace Rewired.Demos {
             ReInput.ControllerConnectedEvent += JoystickConnected;
             ReInput.ControllerPreDisconnectEvent += JoystickPreDisconnect; // runs before joystick is completely disconnected so we can save maps
             ReInput.ControllerDisconnectedEvent += JoystickDisconnected; // final disconnect that runs after joystick has been fully removed
-            Reset();
+            ResetAll();
             initialized = true;
-            LoadAllMaps(); // load saved user maps on start if there are any to load
+            ReInput.userDataStore.Load(); // load saved user maps on start if there are any to load
 
             if(ReInput.unityJoystickIdentificationRequired) {
                 IdentifyAllJoysticks();
@@ -87,15 +102,25 @@ namespace Rewired.Demos {
             setupFinished = true;
         }
 
+        private void Subscribe() {
+            Unsubscribe();
+            inputMapper.ConflictFoundEvent += OnConflictFound;
+            inputMapper.StoppedEvent += OnStopped;
+        }
+
+        private void Unsubscribe() {
+            inputMapper.RemoveAllEventListeners();
+        }
+
         #endregion
 
         #region Main Update
 
         public void OnGUI() {
-            #if UNITY_EDITOR
+#if UNITY_EDITOR
             // Check for script recompile in the editor
             CheckRecompile();
-            #endif
+#endif
 
             if(!initialized) return;
 
@@ -130,12 +155,14 @@ namespace Rewired.Demos {
         private void HandleMenuControl() {
             if(dialog.enabled) return; // don't allow closing the menu while dialog is open so there won't be issues remapping the Menu button
 
-            if(ReInput.players.GetSystemPlayer().GetButtonDown("Menu")) {
-                if(showMenu) { // menu is open and will be closed
-                    SaveAllMaps(); // save all maps when menu is closed
-                    Close();
-                } else {
-                    Open();
+            if(Event.current.type == EventType.Layout) {
+                if(ReInput.players.GetSystemPlayer().GetButtonDown("Menu")) {
+                    if(showMenu) { // menu is open and will be closed
+                        ReInput.userDataStore.Save(); // save all maps when menu is closed
+                        Close();
+                    } else {
+                        Open();
+                    }
                 }
             }
         }
@@ -157,7 +184,7 @@ namespace Rewired.Demos {
         private void DrawInitialScreen() {
             GUIContent content;
             ActionElementMap map = ReInput.players.GetSystemPlayer().controllers.maps.GetFirstElementMapWithAction("Menu", true);
-            
+
             if(map != null) {
                 content = new GUIContent("Press " + map.elementIdentifierName + " to open the menu.");
             } else {
@@ -419,12 +446,12 @@ namespace Rewired.Demos {
 
                     GUILayout.BeginHorizontal();
                     GUILayout.Label(name, GUILayout.Width(labelWidth));
-                    DrawAddActionMapButton(selectedPlayer.id, action, Pole.Positive, selectedController, selectedMap, true); // Add assignment button
+                    DrawAddActionMapButton(selectedPlayer.id, action, AxisRange.Positive, selectedController, selectedMap); // Add assignment button
 
                     // Write out assigned elements
                     foreach(ActionElementMap elementMap in selectedMap.AllMaps) {
                         if(elementMap.actionId != action.id) continue;
-                        DrawActionAssignmentButton(selectedPlayer.id, action, Pole.Positive, selectedController, selectedMap, true, elementMap);
+                        DrawActionAssignmentButton(selectedPlayer.id, action, AxisRange.Positive, selectedController, selectedMap, elementMap);
                     }
                     GUILayout.EndHorizontal();
 
@@ -435,32 +462,31 @@ namespace Rewired.Demos {
 
                         GUILayout.BeginHorizontal();
                         GUILayout.Label(name, GUILayout.Width(labelWidth));
-                        DrawAddActionMapButton(selectedPlayer.id, action, Pole.Positive, selectedController, selectedMap, true); // Add assignment button
+                        DrawAddActionMapButton(selectedPlayer.id, action, AxisRange.Full, selectedController, selectedMap); // Add assignment button
 
                         // Write out assigned elements
                         foreach(ActionElementMap elementMap in selectedMap.AllMaps) {
                             if(elementMap.actionId != action.id) continue;
                             if(elementMap.elementType == ControllerElementType.Button) continue; // skip buttons, will handle below
                             if(elementMap.axisType == AxisType.Split) continue; // skip split axes, will handle below
-                            DrawActionAssignmentButton(selectedPlayer.id, action, Pole.Positive, selectedController, selectedMap, true, elementMap);
+                            DrawActionAssignmentButton(selectedPlayer.id, action, AxisRange.Full, selectedController, selectedMap, elementMap);
                             DrawInvertButton(selectedPlayer.id, action, Pole.Positive, selectedController, selectedMap, elementMap);
                         }
                         GUILayout.EndHorizontal();
-
                     }
 
                     // Positive action
                     string positiveName = action.positiveDescriptiveName != string.Empty ? action.positiveDescriptiveName : action.descriptiveName + " +";
                     GUILayout.BeginHorizontal();
                     GUILayout.Label(positiveName, GUILayout.Width(labelWidth));
-                    DrawAddActionMapButton(selectedPlayer.id, action, Pole.Positive, selectedController, selectedMap, false); // Add assignment button
+                    DrawAddActionMapButton(selectedPlayer.id, action, AxisRange.Positive, selectedController, selectedMap); // Add assignment button
 
                     // Write out assigned elements
                     foreach(ActionElementMap elementMap in selectedMap.AllMaps) {
                         if(elementMap.actionId != action.id) continue;
                         if(elementMap.axisContribution != Pole.Positive) continue; // axis contribution is incorrect, skip
                         if(elementMap.axisType == AxisType.Normal) continue; // normal axes handled above
-                        DrawActionAssignmentButton(selectedPlayer.id, action, Pole.Positive, selectedController, selectedMap, false, elementMap);
+                        DrawActionAssignmentButton(selectedPlayer.id, action, AxisRange.Positive, selectedController, selectedMap, elementMap);
                     }
                     GUILayout.EndHorizontal();
 
@@ -468,14 +494,14 @@ namespace Rewired.Demos {
                     string negativeName = action.negativeDescriptiveName != string.Empty ? action.negativeDescriptiveName : action.descriptiveName + " -";
                     GUILayout.BeginHorizontal();
                     GUILayout.Label(negativeName, GUILayout.Width(labelWidth));
-                    DrawAddActionMapButton(selectedPlayer.id, action, Pole.Negative, selectedController, selectedMap, false); // Add assignment button
+                    DrawAddActionMapButton(selectedPlayer.id, action, AxisRange.Negative, selectedController, selectedMap); // Add assignment button
 
                     // Write out assigned elements
                     foreach(ActionElementMap elementMap in selectedMap.AllMaps) {
                         if(elementMap.actionId != action.id) continue;
                         if(elementMap.axisContribution != Pole.Negative) continue; // axis contribution is incorrect, skip
                         if(elementMap.axisType == AxisType.Normal) continue; // normal axes handled above
-                        DrawActionAssignmentButton(selectedPlayer.id, action, Pole.Negative, selectedController, selectedMap, false, elementMap);
+                        DrawActionAssignmentButton(selectedPlayer.id, action, AxisRange.Negative, selectedController, selectedMap, elementMap);
                     }
                     GUILayout.EndHorizontal();
                 }
@@ -488,12 +514,17 @@ namespace Rewired.Demos {
 
         #region Buttons
 
-        private void DrawActionAssignmentButton(int playerId, InputAction action, Pole actionAxisContribution, ControllerSelection controller, ControllerMap controllerMap,
-            bool assignFullAxis, ActionElementMap elementMap) {
+        private void DrawActionAssignmentButton(int playerId, InputAction action, AxisRange actionRange, ControllerSelection controller, ControllerMap controllerMap, ActionElementMap elementMap) {
 
             if(GUILayout.Button(elementMap.elementIdentifierName, GUILayout.ExpandWidth(false), GUILayout.MinWidth(30.0f))) {
-                EnqueueAction(new ElementAssignmentChange(playerId, controller.id, controller.type, controllerMap,
-                    ElementAssignmentChangeType.ReassignOrRemove, elementMap.id, action.id, actionAxisContribution, action.type, assignFullAxis, elementMap.invert));
+                InputMapper.Context context = new InputMapper.Context() {
+                    actionId = action.id,
+                    actionRange = actionRange,
+                    controllerMap = controllerMap,
+                    actionElementMapToReplace = elementMap
+                };
+                EnqueueAction(new ElementAssignmentChange(ElementAssignmentChangeType.ReassignOrRemove, context));
+                startListening = true;
             }
             GUILayout.Space(4);
         }
@@ -507,11 +538,15 @@ namespace Rewired.Demos {
             GUILayout.Space(10);
         }
 
-        private void DrawAddActionMapButton(int playerId, InputAction action, Pole actionAxisContribution, ControllerSelection controller, ControllerMap controllerMap,
-            bool assignFullAxis) {
+        private void DrawAddActionMapButton(int playerId, InputAction action, AxisRange actionRange, ControllerSelection controller, ControllerMap controllerMap) {
             if(GUILayout.Button("Add...", GUILayout.ExpandWidth(false))) {
-                EnqueueAction(new ElementAssignmentChange(playerId, controller.id, controller.type, controllerMap,
-                    ElementAssignmentChangeType.Add, -1, action.id, actionAxisContribution, action.type, assignFullAxis, false));
+                InputMapper.Context context = new InputMapper.Context() {
+                    actionId = action.id,
+                    actionRange = actionRange,
+                    controllerMap = controllerMap
+                };
+                EnqueueAction(new ElementAssignmentChange(ElementAssignmentChangeType.Add, context));
+                startListening = true;
             }
             GUILayout.Space(10);
         }
@@ -543,7 +578,7 @@ namespace Rewired.Demos {
 
             GUILayout.FlexibleSpace();
             dialog.DrawCancelButton();
-            
+
             GUILayout.EndHorizontal();
         }
 
@@ -581,11 +616,37 @@ namespace Rewired.Demos {
                 return;
             }
 
-            // Poll the controller for input assignment
-            PollControllerForAssignment(entry);
+            float time;
+
+            // Do not start until dialog is ready
+            if(!dialog.busy) {
+
+                // Start the listener
+                if(startListening && inputMapper.status == InputMapper.Status.Idle) {
+                    inputMapper.Start(entry.context);
+                    startListening = false;
+                }
+
+                // Check for conflicts
+                if(conflictFoundEventData != null) { // a conflict is pending
+                    dialog.Confirm();
+                    return;
+                }
+
+                time = inputMapper.timeRemaining;
+
+                // Check for timeout
+                if(time == 0f) {
+                    dialog.Cancel();
+                    return;
+                }
+
+            } else {
+                time = inputMapper.options.timeout;
+            }
 
             // Show the cancel timer
-            GUILayout.Label("Assignment will be canceled in " + ((int)Mathf.Ceil(dialog.closeTimer)).ToString() + "...", style_wordWrap);
+            GUILayout.Label("Assignment will be canceled in " + ((int)Mathf.Ceil(time)).ToString() + "...", style_wordWrap);
         }
 
         private void DrawElementAssignmentProtectedConflictWindow(string title, string message) {
@@ -632,7 +693,7 @@ namespace Rewired.Demos {
 
             // Draw Buttons
             GUILayout.BeginHorizontal();
-            
+
             dialog.DrawConfirmButton(UserResponse.Confirm, "Replace");
             GUILayout.FlexibleSpace();
             dialog.DrawConfirmButton(UserResponse.Custom1, "Add");
@@ -677,7 +738,7 @@ namespace Rewired.Demos {
 
             // Message
             GUILayout.Label(message, style_wordWrap);
-            
+
             GUILayout.Label("Press any button or axis on \"" + entry.joystickName + "\" now.", style_wordWrap);
 
             GUILayout.FlexibleSpace();
@@ -719,8 +780,8 @@ namespace Rewired.Demos {
             // Controller element selection
             GUILayout.BeginVertical(GUILayout.Width(200));
 
-			// Create a scroll view for the axis list in case using the default controller map which has a lot of axes
-			calibrateScrollPos = GUILayout.BeginScrollView(calibrateScrollPos);
+            // Create a scroll view for the axis list in case using the default controller map which has a lot of axes
+            calibrateScrollPos = GUILayout.BeginScrollView(calibrateScrollPos);
 
             if(entry.recording) GUI.enabled = false; // don't allow switching while recording min/max
             IList<ControllerElementIdentifier> axisIdentifiers = entry.joystick.AxisElementIdentifiers;
@@ -734,7 +795,7 @@ namespace Rewired.Demos {
             }
             if(GUI.enabled != origGUIEnabled) GUI.enabled = origGUIEnabled; // restore gui
 
-			GUILayout.EndScrollView();
+            GUILayout.EndScrollView();
 
             GUILayout.EndVertical();
 
@@ -746,13 +807,13 @@ namespace Rewired.Demos {
                 float axisValue = entry.joystick.GetAxisRawById(entry.selectedElementIdentifierId);
 
                 GUILayout.Label("Raw Value: " + axisValue.ToString());
-                
-				// Get the axis index from the element identifier id
+
+                // Get the axis index from the element identifier id
                 int axisIndex = entry.joystick.GetAxisIndexById(entry.selectedElementIdentifierId);
                 AxisCalibration axis = entry.calibrationMap.GetAxis(axisIndex); // get the axis calibration
 
                 // Show current axis information
-				GUILayout.Label("Calibrated Value: " + entry.joystick.GetAxisById(entry.selectedElementIdentifierId));
+                GUILayout.Label("Calibrated Value: " + entry.joystick.GetAxisById(entry.selectedElementIdentifierId));
                 GUILayout.Label("Zero: " + axis.calibratedZero);
                 GUILayout.Label("Min: " + axis.calibratedMin);
                 GUILayout.Label("Max: " + axis.calibratedMax);
@@ -836,126 +897,6 @@ namespace Rewired.Demos {
                 if(response != UserResponse.Cancel) entry.Confirm(response); // mark the entry as confirmed and record user response
                 else entry.Cancel(); // mark the entry as canceled
                 break;
-            }
-        }
-
-        #endregion
-
-        #region Polling
-
-        private void PollControllerForAssignment(ElementAssignmentChange entry) {
-            if(dialog.busy) return; // do not allow assignment until dialog is ready
-
-            switch (entry.controllerType) {
-                case ControllerType.Keyboard:
-                    PollKeyboardForAssignment(entry); // poll keyboard for key presses
-                    break;
-                case ControllerType.Joystick:
-                    PollJoystickForAssignment(entry); // poll joystick for element activations
-                    break;
-                case ControllerType.Mouse:
-                    PollMouseForAssignment(entry); // poll mouse for element activations
-                    break;
-            }
-        }
-
-        private void PollKeyboardForAssignment(ElementAssignmentChange entry) {
-            int modifierPressedCount = 0; // the number of modifier keys being pressed this cycle
-            ControllerPollingInfo nonModifierKeyInfo = new ControllerPollingInfo();
-            ControllerPollingInfo firstModifierKeyInfo = new ControllerPollingInfo();
-            ModifierKeyFlags curModifiers = ModifierKeyFlags.None;
-
-            // Check all keys being pressed at present so we can handle modifier keys
-            foreach(ControllerPollingInfo info in ReInput.controllers.Keyboard.PollForAllKeys()) {
-                KeyCode key = info.keyboardKey;
-                if(key == KeyCode.AltGr) continue; // skip AltGr key because it gets fired when alt and control are held on some keyboards
-
-                // determine if a modifier key is being pressed
-                if(Keyboard.IsModifierKey(info.keyboardKey)) { // a modifier key is pressed
-                    if(modifierPressedCount == 0) firstModifierKeyInfo = info; // store the polling info for the first modifier key pressed in case its the only key pressed
-
-                    curModifiers |= Keyboard.KeyCodeToModifierKeyFlags(key); // add the key to the current modifier flags
-                    modifierPressedCount += 1; // count how many modifier keys are pressed
-
-                } else { // this is not a modifier key
-
-                    if(nonModifierKeyInfo.keyboardKey != KeyCode.None) continue; // skip after the first one detected, we only need one non-modifier key press
-                    nonModifierKeyInfo = info; // store the polling info
-                }
-
-            }
-
-            // Commit immediately if a non-modifier key was pressed
-            if(nonModifierKeyInfo.keyboardKey != KeyCode.None) { // a regular key was pressed
-
-                if(modifierPressedCount == 0) { // only the regular key was pressed
-
-                    entry.pollingInfo = nonModifierKeyInfo; // copy polling info into entry
-                    dialog.Confirm(); // finish
-                    return;
-
-                } else { // one more more modifier keys was pressed too
-
-                    entry.pollingInfo = nonModifierKeyInfo; // copy polling info into entry
-                    entry.modifierKeyFlags = curModifiers; // set the modifier key flags in the entry
-                    dialog.Confirm(); // finish
-                    return;
-
-                }
-
-            } else if(modifierPressedCount > 0) { // one or more modifier keys were pressed, but no regular keys
-                dialog.StartCloseTimer(assignmentTimeout); // reset close timer if a modifier key is pressed
-
-                if(modifierPressedCount == 1) { // only one modifier is pressed, allow assigning just the modifier key
-
-                    // Assign the modifier key as the main key if the user holds it for 1 second
-                    if(ReInput.controllers.Keyboard.GetKeyTimePressed(firstModifierKeyInfo.keyboardKey) > 1.0f) { // key was pressed for one second
-                        entry.pollingInfo = firstModifierKeyInfo; // copy polling info into entry
-                        dialog.Confirm(); // finish
-                        return;
-                    }
-
-                    // Show the key that is being pressed
-                    GUILayout.Label(Keyboard.GetKeyName(firstModifierKeyInfo.keyboardKey));
-
-                } else { // more than one modifier key is pressed
-                    // do nothing because we don't want to assign modified modifier key presses such as Control + Alt, but you could if you wanted to.
-
-                    // Show the modifier keys being held
-                    GUILayout.Label(Keyboard.ModifierKeyFlagsToString(curModifiers));
-
-                }
-
-            }
-        }
-
-        private void PollJoystickForAssignment(ElementAssignmentChange entry) {
-            // Poll the controller via the owning player
-            Player player = ReInput.players.GetPlayer(entry.playerId);
-            if(player == null) {
-                dialog.Cancel();
-                return;
-            }
-
-            // Just poll the controller for the first axis or button press
-            entry.pollingInfo = player.controllers.polling.PollControllerForFirstElementDown(entry.controllerType, entry.controllerId);
-            if(entry.pollingInfo.success) { // polling returned a result
-                dialog.Confirm(); // finish
-            }
-        }
-
-        private void PollMouseForAssignment(ElementAssignmentChange entry) {
-            // Poll the controller via the owning player
-            Player player = ReInput.players.GetPlayer(entry.playerId);
-            if(player == null) {
-                dialog.Cancel();
-                return;
-            }
-
-            // Just poll the controller for the first axis or button press
-            entry.pollingInfo = player.controllers.polling.PollControllerForFirstElementDown(entry.controllerType, entry.controllerId); // PollMouseForFirstElement_ExcludeXYAxis(entry.controllerId); // poll the mouse for all input except the primary X/Y axes -- we'll handle these separately
-            if(entry.pollingInfo.success) { // polling returned a result
-                dialog.Confirm(); // finish
             }
         }
 
@@ -1073,8 +1014,7 @@ namespace Rewired.Demos {
         }
 
         private bool ProcessRemoveOrReassignElementAssignment(ElementAssignmentChange entry) {
-            if(entry.controllerMap == null) return true;
-            
+            if(entry.context.controllerMap == null) return true;
             if(entry.state == QueueEntry.State.Canceled) { // delete entry
                 // Enqueue a new action to delete the entry
                 ElementAssignmentChange newEntry = new ElementAssignmentChange(entry); // copy the entry
@@ -1105,15 +1045,15 @@ namespace Rewired.Demos {
         }
 
         private bool ProcessRemoveElementAssignment(ElementAssignmentChange entry) {
-            if(entry.controllerMap == null) return true;
+            if(entry.context.controllerMap == null) return true;
             if(entry.state == QueueEntry.State.Canceled) return true; // user canceled
 
             // Delete element
             if(entry.state == QueueEntry.State.Confirmed) { // user confirmed, delete it
-                entry.controllerMap.DeleteElementMap(entry.actionElementMapId);
+                entry.context.controllerMap.DeleteElementMap(entry.context.actionElementMapToReplace.id);
                 return true;
             }
-            
+
             // Create dialog and start waiting for user confirmation
             dialog.StartModal(entry.id, DialogHelper.DialogType.DeleteAssignmentConfirmation, new WindowProperties {
                 title = "Remove Assignment",
@@ -1126,36 +1066,38 @@ namespace Rewired.Demos {
         }
 
         private bool ProcessAddOrReplaceElementAssignment(ElementAssignmentChange entry) {
-            Player player = ReInput.players.GetPlayer(entry.playerId);
-            if(player == null) return true;
-            if(entry.controllerMap == null) return true;
-            if(entry.state == QueueEntry.State.Canceled) return true; // user canceled
+
+            if(entry.state == QueueEntry.State.Canceled) {
+                inputMapper.Stop();
+                return true; // user canceled
+            }
 
             // Check for user confirmation
             if(entry.state == QueueEntry.State.Confirmed) { // the action assignment has been confirmed
                 if(Event.current.type != EventType.Layout) return false; // only make changes in layout to avoid GUI errors when new controls appear
 
-                // Do a check for element assignment conflicts
-                if(!ReInput.controllers.conflictChecking.DoesElementAssignmentConflict(entry.ToElementAssignmentConflictCheck())) {  // no conflicts
-                    entry.ReplaceOrCreateActionElementMap(); // make the assignment, done
-
-                } else { // we had conflicts
-                    
+                // Handle conflicts
+                if(conflictFoundEventData != null) { // we had conflicts
                     // Enqueue a conflict check
                     ElementAssignmentChange newEntry = new ElementAssignmentChange(entry); // clone the entry
                     newEntry.changeType = ElementAssignmentChangeType.ConflictCheck; // set the new type to check for conflicts
                     actionQueue.Enqueue(newEntry); // enqueue the new entry
                 }
-                
+
                 return true; // finished
             }
 
             // Customize the message for different controller types and different platforms
             string message;
-            if(entry.controllerType == ControllerType.Keyboard) {
+            if(entry.context.controllerMap.controllerType == ControllerType.Keyboard) {
 
-                if(Application.platform == RuntimePlatform.OSXEditor || Application.platform == RuntimePlatform.OSXPlayer || Application.platform == RuntimePlatform.OSXWebPlayer) {
-                    message = "Press any key to assign it to this action. You may also use the modifier keys Command, Control, Alt, and Shift. If you wish to assign a modifier key ifselt this action, press and hold the key for 1 second.";
+#if UNITY_5_4_OR_NEWER
+                bool isOSX = Application.platform == RuntimePlatform.OSXEditor || Application.platform == RuntimePlatform.OSXPlayer;
+#else
+                bool isOSX = Application.platform == RuntimePlatform.OSXEditor || Application.platform == RuntimePlatform.OSXPlayer || Application.platform == RuntimePlatform.OSXWebPlayer;
+#endif
+                if(isOSX) {
+                    message = "Press any key to assign it to this action. You may also use the modifier keys Command, Control, Alt, and Shift. If you wish to assign a modifier key itself to this action, press and hold the key for 1 second.";
                 } else {
                     message = "Press any key to assign it to this action. You may also use the modifier keys Control, Alt, and Shift. If you wish to assign a modifier key itself to this action, press and hold the key for 1 second.";
                 }
@@ -1165,7 +1107,7 @@ namespace Rewired.Demos {
                     message += "\n\nNOTE: Some modifier key combinations will not work in the Unity Editor, but they will work in a game build.";
                 }
 
-            } else if(entry.controllerType == ControllerType.Mouse) {
+            } else if(entry.context.controllerMap.controllerType == ControllerType.Mouse) {
                 message = "Press any mouse button or axis to assign it to this action.\n\nTo assign mouse movement axes, move the mouse quickly in the direction you want mapped to the action. Slow movements will be ignored.";
             } else {
                 message = "Press any button or axis to assign it to this action.";
@@ -1178,51 +1120,35 @@ namespace Rewired.Demos {
                 rect = GetScreenCenteredRect(defaultModalWidth, defaultModalHeight),
                 windowDrawDelegate = DrawElementAssignmentWindow
             },
-            DialogResultCallback,
-            assignmentTimeout);
+            DialogResultCallback);
 
             return false;
         }
 
         private bool ProcessElementAssignmentConflictCheck(ElementAssignmentChange entry) {
-            Player player = ReInput.players.GetPlayer(entry.playerId);
-            if(player == null) return true;
-            if(entry.controllerMap == null) return true;
-            if(entry.state == QueueEntry.State.Canceled) return true; // user canceled
+            if(entry.context.controllerMap == null) return true;
+            if(entry.state == QueueEntry.State.Canceled) {
+                inputMapper.Stop();
+                return true; // user canceled
+            }
+
+            if(conflictFoundEventData == null) return true; // error
 
             // Check for user confirmation
             if(entry.state == QueueEntry.State.Confirmed) {
-                
-                entry.changeType = ElementAssignmentChangeType.Add; // set the change type back to add before we add the assignment
-                
+
                 if(entry.response == UserResponse.Confirm) { // remove and add
-
-                    ReInput.controllers.conflictChecking.RemoveElementAssignmentConflicts(entry.ToElementAssignmentConflictCheck()); // remove conflicts
-                    entry.ReplaceOrCreateActionElementMap(); // create or replace the element
-
+                    conflictFoundEventData.responseCallback(InputMapper.ConflictResponse.Replace);
                 } else if(entry.response == UserResponse.Custom1) { // add without removing
-
-                    entry.ReplaceOrCreateActionElementMap(); // add the element
-
+                    conflictFoundEventData.responseCallback(InputMapper.ConflictResponse.Add);
                 } else throw new System.NotImplementedException();
-
 
                 return true; // finished
             }
 
-            // Do a detailed conflict check
-            bool protectedConflictFound = false;
-            foreach(ElementAssignmentConflictInfo info in ReInput.controllers.conflictChecking.ElementAssignmentConflicts(entry.ToElementAssignmentConflictCheck())) {
-                // Check if this conflict is with a protected assignment
-                if(!info.isUserAssignable) {
-                    protectedConflictFound = true;
-                    break;
-                }
-            }
-
             // Open a different dialog depending on if a protected conflict was found
-            if(protectedConflictFound) {
-                string message = entry.elementName + " is already in use and is protected from reassignment. You cannot remove the protected assignment, but you can still assign the action to this element. If you do so, the element will trigger multiple actions when activated.";
+            if(conflictFoundEventData.isProtected) {
+                string message = conflictFoundEventData.assignment.elementDisplayName + " is already in use and is protected from reassignment. You cannot remove the protected assignment, but you can still assign the action to this element. If you do so, the element will trigger multiple actions when activated.";
 
                 // Create dialog and start waiting for user assignment
                 dialog.StartModal(entry.id, DialogHelper.DialogType.AssignElement, new WindowProperties {
@@ -1234,7 +1160,7 @@ namespace Rewired.Demos {
                 DialogResultCallback);
 
             } else {
-                string message = entry.elementName + " is already in use. You may replace the other conflicting assignments, add this assignment anyway which will leave multiple actions assigned to this element, or cancel this assignment.";
+                string message = conflictFoundEventData.assignment.elementDisplayName + " is already in use. You may replace the other conflicting assignments, add this assignment anyway which will leave multiple actions assigned to this element, or cancel this assignment.";
 
                 // Create dialog and start waiting for user assignment
                 dialog.StartModal(entry.id, DialogHelper.DialogType.AssignElement, new WindowProperties {
@@ -1270,7 +1196,6 @@ namespace Rewired.Demos {
                 windowDrawDelegate = DrawFallbackJoystickIdentificationWindow
             },
             DialogResultCallback,
-            0.0f,
             1.0f); // add a longer delay after the dialog opens to prevent one joystick press from being used for subsequent joysticks if held for a short time
             return false; // don't process anything more in this queue
         }
@@ -1322,7 +1247,7 @@ namespace Rewired.Demos {
             selectedMap = null;
         }
 
-        private void Reset() {
+        private void ResetAll() {
             ClearWorkingVars();
             initialized = false;
             showMenu = false;
@@ -1336,6 +1261,9 @@ namespace Rewired.Demos {
             dialog.FullReset();
             actionQueue.Clear();
             busy = false;
+            startListening = false;
+            conflictFoundEventData = null;
+            inputMapper.Stop();
         }
 
         #endregion
@@ -1361,7 +1289,18 @@ namespace Rewired.Demos {
 
         private void JoystickConnected(ControllerStatusChangedEventArgs args) {
             // Reload maps if a joystick is connected
-            LoadJoystickMaps(args.controllerId);
+            if(ReInput.controllers.IsControllerAssigned(args.controllerType, args.controllerId)) {
+                // Load the maps for the player(s) that are assigned this joystick
+                foreach(Player player in ReInput.players.AllPlayers) {
+                    if(player.controllers.ContainsController(args.controllerType, args.controllerId)) {
+                        ReInput.userDataStore.LoadControllerData(player.id, args.controllerType, args.controllerId);
+                    }
+                }
+            } else {
+                // Just load the general joystick save data
+                ReInput.userDataStore.LoadControllerData(args.controllerType, args.controllerId);
+            }
+
 
             // Always force reidentification of all joysticks when a joystick is added or removed when using Unity input on a platform that requires manual identification
             if(ReInput.unityJoystickIdentificationRequired) IdentifyAllJoysticks();
@@ -1374,7 +1313,16 @@ namespace Rewired.Demos {
             }
 
             // Save the user maps before the joystick is disconnected if in the menu since user may have changed something
-            if(showMenu) SaveJoystickMaps(args.controllerId);
+            if(showMenu) {
+                if(ReInput.controllers.IsControllerAssigned(args.controllerType, args.controllerId)) {
+                    foreach(Player player in ReInput.players.AllPlayers) {
+                        if(!player.controllers.ContainsController(args.controllerType, args.controllerId)) continue;
+                        ReInput.userDataStore.SaveControllerData(player.id, args.controllerType, args.controllerId);
+                    }
+                } else {
+                    ReInput.userDataStore.SaveControllerData(args.controllerType, args.controllerId);
+                }
+            }
         }
 
         private void JoystickDisconnected(ControllerStatusChangedEventArgs args) {
@@ -1387,265 +1335,15 @@ namespace Rewired.Demos {
 
         #endregion
 
-        #region Load/Save
+        #region Mapping Listener Event Handlers
 
-        private void LoadAllMaps() {
-            // This example uses PlayerPrefs because its convenient, though not efficient, but you could use any data storage method you like.
-
-            IList<Player> allPlayers = ReInput.players.AllPlayers;
-            for(int i = 0; i < allPlayers.Count; i++) {
-                Player player = allPlayers[i];
-
-                // Load Input Behaviors - all players have an instance of each input behavior so it can be modified
-                IList<InputBehavior> behaviors = ReInput.mapping.GetInputBehaviors(player.id); // get all behaviors from player
-                for(int j = 0; j < behaviors.Count; j++) {
-                    string xml = GetInputBehaviorXml(player, behaviors[j].id); // try to the behavior for this id
-                    if(xml == null || xml == string.Empty) continue; // no data found for this behavior
-                    behaviors[j].ImportXmlString(xml); // import the data into the behavior
-                }
-
-                // Load the maps first and make sure we have them to load before clearing
-
-                // Load Keyboard Maps
-				List<string> keyboardMaps = GetAllControllerMapsXml(player, true, ControllerType.Keyboard, ReInput.controllers.Keyboard);
-
-                // Load Mouse Maps
-                List<string> mouseMaps = GetAllControllerMapsXml(player, true, ControllerType.Mouse, ReInput.controllers.Mouse); // load mouse controller maps
-                
-                // Load Joystick Maps
-                bool foundJoystickMaps = false;
-                List<List<string>> joystickMaps = new List<List<string>>();
-                foreach(Joystick joystick in player.controllers.Joysticks) {
-                    List<string> maps = GetAllControllerMapsXml(player, true, ControllerType.Joystick, joystick);
-                    joystickMaps.Add(maps);
-                    if(maps.Count > 0) foundJoystickMaps = true;
-                }
-                
-                // Now add the maps to the controller
-
-                // Keyboard maps
-                if(keyboardMaps.Count > 0) player.controllers.maps.ClearMaps(ControllerType.Keyboard, true); // clear only user-assignable maps, but only if we found something to load. Don't _really_ have to clear the maps as adding ones in the same cat/layout will just replace, but let's clear anyway.
-                player.controllers.maps.AddMapsFromXml(ControllerType.Keyboard, 0, keyboardMaps); // add the maps to the player
-
-                // Joystick maps
-                if(foundJoystickMaps) player.controllers.maps.ClearMaps(ControllerType.Joystick, true); // clear only user-assignable maps, but only if we found something to load. Don't _really_ have to clear the maps as adding ones in the same cat/layout will just replace, but let's clear anyway.
-                int count = 0;
-                foreach(Joystick joystick in player.controllers.Joysticks) {
-                    player.controllers.maps.AddMapsFromXml(ControllerType.Joystick, joystick.id, joystickMaps[count]); // add joystick controller maps to player
-                    count++;
-                }
-
-                // Mouse Maps
-                if(mouseMaps.Count > 0) player.controllers.maps.ClearMaps(ControllerType.Mouse, true); // clear only user-assignable maps, but only if we found something to load. Don't _really_ have to clear the maps as adding ones in the same cat/layout will just replace, but let's clear anyway.
-                player.controllers.maps.AddMapsFromXml(ControllerType.Mouse, 0, mouseMaps); // add the maps to the player
-            }
-
-            // Load joystick calibration maps
-            foreach(Joystick joystick in ReInput.controllers.Joysticks) {
-                joystick.ImportCalibrationMapFromXmlString(GetJoystickCalibrationMapXml(joystick)); // load joystick calibration map if any
-            }
+        private void OnConflictFound(InputMapper.ConflictFoundEventData data) {
+            this.conflictFoundEventData = data;
         }
 
-        private void SaveAllMaps() {
-            // This example uses PlayerPrefs because its convenient, though not efficient, but you could use any data storage method you like.
-
-            IList<Player> allPlayers = ReInput.players.AllPlayers;
-            for(int i = 0; i < allPlayers.Count; i++) {
-                Player player = allPlayers[i];
-
-                // Get all savable data from player
-                PlayerSaveData playerData = player.GetSaveData(true);
-
-                // Save Input Behaviors
-                foreach(InputBehavior behavior in playerData.inputBehaviors) {
-                    string key = GetInputBehaviorPlayerPrefsKey(player, behavior);
-                    PlayerPrefs.SetString(key, behavior.ToXmlString()); // save the behavior to player prefs in XML format
-                }
-
-                // Save controller maps
-                foreach(ControllerMapSaveData saveData in playerData.AllControllerMapSaveData) {
-                    string key = GetControllerMapPlayerPrefsKey(player, saveData);
-                    PlayerPrefs.SetString(key, saveData.map.ToXmlString()); // save the map to player prefs in XML format
-                }
-            }
-
-            // Save joystick calibration maps
-            foreach(Joystick joystick in ReInput.controllers.Joysticks) {
-                JoystickCalibrationMapSaveData saveData = joystick.GetCalibrationMapSaveData();
-                string key = GetJoystickCalibrationMapPlayerPrefsKey(saveData);
-                PlayerPrefs.SetString(key, saveData.map.ToXmlString()); // save the map to player prefs in XML format
-            }
-
-            // Save changes to PlayerPrefs
-            PlayerPrefs.Save();
+        private void OnStopped(InputMapper.StoppedEventData data) {
+            this.conflictFoundEventData = null;
         }
-
-        private void LoadJoystickMaps(int joystickId) {
-            // This example uses PlayerPrefs because its convenient, though not efficient, but you could use any data storage method you like.
-
-            IList<Player> allPlayers = ReInput.players.AllPlayers;
-            for(int i = 0; i < allPlayers.Count; i++) { // this controller may be owned by more than one player, so check all
-                Player player = allPlayers[i];
-                if(!player.controllers.ContainsController(ControllerType.Joystick, joystickId)) continue; // player does not have the joystick
-
-                Joystick joystick = player.controllers.GetController<Joystick>(joystickId);
-                if(joystick == null) continue;
-
-                // Load the joystick maps first and make sure we have them to load before clearing
-                List<string> xmlMaps = GetAllControllerMapsXml(player, true, ControllerType.Joystick, joystick);
-                if(xmlMaps.Count == 0) continue;
-
-                // Clear joystick maps first
-                player.controllers.maps.ClearMaps(ControllerType.Joystick, true); // clear only user-assignable maps (technically you don't have to clear -- adding a map in same catId/layoutId will overwrite)
-
-                // Load Joystick Maps
-                player.controllers.maps.AddMapsFromXml(ControllerType.Joystick, joystickId, xmlMaps); // load joystick controller maps
-                
-                // Load joystick calibration map
-                joystick.ImportCalibrationMapFromXmlString(GetJoystickCalibrationMapXml(joystick)); // load joystick calibration map
-            }
-        }
-
-        private void SaveJoystickMaps(int joystickId) {
-            // This example uses PlayerPrefs because its convenient, though not efficient, but you could use any data storage method you like.
-
-            IList<Player> allPlayers = ReInput.players.AllPlayers;
-            for(int i = 0; i < allPlayers.Count; i++) { // this controller may be owned by more than one player, so check all
-                string key;
-                Player player = allPlayers[i];
-                if(!player.controllers.ContainsController(ControllerType.Joystick, joystickId)) continue; // player does not have the joystick
-
-                // Save controller maps
-                JoystickMapSaveData[] saveData = player.controllers.maps.GetMapSaveData<JoystickMapSaveData>(joystickId, true);
-                if(saveData != null) {
-                    for(int j = 0; j < saveData.Length; j++) {
-                        key = GetControllerMapPlayerPrefsKey(player, saveData[j]);
-                        PlayerPrefs.SetString(key, saveData[j].map.ToXmlString()); // save the map to player prefs in XML format
-                    }
-                }
-
-                // Save joystick calibration map
-                Joystick joystick = player.controllers.GetController<Joystick>(joystickId);
-                JoystickCalibrationMapSaveData calibrationSaveData = joystick.GetCalibrationMapSaveData();
-                key = GetJoystickCalibrationMapPlayerPrefsKey(calibrationSaveData);
-                PlayerPrefs.SetString(key, calibrationSaveData.map.ToXmlString()); // save the map to player prefs in XML format
-            }
-
-            // Save calibration maps
-            IList<Joystick> joysticks = ReInput.controllers.Joysticks;
-            for(int i = 0; i < joysticks.Count; i++) {
-                JoystickCalibrationMapSaveData saveData = joysticks[i].GetCalibrationMapSaveData();
-                string key = GetJoystickCalibrationMapPlayerPrefsKey(saveData);
-                PlayerPrefs.SetString(key, saveData.map.ToXmlString()); // save the map to player prefs in XML format
-            }
-        }
-
-        #region PlayerPrefs Methods
-
-        /* NOTE ON PLAYER PREFS:
-         * PlayerPrefs on Windows Standalone is saved in the registry. There is a bug in Regedit that makes any entry with a name equal to or greater than 255 characters
-         * (243 + 12 unity appends) invisible in Regedit. Unity will still load the data fine, but if you are debugging and wondering why your data is not showing up in
-         * Regedit, this is why. If you need to delete the values, either call PlayerPrefs.Clear or delete the key folder in Regedit -- Warning: both methods will
-         * delete all player prefs including any ones you've created yourself or other plugins have created.
-         */
-         
-         // WARNING: Do not use & symbol in keys. Linux cannot load them after the current session ends.
-       
-        private string GetBasePlayerPrefsKey(Player player) {
-            string key = playerPrefsBaseKey;
-            key += "|playerName=" + player.name; // make a key for this specific player, could use id, descriptive name, or a custom profile identifier of your choice
-            return key;
-        }
-
-        private string GetControllerMapPlayerPrefsKey(Player player, ControllerMapSaveData saveData) {
-            // Create a player prefs key like a web querystring so we can search for player prefs key when loading maps
-            string key = GetBasePlayerPrefsKey(player);
-            key += "|dataType=ControllerMap";
-            key += "|controllerMapType=" + saveData.mapTypeString;
-            key += "|categoryId=" + saveData.map.categoryId + "|" + "layoutId=" + saveData.map.layoutId;
-			key += "|hardwareIdentifier=" + saveData.controllerHardwareIdentifier; // the hardware identifier string helps us identify maps for unknown hardware because it doesn't have a Guid
-            if(saveData.mapType == typeof(JoystickMap)) { // store special info for joystick maps
-                key += "|hardwareGuid=" + ((JoystickMapSaveData)saveData).joystickHardwareTypeGuid.ToString(); // the identifying GUID that determines which known joystick this is
-            }
-            return key;
-        }
-
-        private string GetControllerMapXml(Player player, ControllerType controllerType, int categoryId, int layoutId, Controller controller) {
-            string key = GetBasePlayerPrefsKey(player);
-            key += "|dataType=ControllerMap";
-            key += "|controllerMapType=" + controller.mapTypeString;
-            key += "|categoryId=" + categoryId + "|" + "layoutId=" + layoutId;
-			key += "|hardwareIdentifier=" + controller.hardwareIdentifier; // the hardware identifier string helps us identify maps for unknown hardware because it doesn't have a Guid
-            if(controllerType == ControllerType.Joystick) {
-                Joystick joystick = (Joystick)controller;
-                key += "|hardwareGuid=" + joystick.hardwareTypeGuid.ToString(); // the identifying GUID that determines which known joystick this is
-            }
-
-            if(!PlayerPrefs.HasKey(key)) return string.Empty; // key does not exist
-            return PlayerPrefs.GetString(key); // return the data
-        }
-
-        private List<string> GetAllControllerMapsXml(Player player, bool userAssignableMapsOnly, ControllerType controllerType, Controller controller) {
-            // Because player prefs does not allow us to search for partial keys, we have to check all possible category ids and layout ids to find the maps to load
-
-            List<string> mapsXml = new List<string>();
-
-            IList<InputMapCategory> categories = ReInput.mapping.MapCategories;
-            for(int i = 0; i < categories.Count; i++) {
-                InputMapCategory cat = categories[i];
-                if(userAssignableMapsOnly && !cat.userAssignable) continue; // skip map because not user-assignable
-
-                IList<InputLayout> layouts = ReInput.mapping.MapLayouts(controllerType);
-                for(int j = 0; j < layouts.Count; j++) {
-                    InputLayout layout = layouts[j];
-					string xml = GetControllerMapXml(player, controllerType, cat.id, layout.id, controller);
-                    if(xml == string.Empty) continue;
-                    mapsXml.Add(xml);
-                }
-            }
-
-            return mapsXml;
-        }
-
-        private string GetJoystickCalibrationMapPlayerPrefsKey(JoystickCalibrationMapSaveData saveData) {
-            // Create a player prefs key like a web querystring so we can search for player prefs key when loading maps
-            string key = playerPrefsBaseKey;
-            key += "|dataType=CalibrationMap";
-            key += "|controllerType=" + saveData.controllerType.ToString();
-            key += "|hardwareIdentifier=" + saveData.hardwareIdentifier; // the hardware identifier string helps us identify maps for unknown hardware because it doesn't have a Guid
-            key += "|hardwareGuid=" + saveData.joystickHardwareTypeGuid.ToString();
-            return key;
-        }
-
-        private string GetJoystickCalibrationMapXml(Joystick joystick) {
-            string key = playerPrefsBaseKey;
-            key += "|dataType=CalibrationMap";
-            key += "|controllerType=" + joystick.type.ToString();
-			key += "|hardwareIdentifier=" + joystick.hardwareIdentifier; // the hardware identifier string helps us identify maps for unknown hardware because it doesn't have a Guid
-            key += "|hardwareGuid=" + joystick.hardwareTypeGuid.ToString();
-
-            if(!PlayerPrefs.HasKey(key)) return string.Empty; // key does not exist
-            return PlayerPrefs.GetString(key); // return the data
-        }
-
-        private string GetInputBehaviorPlayerPrefsKey(Player player, InputBehavior saveData) {
-            // Create a player prefs key like a web querystring so we can search for player prefs key when loading maps
-            string key = GetBasePlayerPrefsKey(player);
-            key += "|dataType=InputBehavior";
-            key += "|id=" + saveData.id;
-            return key;
-        }
-
-        private string GetInputBehaviorXml(Player player, int id) {
-            string key = GetBasePlayerPrefsKey(player);
-            key += "|dataType=InputBehavior";
-            key += "|id=" + id;
-
-            if(!PlayerPrefs.HasKey(key)) return string.Empty; // key does not exist
-            return PlayerPrefs.GetString(key); // return the data
-        }
-
-        #endregion
 
         #endregion
 
@@ -1671,13 +1369,12 @@ namespace Rewired.Demos {
 
         #region Editor Methods
 
-
         protected void CheckRecompile() {
 #if UNITY_EDITOR
             // Destroy system if recompiling
             if(UnityEditor.EditorApplication.isCompiling) { // editor is recompiling
                 if(!isCompiling) { // this is the first cycle of recompile
-                    Reset();
+                    ResetAll();
                     isCompiling = true;
                 }
                 GUILayout.Window(0, GetScreenCenteredRect(300, 100), RecompileWindow, new GUIContent("Scripts are Compiling"));
@@ -1757,8 +1454,6 @@ namespace Rewired.Demos {
 
             private DialogType _type;
             private bool _enabled;
-            private float _closeTime;
-            private bool _closeTimerRunning;
             private float _busyTime;
             private bool _busyTimerRunning;
             private float busyTimer { get { if(!_busyTimerRunning) return 0.0f; return _busyTime - Time.realtimeSinceStartup; } }
@@ -1776,7 +1471,7 @@ namespace Rewired.Demos {
                         _type = DialogType.None;
                         StateChanged(closeBusyDelay);
                     }
-                    
+
                 }
             }
             public DialogType type {
@@ -1795,7 +1490,6 @@ namespace Rewired.Demos {
                     _type = value;
                 }
             }
-            public float closeTimer { get { if(!_closeTimerRunning) return 0.0f; return _closeTime - Time.realtimeSinceStartup; } }
             public bool busy { get { return _busyTimerRunning; } }
 
             private Action<int> drawWindowDelegate;
@@ -1811,17 +1505,13 @@ namespace Rewired.Demos {
             }
 
             public void StartModal(int queueActionId, DialogType type, WindowProperties windowProperties, Action<int, UserResponse> resultCallback) {
-                StartModal(queueActionId, type, windowProperties, resultCallback, 0.0f, -1.0f);
+                StartModal(queueActionId, type, windowProperties, resultCallback, -1.0f);
             }
-            public void StartModal(int queueActionId, DialogType type, WindowProperties windowProperties, Action<int, UserResponse> resultCallback, float closeTimer) {
-                StartModal(queueActionId, type, windowProperties, resultCallback, closeTimer, -1.0f);
-            }
-            public void StartModal(int queueActionId, DialogType type, WindowProperties windowProperties, Action<int, UserResponse> resultCallback, float closeTimer, float openBusyDelay) {
+            public void StartModal(int queueActionId, DialogType type, WindowProperties windowProperties, Action<int, UserResponse> resultCallback, float openBusyDelay) {
                 currentActionId = queueActionId;
                 this.windowProperties = windowProperties;
                 this.type = type;
                 this.resultCallback = resultCallback;
-                if(closeTimer > 0.0f) StartCloseTimer(closeTimer);
                 if(openBusyDelay >= 0.0f) StateChanged(openBusyDelay); // override with user defined open busy delay
             }
 
@@ -1893,17 +1583,9 @@ namespace Rewired.Demos {
             }
 
             private void UpdateTimers() {
-                if(_closeTimerRunning) {
-                    if(closeTimer <= 0.0f) Cancel();
-                }
                 if(_busyTimerRunning) {
                     if(busyTimer <= 0.0f) _busyTimerRunning = false;
                 }
-            }
-
-            public void StartCloseTimer(float time) {
-                _closeTime = time + Time.realtimeSinceStartup;
-                _closeTimerRunning = true;
             }
 
             private void StartBusyTimer(float time) {
@@ -1925,13 +1607,10 @@ namespace Rewired.Demos {
                 _type = DialogType.None;
                 currentActionId = -1;
                 resultCallback = null;
-                _closeTimerRunning = false;
-                _closeTime = 0.0f;
             }
 
             private void ResetTimers() {
                 _busyTimerRunning = false;
-                _closeTimerRunning = false;
             }
 
             public void FullReset() {
@@ -1996,7 +1675,8 @@ namespace Rewired.Demos {
                 int newPlayerId,
                 int joystickId,
                 bool assign
-            ) : base(QueueActionType.JoystickAssignment) {
+            )
+                : base(QueueActionType.JoystickAssignment) {
                 this.playerId = newPlayerId;
                 this.joystickId = joystickId;
                 this.assign = assign;
@@ -2004,117 +1684,18 @@ namespace Rewired.Demos {
         }
 
         private class ElementAssignmentChange : QueueEntry {
-            public int playerId { get; private set; }
-            public int controllerId { get; private set; }
-            public ControllerType controllerType { get; private set; }
-            public ControllerMap controllerMap { get; private set; }
-            public int actionElementMapId { get; private set; }
-            public int actionId { get; private set; }
-            public Pole actionAxisContribution { get; private set; }
-            public InputActionType actionType { get; private set; }
-            public bool assignFullAxis { get; private set; }
-            public bool invert { get; private set; }
 
-            // Assignable outside constructor
             public ElementAssignmentChangeType changeType { get; set; }
-            public ControllerPollingInfo pollingInfo { get; set; }
-            public ModifierKeyFlags modifierKeyFlags { get; set; }
+            public InputMapper.Context context { get; private set; }
 
-            public AxisRange AssignedAxisRange {
-                get {
-                    if(!pollingInfo.success) return AxisRange.Positive;
-
-                    // Get info from the polling data
-                    ControllerElementType elementType = pollingInfo.elementType;
-                    Pole axisPole = pollingInfo.axisPole;
-
-                    // Determine which part of the axis is being assigned -- full or just one pole
-                    AxisRange axisRange = AxisRange.Positive;
-                    if(elementType == ControllerElementType.Axis) { // axis is being assigned
-                        if(actionType == InputActionType.Axis) { // assigned to an axis
-                            if(assignFullAxis) axisRange = AxisRange.Full;
-                            else axisRange = axisPole == Pole.Positive ? AxisRange.Positive : AxisRange.Negative;
-                        } else { // assigned to a button
-                            axisRange = axisPole == Pole.Positive ? AxisRange.Positive : AxisRange.Negative;
-                        }
-                    }
-                    return axisRange;
-                }
-            }
-            public string elementName {
-                get {
-                    if(controllerType == ControllerType.Keyboard) {
-                        if(modifierKeyFlags != ModifierKeyFlags.None) {
-                            return string.Format("{0} + {1}", Keyboard.ModifierKeyFlagsToString(modifierKeyFlags), pollingInfo.elementIdentifierName);
-                        }
-                    }
-                    return pollingInfo.elementIdentifierName;
-                }
-            }
-
-            public ElementAssignmentChange(
-                int playerId,
-                int controllerId,
-                ControllerType controllerType,
-                ControllerMap controllerMap,
-                ElementAssignmentChangeType changeType,
-                int actionElementMapId,
-                int actionId,
-                Pole actionAxisContribution,
-                InputActionType actionType,
-                bool assignFullAxis,
-                bool invert
-            ) : base(QueueActionType.ElementAssignment) {
-                this.playerId = playerId;
-                this.controllerId = controllerId;
-                this.controllerType = controllerType;
-                this.controllerMap = controllerMap;
+            public ElementAssignmentChange(ElementAssignmentChangeType changeType, InputMapper.Context context)
+                : base(QueueActionType.ElementAssignment) {
                 this.changeType = changeType;
-                this.actionElementMapId = actionElementMapId;
-                this.actionId = actionId;
-                this.actionAxisContribution = actionAxisContribution;
-                this.actionType = actionType;
-                this.assignFullAxis = assignFullAxis;
-                this.invert = invert;
+                this.context = context;
             }
 
-            public ElementAssignmentChange(ElementAssignmentChange source) : base(QueueActionType.ElementAssignment) {
-                // Clones but with new id
-                this.playerId = source.playerId;
-                this.controllerId = source.controllerId;
-                this.controllerType = source.controllerType;
-                this.controllerMap = source.controllerMap;
-                this.changeType = source.changeType;
-                this.actionElementMapId = source.actionElementMapId;
-                this.actionId = source.actionId;
-                this.actionAxisContribution = source.actionAxisContribution;
-                this.actionType = source.actionType;
-                this.assignFullAxis = source.assignFullAxis;
-                this.invert = source.invert;
-                this.pollingInfo = source.pollingInfo;
-                this.modifierKeyFlags = source.modifierKeyFlags;
-            }
-
-            public void ReplaceOrCreateActionElementMap() {
-                controllerMap.ReplaceOrCreateElementMap(this.ToElementAssignment()); // create new element map or replace existing
-            }
-
-            public ElementAssignmentConflictCheck ToElementAssignmentConflictCheck() {
-                // Create an ElementAssignmentConflictCheck struct for use in conflict checking
-                return new ElementAssignmentConflictCheck(
-                    playerId, controllerType, controllerId, controllerMap.id,
-                    pollingInfo.elementType, pollingInfo.elementIdentifierId, AssignedAxisRange,
-                    pollingInfo.keyboardKey, modifierKeyFlags, actionId,
-                    actionAxisContribution, invert, actionElementMapId
-                );
-            }
-
-            public ElementAssignment ToElementAssignment() {
-                // Create an ElementAssignment struct for use in assignment
-                return new ElementAssignment(
-                    controllerType, pollingInfo.elementType, pollingInfo.elementIdentifierId, AssignedAxisRange, pollingInfo.keyboardKey,
-                    modifierKeyFlags, actionId, actionAxisContribution, invert, actionElementMapId
-                );
+            public ElementAssignmentChange(ElementAssignmentChange other)
+                : this(other.changeType, other.context.Clone()) {
             }
         }
 
@@ -2134,10 +1715,10 @@ namespace Rewired.Demos {
 
         private class Calibration : QueueEntry {
             public Player player { get; private set; }
-            public ControllerType  controllerType { get; private set; }
+            public ControllerType controllerType { get; private set; }
             public Joystick joystick { get; private set; }
             public CalibrationMap calibrationMap { get; private set; }
-            
+
             public int selectedElementIdentifierId;
             public bool recording;
 
@@ -2147,10 +1728,10 @@ namespace Rewired.Demos {
                 CalibrationMap calibrationMap
             )
                 : base(QueueActionType.Calibrate) {
-                    this.player = player;
-                    this.joystick = joystick;
-                    this.calibrationMap = calibrationMap;
-                    selectedElementIdentifierId = -1;
+                this.player = player;
+                this.joystick = joystick;
+                this.calibrationMap = calibrationMap;
+                selectedElementIdentifierId = -1;
             }
         }
 

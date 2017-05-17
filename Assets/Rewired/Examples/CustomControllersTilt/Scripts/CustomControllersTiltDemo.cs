@@ -6,7 +6,11 @@ namespace Rewired.Demos {
     using System.Collections;
     using Rewired;
     
-    /* This is a simple demo to show how to use a Custom Controller to handle tilt input on a mobile device */
+    /* IMPORTANT NOTE: Basic tilt control is now available through using the Tilt Control component. Please see
+     * the documentation on Touch Controls for more information: http://guavaman.com/rewired/docs/TouchControls.html
+     * 
+     * This is a simple demo to show how to use a Custom Controller to handle tilt input on a mobile device
+     */
 
     [AddComponentMenu("")]
     [RequireComponent(typeof(Demos.TouchControllerExample))]

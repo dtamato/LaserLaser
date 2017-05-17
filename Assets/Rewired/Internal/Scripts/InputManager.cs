@@ -1,6 +1,7 @@
 ﻿// Copyright (c) 2014 Augie R. Maddox, Guavaman Enterprises. All rights reserved.
 #pragma warning disable 0219
 #pragma warning disable 0618
+#pragma warning disable 0649
 
 namespace Rewired {
 
@@ -32,13 +33,16 @@ namespace Rewired {
             editorPlatform = EditorPlatform.Windows;
 #endif
 
+#if UNITY_EDITOR_LINUX
+            editorPlatform = EditorPlatform.Linux;
+#endif
+
 #if UNITY_EDITOR_OSX
             editorPlatform = EditorPlatform.OSX;
 #endif
 
 #if UNITY_STANDALONE_OSX
             platform = Platform.OSX;
-            
 #endif
 
 #if UNITY_DASHBOARD_WIDGET
@@ -53,18 +57,20 @@ namespace Rewired {
             platform = Platform.Linux;
 #endif
 
-#if UNITY_STANDALONE
-
-#endif
-            
 #if UNITY_ANDROID
             platform = Platform.Android;
 #if !UNITY_EDITOR
             // Handle special Android platforms
             if(CheckDeviceName("OUYA", deviceName, deviceModel)) {
                 platform = Platform.Ouya;
-            } else if(CheckDeviceName("Amazon AFTB", deviceName, deviceModel) || CheckDeviceName("Amazon AFTM", deviceName, deviceModel)) {
+            } else if(CheckDeviceName("Amazon AFT.*", deviceName, deviceModel)) {
                 platform = Platform.AmazonFireTV;
+            } else if(CheckDeviceName("razer Forge", deviceName, deviceModel)) {
+#if REWIRED_OUYA && REWIRED_USE_OUYA_SDK_ON_FORGETV
+                platform = Platform.Ouya;
+#else
+                platform = Platform.RazerForgeTV;
+#endif
             }
 #endif
 #endif
@@ -73,16 +79,12 @@ namespace Rewired {
             platform = Platform.Blackberry;
 #endif
 
-#if UNITY_WP8
-            platform = Platform.WindowsPhone8;
-#endif
-
-#if UNITY_IPHONE
+#if UNITY_IPHONE || UNITY_IOS
             platform = Platform.iOS;
 #endif
 
-#if UNITY_IOS
-            platform = Platform.iOS;
+#if UNITY_TVOS
+            platform = Platform.tvOS;
 #endif
 
 #if UNITY_PS3
@@ -117,16 +119,38 @@ namespace Rewired {
             platform = Platform.WiiU;
 #endif
 
+#if UNITY_N3DS
+            platform = Platform.N3DS;
+#endif
+
+#if UNITY_SWITCH
+            platform = Platform.Switch;
+#endif
+
 #if UNITY_FLASH
             platform = Platform.Flash;
 #endif
 
-#if UNITY_METRO
+#if UNITY_METRO || UNITY_WSA || UNITY_WSA_8_0
             platform = Platform.WindowsAppStore;
 #endif
 
-#if UNITY_WINRT
+#if UNITY_WSA_8_1
+            platform = Platform.Windows81Store;
+#endif
 
+            // Windows 8.1 Universal
+#if UNITY_WINRT_8_1 && !UNITY_WSA_8_1 // this seems to be the only way to detect this
+    platform = Platform.Windows81Store;
+#endif
+
+            // Windows Phone overrides Windows Store -- this is not set when doing Universal 8.1 builds
+#if UNITY_WP8 || UNITY_WP8_1 || UNITY_WP_8 || UNITY_WP_8_1 // documentation error on format of WP8 defines, so include both
+            platform = Platform.WindowsPhone8;
+#endif
+
+#if UNITY_WSA_10_0
+            platform = Platform.WindowsUWP;
 #endif
 
 #if UNITY_WEBGL
@@ -174,9 +198,9 @@ namespace Rewired {
             return new ExternalTools();
         }
 
-        private bool CheckDeviceName(string searchString, string deviceName, string deviceModel) {
-            return deviceName.IndexOf(searchString, 0, System.StringComparison.OrdinalIgnoreCase) >= 0 ||
-                deviceModel.IndexOf(searchString, 0, System.StringComparison.OrdinalIgnoreCase) >= 0;
+        private bool CheckDeviceName(string searchPattern, string deviceName, string deviceModel) {
+            return System.Text.RegularExpressions.Regex.IsMatch(deviceName, searchPattern, System.Text.RegularExpressions.RegexOptions.IgnoreCase) ||
+                System.Text.RegularExpressions.Regex.IsMatch(deviceModel, searchPattern, System.Text.RegularExpressions.RegexOptions.IgnoreCase);
         }
     }
 }
