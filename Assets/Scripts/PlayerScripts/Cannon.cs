@@ -9,6 +9,8 @@ enum Direction { Up, Down, Left, Right };
 [DisallowMultipleComponent]
 public class Cannon : MonoBehaviour
 {
+	#region Variables
+
     //from customization script
     private int colorIdx; //the player's position within the color array
     private float rotationSpeedIncrement = 1;
@@ -25,13 +27,8 @@ public class Cannon : MonoBehaviour
     BaseGM gameManager;
     public Player rewiredPlayer;
     [SerializeField] Laser pairedLaser;     // Permanent reference to ball, manually assigned in Lobby scene and in player prefab.
-    [SerializeField] Rigidbody2D laserRB;   // Reference to the ball's RB.
-    public bool inFlight;                   // True if laser/ball is in flight, false if stored in cannon.
-    public int playerId;
-
-    //Control values
-    [SerializeField] float maxBlastForce;
-    [SerializeField] float maxAngleOffset;
+    [SerializeField] Rigidbody2D laserRB;   // Reference to the ball's RB.    
+    public int playerId;   
     
     //Rotation
 	[SerializeField] float rotationSpeed;
@@ -39,6 +36,16 @@ public class Cannon : MonoBehaviour
 	int rotationModifier = 1;
     float minRotationSpeed = 1.0f;
     float maxRotationSpeed = 5.0f;
+
+	[Header("Shooting")]
+	[SerializeField] float minBlastForce;
+	[SerializeField] float maxBlastForce;
+	[SerializeField] float maxAngleOffset;
+	[SerializeField] Image blastFill;
+	float blastForce;
+	float chargeTime;
+	float maxChargeTime = 0.3f;
+	public bool inFlight;                   // True if laser/ball is in flight, false if stored in cannon.
 
     private Transform LTransform;
     private Transform RTransform;
@@ -57,6 +64,8 @@ public class Cannon : MonoBehaviour
     float baseAngle;
     float minAngle;
     float maxAngle;
+
+	#endregion
 
 	#region Initialization
     void Start()
@@ -87,6 +96,8 @@ public class Cannon : MonoBehaviour
 		LPoint = new Vector2(LTransform.position.x,LTransform.position.y);
 		RPoint = new Vector2(RTransform.position.x, RTransform.position.y);
 		MPoint = new Vector2(MTransform.position.x, MTransform.position.y);
+
+		blastFill.gameObject.SetActive (false);
 	}
 
 	void InitializeParameters () {
@@ -171,27 +182,23 @@ public class Cannon : MonoBehaviour
 
 	void GetControllerInput () {
 
-		switch (direction) {
-			case Direction.Up:
+		float horizontalInput = rewiredPlayer.GetAxis ("Horizontal");
+		float verticalInput = rewiredPlayer.GetAxis ("Vertical");
 
-				axisMod = rewiredPlayer.GetAxis("Horizontal");
-				break;
-			case Direction.Down:
-
-				axisMod = rewiredPlayer.GetAxis("Horizontal");
-				break;
-			case Direction.Left:
-
-				axisMod = rewiredPlayer.GetAxis("Vertical");
-				break;
-			case Direction.Right:
-
-				axisMod = rewiredPlayer.GetAxis ("Vertical");
-				break;
+		if (Mathf.Abs (horizontalInput) > Mathf.Abs (verticalInput)) {
+			
+			verticalInput = 0;
+			axisMod = (direction == Direction.Right) ? -horizontalInput : horizontalInput;
 		}
+		else if (Mathf.Abs (verticalInput) > Mathf.Abs (horizontalInput)) {
 
-		const float inputThreshold = 0.1f;
-		if (Mathf.Abs(axisMod) < inputThreshold) { axisMod = 0; }
+			horizontalInput = 0;
+			axisMod = (direction == Direction.Down) ? -verticalInput : verticalInput;
+		}
+		else {
+
+			axisMod = 0;
+		}
 	}
 
 	void CheckForWallCollision () {
@@ -246,17 +253,42 @@ public class Cannon : MonoBehaviour
 		
     void GetFireInput()
     {
-         if (rewiredPlayer.GetButtonDown("Fire"))
-         {
-	         laserRB.bodyType = RigidbodyType2D.Dynamic;
-			 laserRB.GetComponent<Collider2D>().isTrigger = false;
-	         laserRB.AddForce(maxBlastForce * this.transform.up);
-	         pairedLaser.transform.GetComponent<SpriteRenderer>().enabled = true;
-	         pairedLaser.transform.GetComponent<TrailRenderer>().enabled = true;
-	         inFlight = true;
-	         this.GetComponent<AudioSource>().pitch = Random.Range(0.85f, 1.15f);
-	         this.GetComponent<AudioSource>().Play();
-         }
+		if (inFlight)
+			return;
+
+		if (rewiredPlayer.GetButtonDown ("Fire")) {
+
+			blastForce = 0;
+			chargeTime = 0;
+			blastFill.fillAmount = 0;
+			blastFill.gameObject.SetActive (true);
+		}
+		else if (rewiredPlayer.GetButton ("Fire") && !inFlight) {
+			
+			chargeTime += Time.deltaTime;
+			chargeTime = Mathf.Clamp (chargeTime, 0, maxChargeTime);
+
+			float unclampedBlastForce = (chargeTime / maxChargeTime) * maxBlastForce;
+			blastForce = Mathf.Clamp (unclampedBlastForce, minBlastForce, maxBlastForce);
+			if (blastFill.gameObject.activeSelf == false) { blastFill.gameObject.SetActive (true); }
+			blastFill.fillAmount = chargeTime / maxChargeTime;
+		}
+		else if (rewiredPlayer.GetButtonUp("Fire") && blastFill.gameObject.activeSelf)
+		{
+			laserRB.bodyType = RigidbodyType2D.Dynamic;
+			laserRB.GetComponent<Collider2D>().isTrigger = false;
+			laserRB.AddForce(blastForce * this.transform.up);
+			pairedLaser.transform.GetComponent<SpriteRenderer>().enabled = true;
+			pairedLaser.transform.GetComponent<TrailRenderer>().enabled = true;
+			inFlight = true;
+			this.GetComponent<AudioSource>().pitch = Random.Range(0.85f, 1.15f);
+			this.GetComponent<AudioSource>().Play();
+
+			blastForce = 0;
+			chargeTime = 0;
+			blastFill.fillAmount = 0;
+			blastFill.gameObject.SetActive(false);
+		}
     }
 
     //customization inputs

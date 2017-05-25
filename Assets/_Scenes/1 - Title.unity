@@ -13,7 +13,7 @@ OcclusionCullingSettings:
 --- !u!104 &2
 RenderSettings:
   m_ObjectHideFlags: 0
-  serializedVersion: 7
+  serializedVersion: 8
   m_Fog: 0
   m_FogColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   m_FogMode: 3
@@ -25,6 +25,7 @@ RenderSettings:
   m_AmbientGroundColor: {r: 0.047, g: 0.043, b: 0.035, a: 1}
   m_AmbientIntensity: 1
   m_AmbientMode: 3
+  m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
   m_SkyboxMaterial: {fileID: 0}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
@@ -41,7 +42,7 @@ RenderSettings:
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
-  serializedVersion: 7
+  serializedVersion: 9
   m_GIWorkflowMode: 1
   m_GISettings:
     serializedVersion: 2
@@ -53,7 +54,7 @@ LightmapSettings:
     m_EnableBakedLightmaps: 0
     m_EnableRealtimeLightmaps: 0
   m_LightmapEditorSettings:
-    serializedVersion: 4
+    serializedVersion: 8
     m_Resolution: 2
     m_BakeResolution: 40
     m_TextureWidth: 1024
@@ -66,13 +67,27 @@ LightmapSettings:
     m_LightmapParameters: {fileID: 0}
     m_LightmapsBakeMode: 1
     m_TextureCompression: 1
-    m_DirectLightInLightProbes: 1
     m_FinalGather: 0
     m_FinalGatherFiltering: 1
     m_FinalGatherRayCount: 256
     m_ReflectionCompression: 2
+    m_MixedBakeMode: 1
+    m_BakeBackend: 0
+    m_PVRSampling: 1
+    m_PVRDirectSampleCount: 32
+    m_PVRSampleCount: 500
+    m_PVRBounces: 2
+    m_PVRFiltering: 0
+    m_PVRFilteringMode: 1
+    m_PVRCulling: 1
+    m_PVRFilteringGaussRadiusDirect: 1
+    m_PVRFilteringGaussRadiusIndirect: 5
+    m_PVRFilteringGaussRadiusAO: 2
+    m_PVRFilteringAtrousColorSigma: 1
+    m_PVRFilteringAtrousNormalSigma: 1
+    m_PVRFilteringAtrousPositionSigma: 1
   m_LightingDataAsset: {fileID: 0}
-  m_RuntimeCPUUsage: 25
+  m_ShadowMaskMode: 2
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -89,6 +104,8 @@ NavMeshSettings:
     minRegionArea: 2
     manualCellSize: 0
     cellSize: 0.16666667
+    manualTileSize: 0
+    tileSize: 256
     accuratePlacement: 0
   m_NavMeshData: {fileID: 0}
 --- !u!1 &12555908
@@ -102,7 +119,7 @@ GameObject:
   - component: {fileID: 12555911}
   - component: {fileID: 12555910}
   m_Layer: 5
-  m_Name: Shots Text - Pink
+  m_Name: Launch Text - Pink
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -158,7 +175,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: SHOTS
+  m_Text: LAUNCH
 --- !u!222 &12555911
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -358,7 +375,7 @@ GameObject:
   - component: {fileID: 82451385}
   - component: {fileID: 82451384}
   m_Layer: 5
-  m_Name: Fired Text - Blue
+  m_Name: Party Text - Blue
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -414,7 +431,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: fired!
+  m_Text: party
 --- !u!222 &82451385
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -483,7 +500,7 @@ Canvas:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 111149508}
   m_Enabled: 1
-  serializedVersion: 2
+  serializedVersion: 3
   m_RenderMode: 1
   m_Camera: {fileID: 576748022}
   m_PlaneDistance: 100
@@ -492,6 +509,7 @@ Canvas:
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
+  m_AdditionalShaderChannelsFlag: 25
   m_SortingLayerID: 1482671577
   m_SortingOrder: 0
   m_TargetDisplay: 0
@@ -719,6 +737,7 @@ MonoBehaviour:
   useAllRewiredGamePlayers: 1
   useRewiredSystemPlayer: 1
   rewiredPlayerIds: 00000000010000000200000003000000
+  usePlayingPlayersOnly: 0
   moveOneElementPerAxisPress: 1
   m_HorizontalAxis: 
   m_VerticalAxis: Vertical
@@ -726,9 +745,9 @@ MonoBehaviour:
   m_CancelButton: Back
   m_InputActionsPerSecond: 10
   m_RepeatDelay: 0.5
-  m_AllowActivationOnMobileDevice: 0
   m_allowMouseInput: 0
   m_allowMouseInputIfTouchSupported: 0
+  m_ForceModuleActive: 0
 --- !u!1001 &338462248
 Prefab:
   m_ObjectHideFlags: 0
@@ -937,7 +956,7 @@ GameObject:
   - component: {fileID: 366889925}
   - component: {fileID: 366889924}
   m_Layer: 5
-  m_Name: Shots Text - Blue
+  m_Name: Launch Text - Blue
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -993,7 +1012,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: SHOTS
+  m_Text: LAUNCH
 --- !u!222 &366889925
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1223,6 +1242,8 @@ Camera:
   m_TargetDisplay: 0
   m_TargetEye: 3
   m_HDR: 0
+  m_AllowMSAA: 1
+  m_ForceIntoRT: 0
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
@@ -1395,7 +1416,7 @@ GameObject:
   - component: {fileID: 909987069}
   - component: {fileID: 909987068}
   m_Layer: 5
-  m_Name: Fired Text - Pink
+  m_Name: Party Text - Pink
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1451,7 +1472,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: fired!
+  m_Text: party
 --- !u!222 &909987069
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -2001,7 +2022,7 @@ GameObject:
   - component: {fileID: 1630440265}
   - component: {fileID: 1630440264}
   m_Layer: 5
-  m_Name: Fired Text - White
+  m_Name: Party Text - White
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2057,7 +2078,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: fired!
+  m_Text: party
 --- !u!222 &1630440265
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -2075,7 +2096,7 @@ GameObject:
   - component: {fileID: 1761051453}
   - component: {fileID: 1761051452}
   m_Layer: 5
-  m_Name: Shots Text - White
+  m_Name: Launch Text - White
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2131,7 +2152,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: SHOTS
+  m_Text: LAUNCH
 --- !u!222 &1761051453
 CanvasRenderer:
   m_ObjectHideFlags: 0
